@@ -2,8 +2,11 @@
   "dependencies": {
     "mssql1": {
       "type": "mssql",
-      "connectionId": "ConnectionStrings:ApplicationDbContextConnection",
-      "dynamicId": null
+      "connectionId": "ConnectionStrings:ApplicationDbContextConnection"
+    },
+    "mssql2": {
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:WebScrapper_PrototypeContext"
     }
   }
 }

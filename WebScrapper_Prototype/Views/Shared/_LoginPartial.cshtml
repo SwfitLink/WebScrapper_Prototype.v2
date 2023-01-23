@@ -52,7 +52,7 @@
                         </ul>
                     </li>
                     <li>
-                        <a id="manage" href="/Identity/Account/Manage/" title="Manage">Hello @UserManager.GetUserName(User)!</a>
+                        <a id="manage" href="/Identity/Account/Manage/" title="Manage">You are Logged in as @UserManager.GetUserName(User)!</a>
                     </li>
                     <li>
                         <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">

@@ -1,7 +1,16 @@
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
+using System.Security.Claims;
+using System.Web.Helpers;
 using WebScrapper_Prototype.Areas.Identity.Data;
+using WebScrapper_Prototype.Data;
+
+
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<WebScrapper_PrototypeContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("WebScrapper_PrototypeContext") ?? throw new InvalidOperationException("Connection string 'WebScrapper_PrototypeContext' not found.")));
+
 var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -13,6 +22,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+AntiForgeryConfig.UniqueClaimTypeIdentifier = ClaimTypes.NameIdentifier;
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
