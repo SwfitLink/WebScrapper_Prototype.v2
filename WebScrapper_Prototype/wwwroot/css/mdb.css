@@ -1624,9 +1624,12 @@ a.text-light:hover, a.text-light:focus {
     height: 100%;
     overflow: hidden;
     background-attachment: fixed; }
-  .view img, .view video {
-    position: relative;
-    display: block; }
+    .view img, .view video {
+        position: relative;
+        display: block;
+        max-width: 100%;
+        height: auto;
+    }
   .view video.video-intro {
     top: 50%;
     left: 50%;
