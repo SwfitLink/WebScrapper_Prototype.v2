@@ -9,118 +9,168 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-    <section class="navigation">
-        <div class="nav-container">
-            <div class="brand">
-                <a href="/">SwiftLink</a>
-            </div>
-            <nav>
-                <div class="nav-mobile"><a id="nav-toggle" href="#!"><span></span></a></div>
-                <ul class="nav-list">
-                    <li>
-                        <a href="/">Home</a>
-                    </li>
-                    <li>
-                        <a href="#!">Shop</a>
-                        <ul class="nav-dropdown">
-                            <li>
-                                <a href="#!">Hardware</a>
-                            </li>
-                            <li>
-                                <a href="#!">Software</a>
-                            </li>
-                            <li>
-                                <a href="#!">Laptops</a>
-                            </li>
-                            <li>
-                                <a href="#!">Accessories</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#!"></a>
-                    </li>
-                    <li>
-                        <a href="#!">PC Builder</a>
-                        <ul class="nav-dropdown">
-                            <li>
-                                <a href="#!">Custom</a>
-                            </li>
-                            <li>
-                                <a href="#!">Pre-built</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a id="manage" href="/Identity/Account/Manage/" title="Manage">You are Logged in as @UserManager.GetUserName(User)!</a>
-                    </li>
-                    <li>
-                        <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                            <button id="logout" type="submit">Logout</button>
-                        </form>
-                    </li>
+    <!-- Navbar -->
+    <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
+        <div class="container">
 
+            <!-- Brand -->
+            <a class="navbar-brand waves-effect" href="https://mdbootstrap.com/docs/jquery/" target="_blank">
+                <strong class="blue-text">SwiftLink</strong>
+            </a>
+
+            <!-- Collapse -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Links -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+                <!-- Left -->
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link waves-effect" href="#">
+                            Home
+                            <span class="sr-only">(current)</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link waves-effect" href="#"
+                       target="_blank">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link waves-effect" href="#"
+                       target="_blank">Shop</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link waves-effect" href="#">
+                            PC Builder
+                        </a>
+                    </li>
                 </ul>
-            </nav>
+                <!-- Right -->
+                <ul class="navbar-nav nav-flex-icons">
+                    <li class="nav-item">
+                        <a class="nav-link waves-effect">
+                            <span class="badge red z-depth-1 mr-1"> 0 </span>
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="clearfix d-none d-sm-inline-block"> Cart </span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link waves-effect" target="_blank">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link waves-effect" target="_blank">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="manage" href="/Identity/Account/Manage/" title="Manage" class="nav-link border border-light rounded waves-effect">@UserManager.GetUserName(User)</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link waves-effect" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">Logout</a>
+
+        @*                <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                            <button class="nav-link border border-light rounded waves-effect" id="logout" type="submit">Logout</button>
+                        </form>*@
+                    </li>
+                </ul>
+
+            </div>
+
         </div>
-    </section>
+    </nav> 
 
 }
 else
 {
-    <section class="navigation">
-        <div class="nav-container">
-            <div class="brand">
-                <a href="/">SwiftLink</a>
-            </div>
-            <nav>
-                <div class="nav-mobile"><a id="nav-toggle" href="#!"><span></span></a></div>
-                <ul class="nav-list">
-                    <li>
-                        <a href="/">Home</a>
-                    </li>
-                    <li>
-                        <a href="#!">Shop</a>
-                        <ul class="nav-dropdown">
-                            <li>
-                                <a href="#!">Hardware</a>
-                            </li>
-                            <li>
-                                <a href="#!">Software</a>
-                            </li>
-                            <li>
-                                <a href="#!">Laptops</a>
-                            </li>
-                            <li>
-                                <a href="#!">Accessories</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#!"></a>
-                    </li>
-                    <li>
-                        <a href="#!">PC Builder</a>
-                        <ul class="nav-dropdown">
-                            <li>
-                                <a href="#!">Custom</a>
-                            </li>
-                            <li>
-                                <a href="#!">Pre-built</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="/Identity/Account/Register">Register</a>
-                    </li>
-                    <li>
-                        <a href="/Identity/Account/Login">Login</a>
-                    </li>
+    <!-- Navbar -->
+    <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
+        <div class="container">
 
+            <!-- Brand -->
+            <a class="navbar-brand waves-effect" href="https://mdbootstrap.com/docs/jquery/" target="_blank">
+                <strong class="blue-text">SwiftLink</strong>
+            </a>
+
+            <!-- Collapse -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Links -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+                <!-- Left -->
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link waves-effect" href="#">
+                            Home
+                            <span class="sr-only">(current)</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link waves-effect" href="#"
+                       target="_blank">About SwiftLink</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link waves-effect" href="#"
+                       target="_blank">Pre-built PC's</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link waves-effect" href="#">
+                            Laptops
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link waves-effect" href="#">
+                            PC Builder
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link waves-effect" href="#">
+                            Accessories
+                        </a>
+
+                    </li>
                 </ul>
-            </nav>
+
+                <!-- Right -->
+                <ul class="navbar-nav nav-flex-icons">
+                    <li class="nav-item">
+                        <a class="nav-link waves-effect">
+                            <span class="badge red z-depth-1 mr-1"> 0 </span>
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="clearfix d-none d-sm-inline-block"> Cart </span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link waves-effect" target="_blank">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link waves-effect" target="_blank">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/Identity/Account/Login" class="nav-link border border-light rounded waves-effect">
+                            Login/Sign up
+                        </a>
+                    </li>
+                </ul>
+
+            </div>
+
         </div>
-    </section>
+    </nav>
+    <!-- Navbar -->
 
 }
 

@@ -1,4 +1,4 @@
-﻿@charset "UTF-8";
+﻿/*@charset "UTF-8";
 
 .navigation {
     height: 70px;
@@ -76,10 +76,10 @@ nav {
     display: none;
     z-index: 1;
     box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
-}
+}*/
 
 /* Mobile navigation */
-.nav-mobile {
+/*.nav-mobile {
     display: none;
     position: absolute;
     top: 0;
@@ -177,4 +177,32 @@ article {
     max-width: 1000px;
     margin: 0 auto;
     padding: 10px;
+}*/
+
+html,
+body,
+header,
+.carousel {
+    height: 60vh;
 }
+
+@media (max-width: 740px) {
+
+    html,
+    body,
+    header,
+    .carousel {
+        height: 100vh;
+    }
+}
+
+@media (min-width: 800px) and (max-width: 850px) {
+
+    html,
+    body,
+    header,
+    .carousel {
+        height: 100vh;
+    }
+}
+

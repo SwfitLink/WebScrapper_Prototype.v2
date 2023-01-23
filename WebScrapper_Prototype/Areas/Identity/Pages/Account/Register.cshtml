@@ -15,7 +15,7 @@
 </head>
 <body>
     <a href="/">
-        <img src="/backbutton.png" height="25" width="25" />
+        <img src="/backbutton.png" height="50" width="50" />
     </a>
     <div class="container" id="container" style="min-height:640px">
         <div class="form-container sign-in-container">
@@ -50,8 +50,7 @@
             <div class="overlay">
                 <div class="overlay-panel overlay-right">
                     <h1>Already a user?</h1>
-                    <p>Go to Sign In webpage...</p>
-                    <button class="ghost" id="signIn" onclick="href='/Identity/Account/Login'">Sign In</button>
+                    <h2><a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl" style="font-weight:500">Login</a></h2>
                 </div>
             </div>
         </div>

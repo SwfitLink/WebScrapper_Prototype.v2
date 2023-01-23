@@ -15,7 +15,7 @@
 
 <body>
         <a href="/">
-            <img src="/backbutton.png" height="25" width="25"/>
+            <img src="/backbutton.png" height="50" width="50"/>
         </a>
     <div class="container" id="container">
         <div class="form-container sign-in-container">
@@ -43,7 +43,7 @@
                 </div>
                 <div>
                     <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-                    <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
+                    
 @*                    <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
 *@                </div>
             </form>
@@ -52,8 +52,10 @@
             <div class="overlay">
                 <div class="overlay-panel overlay-right">
                     <h1>Not a member yet?</h1>
-                    <p>Go to Register webpage...</p>
-                    <button class="ghost" id="signIn" href="/Identity/Account/Register">Register</button>
+                    <h2>
+                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
+
+                    </h2>
                 </div>
             </div>
         </div>
