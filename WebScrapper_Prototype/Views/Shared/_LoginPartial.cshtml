@@ -9,28 +9,19 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-    <!-- Navbar -->
     <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
         <div class="container">
-
-            <!-- Brand -->
             <a class="navbar-brand waves-effect" href="/" target="_blank">
                 <strong class="blue-text">SwiftLink</strong>
             </a>
-
-            <!-- Collapse -->
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-
-            <!-- Links -->
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-
-                <!-- Left -->
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
-                        <a class="nav-link waves-effect" href="#">
+                        <a class="nav-link waves-effect" href="/">
                             Home
                             <span class="sr-only">(current)</span>
                         </a>
@@ -40,22 +31,9 @@
                        target="_blank">About</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link waves-effect" href="#"
-                       target="_blank">Pre-built PC's</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link waves-effect" href="#">
-                            PC Builder
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link waves-effect" href="#">
-                            Shop
-                        </a>
-
+                        <a class="nav-link waves-effect" asp-area="" asp-controller="Product" asp-action="Index" target="_blank">Product List</a>
                     </li>
                 </ul>
-                <!-- Right -->
                 <ul class="navbar-nav nav-flex-icons">
                     <li class="nav-item">
                         <a onclick="/Checkout" class="nav-link waves-effect">
@@ -79,43 +57,24 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link waves-effect" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">Logout</a>
-
-        @*                <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                            <button class="nav-link border border-light rounded waves-effect" id="logout" type="submit">Logout</button>
-                        </form>*@
-                    </li>
-                    <li class="nav-item">                                    
-                        <a class="nav-link waves-effect" asp-area="" asp-controller="Product" asp-action="Index" target="_blank">Product</a>
                     </li>
                 </ul>
-
             </div>
-
         </div>
-    </nav> 
-
+    </nav>
 }
 else
 {
-    <!-- Navbar -->
     <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
         <div class="container">
-
-            <!-- Brand -->
             <a class="navbar-brand waves-effect" href="/" target="_blank">
                 <strong class="blue-text">SwiftLink</strong>
             </a>
-
-            <!-- Collapse -->
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-
-            <!-- Links -->
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-
-                <!-- Left -->
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
                         <a class="nav-link waves-effect" href="#">
@@ -126,25 +85,8 @@ else
                     <li class="nav-item">
                         <a class="nav-link waves-effect" href="#"
                        target="_blank">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link waves-effect" href="#"
-                       target="_blank">Pre-built PC's</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link waves-effect" href="#">
-                            PC Builder
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link waves-effect" href="#">
-                            Shop
-                        </a>
-
-                    </li>
+                    </li>                                        
                 </ul>
-
-                <!-- Right -->
                 <ul class="navbar-nav nav-flex-icons">
                     <li class="nav-item">
                         <a href="#" class="nav-link waves-effect" target="_blank">
@@ -167,8 +109,5 @@ else
 
         </div>
     </nav>
-    <!-- Navbar -->
 
 }
-
-

@@ -14,8 +14,6 @@ namespace WebScrapper_Prototype.Controllers
         private readonly WebScrapper_PrototypeContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IHttpContextAccessor _httpContextAccessor;
-
-
         public ProductController(WebScrapper_PrototypeContext context, IWebHostEnvironment webHost, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
@@ -43,7 +41,6 @@ namespace WebScrapper_Prototype.Controllers
             _context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
-        // GET: Product/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Product == null)
@@ -58,10 +55,6 @@ namespace WebScrapper_Prototype.Controllers
             }
             return View(product);
         }
-
-        // POST: Product/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,ProductName,ProductDescription,ProductStatus,ProductCategory,ActualPrice,ScrappedPrice,ImageURL")] Product product)
@@ -93,7 +86,6 @@ namespace WebScrapper_Prototype.Controllers
             }
             return View(product);
         }
-        // GET: Product/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Product == null)
@@ -110,8 +102,6 @@ namespace WebScrapper_Prototype.Controllers
 
             return View(product);
         }
-
-        // POST: Product/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
