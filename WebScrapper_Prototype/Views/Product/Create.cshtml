@@ -1,0 +1,75 @@
+﻿@model WebScrapper_Prototype.Models.Product
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>Product</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form enctype="multipart/form-data" asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ProductName" class="control-label"></label>
+                <input asp-for="ProductName" class="form-control" />
+                <span asp-validation-for="ProductName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProductDescription" class="control-label"></label>
+                <input asp-for="ProductDescription" class="form-control" />
+                <span asp-validation-for="ProductDescription" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProductStatus" class="control-label"></label>
+                <input asp-for="ProductStatus" class="form-control" />
+                <span asp-validation-for="ProductStatus" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProductCategory" class="control-label"></label>
+                <input asp-for="ProductCategory" class="form-control" />
+                <span asp-validation-for="ProductCategory" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ActualPrice" class="control-label"></label>
+                <input asp-for="ActualPrice" class="form-control" />
+                <span asp-validation-for="ActualPrice" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ScrappedPrice" class="control-label"></label>
+                <input asp-for="ScrappedPrice" class="form-control" />
+                <span asp-validation-for="ScrappedPrice" class="text-danger"></span>
+            </div>  
+                    <div class="form-group">
+                        <label asp-for="ProductPic" class="control-label"></label>
+                        <div class="custom-file">
+                        <input asp-for="ProductPic" class="custom-file-input" id="FLFrontImage" onchange="document.getElementById('FrontImagePrv').src = window.URL.createObjectURL(this.files[0])">
+                            <label class="custom-file-label" for="FLFrontImage">Choose file</label>
+                        </div>
+                    <span asp-validation-for="ProductPic" class="text-danger"></span>
+                    <img id="FrontImagePrv" src="" data="image" width="150" height="150" style="border:1px; margin-top:20px; margin-left:120px" />              
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+@section Scripts {
+        <script>
+            // Add the following code if you want the name of the file appear on select
+            $(".custom-file-input").on("change", function () {
+                var fileName = $(this).val().split("\\").pop();
+                $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+            });
+        </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

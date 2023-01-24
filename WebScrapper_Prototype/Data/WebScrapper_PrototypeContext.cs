@@ -14,6 +14,6 @@ namespace WebScrapper_Prototype.Data
         {
         }
 
-        public DbSet<WebScrapper_Prototype.Models.ScrappedProductModel> ScrappedProductModel { get; set; } = default!;
+        public DbSet<WebScrapper_Prototype.Models.Product> Product { get; set; } = default!;
     }
 }

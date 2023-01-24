@@ -1,12 +1,21 @@
 {
   "dependencies": {
+    "mssql2": {
+      "ignored": "true",
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:WebScrapper_PrototypeContext"
+    },
     "mssql1": {
       "type": "mssql",
       "connectionId": "ConnectionStrings:ApplicationDbContextConnection"
     },
-    "mssql2": {
+    "mssql3": {
       "type": "mssql",
-      "connectionId": "ConnectionStrings:WebScrapper_PrototypeContext"
+      "connectionId": "ConnectionStrings:WebScrapper_ProductContext"
+    },
+    "mssql4": {
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:WebScrapper_PrototypeProductContext"
     }
   }
 }
