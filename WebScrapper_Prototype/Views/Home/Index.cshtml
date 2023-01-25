@@ -1,6 +1,6 @@
 @model IEnumerable<WebScrapper_Prototype.Models.Product>
 @{
-    ViewData["Title"] = "SwiftLink";
+    ViewData["Title"] = "Welcome";
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -35,16 +35,13 @@
                                 <strong>Find your dream PC at the lowest possible price</strong>
                             </h1>
                             <p>
-                                <strong>Pre-built PC's | Laptop's | Hardware | Accessories</strong>
+                               Pre-built PC's | Laptop's | Hardware | Accessories
                             </p>
-                            <p class="mb-4 d-none d-md-block">
-                                <strong>
-                                    Find what you like, add it to your cart and get it shipped right to your door.
-                                </strong>
+                            <p class="mb-4 d-none d-md-block">                          
+                                    Find what you like, add it to your cart and get it shipped right to your door.                              
                             </p>
                             <a target="_blank" href="" class="btn btn-outline-white btn-lg">
-                                Start Browsing
-                                <i class="fas  ml-2"></i>
+                                Start Browsing                     
                             </a>
                         </div>
                     </div>
@@ -58,14 +55,13 @@
                                 <strong>On SALE 24/7</strong>
                             </h1>
                             <p>
-                                <strong>Higher quailty at cheaper prices</strong>
+                                Higher quailty at cheaper prices
                             </p>
                             <p class="mb-4 d-none d-md-block">
-                                <strong>We use A.I and other software to find the best possible product at the lowest possible price instantly</strong>
+                                We use A.I and other software to find the best possible product at the lowest possible price instantly
                             </p>
                             <a target="_blank" href="#" class="btn btn-outline-white btn-lg">
-                                Start Browsing
-                                <i class="fas  ml-2"></i>
+                                Start Browsing                      
                             </a>
                         </div>
                     </div>
@@ -79,17 +75,14 @@
                                 <strong>PC Builder</strong>
                             </h1>
                             <p>
-                                <strong>Create your dream PC</strong>
+                                Create your dream PC
                             </p>
-                            <p class="mb-4 d-none d-md-block">
-                                <strong>
-                                    Select components or let our ite select them for you,
-                                    place your order and get your components deliveried for you to assemble.
-                                </strong>
+                            <p class="mb-4 d-none d-md-block">                      
+                                    Select components or let our site select them for you,
+                                    place your order and get your components deliveried for you to assemble.                         
                             </p>
                             <a target="_blank" href="#" class="btn btn-outline-white btn-lg">
-                                PC Builder
-                                <i class="fas p ml-2"></i>
+                                PC Builder                
                             </a>
                         </div>
                     </div>
@@ -108,35 +101,43 @@
     <main>
         <div class="container">
             <!--Navbar-->
-            <nav class="navbar navbar-expand-lg navbar-dark mdb-color lighten-3 mt-3 mb-5">
-                <span class="navbar-brand">Top Selections</span>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
+            @using (Html.BeginForm())
+            {
+                
+
+                <nav class="navbar navbar-expand-lg navbar-dark mdb-color lighten-3 mt-3 mb-5">
+                    <span class="navbar-brand">Top Selections</span>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
                         aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="basicExampleNav">
-                    <ul class="navbar-nav mr-auto">
-                        <li class="nav-item active">
-                            <a class="nav-link" href="#">
-                                All
-                                <span class="sr-only">(current)</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Latest Arrivals</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Pre-built PC's</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Laptops</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Accessories</a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="basicExampleNav">
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item active">
+                                <a class="nav-link" href="#">
+                                    All
+                                    <span class="sr-only">(current)</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Latest Arrivals</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Pre-built PC's</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Laptops</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Accessories</a>
+                            </li>
+                        </ul>
+                        @Html.TextBox("SearchString")
+                        <input type="submit" value="Find" style="background:transparent; border:none;" />
+                    </div>
+                </nav>
+
+            }
             <section class="text-center mb-4">
                 <table class="table">
 
@@ -145,31 +146,31 @@
                         {
                             <tr>
                                 <td>
-                                    <img src="~/Uploads/@item.ImageURL" alt="@item.ProductName" height="150px" width="150px" />
+                                    <img class="animated" src="~/Uploads/@item.ImageURL" alt="@item.ProductName" height="200" width="200"/>
                                     <div class="p-4">
                                         <h1>@Html.DisplayFor(modelItem => item.ProductName)</h1>
                                         <div class="mb-3">
-                                            <a href="">
+                                           
                                                 <span class="badge purple mr-1">
                                                     @Html.DisplayFor(modelItem => item.ProductCategory)
                                                 </span>
-                                            </a>
-                                            <a href="">
+                                       
+                                        
                                                 <span class="badge red mr-1">
                                                     @Html.DisplayFor(modelItem => item.ProductStatus)
                                                 </span>
-                                            </a>
-                                            <a href="">
+                                     
+                                           
                                                 <span class="badge blue mr-1">Selected</span>
-                                            </a>
+                                          
                                         </div>
                                         <p class="lead">
                                             <span class="mr-1">
                                                 <del>
-                                                   R @Html.DisplayFor(modelItem => item.ActualPrice)
+                                                    R @Html.DisplayFor(modelItem => item.ActualPrice)
                                                 </del>
                                             </span>
-                                            <span>
+                                            <span class="mr-1">
                                                 <strong>
                                                     R @Html.DisplayFor(modelItem => item.ScrappedPrice)
                                                 </strong>
@@ -234,13 +235,13 @@
     </main>
     <footer class="page-footer text-center font-small mt-4 wow fadeIn">
         <p class="mb-4 d-none d-md-block">
-        <strong>
-        Follow our tutorials on how to build your first PC
-        </strong>
-        <a target="_blank" href="#" class="btn btn-outline-white btn-lg">
-        Tutorials
-        <i class="fas fa-graduation-cap ml-2"></i>
-        </a>
+            <strong>
+                Follow our tutorials on how to build your first PC
+            </strong>
+            <a target="_blank" href="#" class="btn btn-outline-white btn-lg">
+                Tutorials
+                <i class="fas fa-graduation-cap ml-2"></i>
+            </a>
         </p>
         <hr class="my-4">
         <div class="pb-4">
@@ -270,7 +271,7 @@
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/mdb.min.js"></script>
     <script type="text/javascript">new WOW().init();</script>
-    </body>
-    </html>
+</body>
+</html>
 
 

@@ -59,6 +59,14 @@ namespace WebScrapper_Prototype.Migrations.WebScrapper_Prototype
                     b.Property<float>("ScrappedPrice")
                         .HasColumnType("real");
 
+                    b.Property<string>("VendorProductURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VendorSite")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("ID");
 
                     b.ToTable("Product");

@@ -1,9 +1,8 @@
 ﻿@model IEnumerable<WebScrapper_Prototype.Models.Product>
-
 @{
-    ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}    
+    ViewData["Title"] = "Products";
+    Layout = "_Layout";
+}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,62 +10,56 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Alienware X17 R1</title>
+    <title>Swift Link</title>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/mdb.min.css" rel="stylesheet">
     <link href="css/style.min.css" rel="stylesheet">
+    <link href="css/site.css" rel="stylesheet">
+    <link href="css/_products.css" rel="stylesheet">
 </head>
-<heaader>
-    <partial name="_LoginPartial" />
-</heaader>
 <body>
-<br />
-<br />
-<br />
-<br />
-<h2>I am developing role based authentication so this page will become hidden only avaliable to you and me :) </h2>
-<h3>Try creating a new product and viewing it back on the home page.</h3>
-<p>You can Delete or edit listed prodcuts aswell. Better start that webscrapper cuz we gonna have this working smoothly soon. Alot of the backend work is done so now its its just styling.</p>
-<br />
-<br />
-<h1>Listed Products:</h1>
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+    <partial name="_AdminPartial" />
+    <h1 style="margin-top:100px;">Product List</h1>
 
-<table class="table">
+<table class="product-table" title="Product Table">
+    <thead>
+        <tr>
+            <th scope="col">Image</th>
+            <th scope="col">Name</th>
+            <th scope="col">Price</th>   
+        </tr>
+    </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
-                <td>
-                    <img src="~/Uploads/@item.ImageURL" height="50px" width="50px" />
+                <td data-label="Image">                        
+                    <img src="~/Uploads/@item.ImageURL" height="50" width="50" />
+                    </td>
+                <td data-label="Model">
+                    <strong>
+                        @Html.DisplayFor(modelItem => item.ProductName)
+                        </strong>
+                    </td>
+                    <td data-label="Model">
+                        <strong>
+                            SwiftLink Price: R @Html.DisplayFor(modelItem => item.ScrappedPrice)
+                        </strong>
+                    </td>
+                <td data-label="Price" data-align="center">
+                    <a class="table-button" rel="nofollow noopener" asp-action="" asp-route-id="@item.ID">View</a>
+                        <a class="table-button" rel="nofollow noopener" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
+                    <a class="table-button" style=" background-color: red !important;" rel="nofollow noopener" rel="nofollow noopener" asp-action="Delete" asp-route-id="@item.ID">Delete</a>
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ProductName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ProductDescription)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ProductStatus)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ProductCategory)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ActualPrice)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ScrappedPrice)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-info">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-danger ml-1">Delete</a>
-                </td>
-            </tr>
+            </tr>      
         }
-    </tbody>
-</table>
+        </tbody>
+        </table>            
+        <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="js/popper.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/mdb.min.js"></script>
+    <script type="text/javascript">new WOW().init();</script>
 </body>
+</html>

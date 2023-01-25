@@ -27,6 +27,10 @@ namespace WebScrapper_Prototype.Models
         [Required]
         public string? ImageURL { get; set; }
         [Required]
+        public string? VendorSite { get; set; }
+        [Required]
+        public string? VendorProductURL { get; set; }
+        [Required]
         [NotMapped]
         public IFormFile? ProductPic { get; set; }
     }

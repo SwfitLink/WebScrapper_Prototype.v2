@@ -17,11 +17,16 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+#region Authorization
 
+AddAuthorizationPolicies(builder.Services);
+
+#endregion
 AntiForgeryConfig.UniqueClaimTypeIdentifier = ClaimTypes.NameIdentifier;
 var app = builder.Build();
 
@@ -47,3 +52,17 @@ app.MapControllerRoute(
 
 app.MapRazorPages();
 app.Run();
+
+void AddAuthorizationPolicies(IServiceCollection services)
+{
+    services.AddAuthorization(options =>
+    {
+        options.AddPolicy("OwnerOnly", policy => policy.RequireClaim("OwnerId"));
+    });
+    services.AddAuthorization(options =>
+    {
+        options.AddPolicy("RequireAdmin", policy => policy.RequireClaim("Administrator"));
+        options.AddPolicy("RequireManager", policy => policy.RequireClaim("Manager"));
+
+    });
+}

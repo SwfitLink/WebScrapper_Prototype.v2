@@ -4,7 +4,6 @@
     ViewData["Title"] = "Register";
 
 }
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,68 +12,80 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" type="text/css" href="/css/login.css">
 </head>
-<body>
-    <a href="/">
-        <img src="/backbutton.png" height="50" width="50" />
-    </a>
-    <div class="container" id="container" style="min-height:640px">
-        <div class="form-container sign-in-container">
-            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                <h1>@ViewData["Title"]</h1>
-                <div class="social-container">
-                    <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-                    <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
-                </div>
-                <hr />
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <input asp-for="Input.FirstName" placeholder="First Name" class="form-control" autocomplete="firstname" aria-required="true" />
-                    <span asp-validation-for="Input.FirstName" class="text-danger"></span>
-                    <input asp-for="Input.LastName" placeholder="Last Name" class="form-control" autocomplete="lastname" aria-required="true" />
-                    <span asp-validation-for="Input.LastName" class="text-danger"></span>
-                    <input asp-for="Input.Cellphone" placeholder="Cellphone" class="form-control" autocomplete="cellphone" aria-required="true" />
-                    <span asp-validation-for="Input.Cellphone" class="text-danger"></span>
-                    <input asp-for="Input.CountryCode" placeholder="Country Code" class="form-control" autocomplete="countrycode" aria-required="true" />
-                    <span asp-validation-for="Input.CountryCode" class="text-danger"></span>
-                    <input asp-for="Input.Email" placeholder="Email" class="form-control" autocomplete="username" aria-required="true" />
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
-                    <input asp-for="Input.Password" placeholder="Password" class="form-control" autocomplete="new-password" aria-required="true" />
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                    <input asp-for="Input.ConfirmPassword" placeholder="Confirm Password" class="form-control" autocomplete="new-password" aria-required="true" />
-                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-
-                <button id="registerSubmit" type="submit">Register</button>
-            </form>
-        </div>
-        <div class="overlay-container">
-            <div class="overlay">
-                <div class="overlay-panel overlay-right">
-                    <h1>Already a user?</h1>
-                    <h2><a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl" style="font-weight:500">Login</a></h2>
-                </div>
-            </div>
+<nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
+    <div class="container">
+        <a class="navbar-brand waves-effect" href="/">
+            <strong class="blue-text">SwiftLink</strong>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link waves-effect" href="#">
+                        Home
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+            </ul>
+            <ul class="navbar-nav nav-flex-icons">
+                <li class="nav-item">
+                    <a href="#" class="nav-link waves-effect" target="_blank">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link waves-effect" target="_blank">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
-    <script type="text/javascript">
-    const signUpButton = document.getElementById('signUp');
-const signInButton = document.getElementById('signIn');
-const container = document.getElementById('container');
-
-signUpButton.addEventListener('click', () => {
-	container.classList.add("right-panel-active");
-});
-
-signInButton.addEventListener('click', () => {
-	container.classList.remove("right-panel-active");
-});    
-    </script>
-
-    @section Scripts {
-        <partial name="_ValidationScriptsPartial" />
-    }
-
-
+</nav>
+<body>
+    <section>
+        <div class="container">
+            <div class="user signinBx">
+                <div class="formBx">
+                    <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                        <h2>Create an account</h2>
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input asp-for="Input.FirstName" type="text" placeholder="First Name" autocomplete="firstname" aria-required="true" />
+                        <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                        <input asp-for="Input.LastName" placeholder="Last Name" autocomplete="lastname" aria-required="true" />
+                        <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                        <input asp-for="Input.Cellphone" placeholder="Cellphone" autocomplete="cellphone" aria-required="true" />
+                        <span asp-validation-for="Input.Cellphone" class="text-danger"></span>
+                        <input asp-for="Input.CountryCode" placeholder="Country Code" autocomplete="countrycode" aria-required="true" />
+                        <span asp-validation-for="Input.CountryCode" class="text-danger"></span>
+                        <input asp-for="Input.Email" placeholder="Email" autocomplete="username" aria-required="true" />
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        <input asp-for="Input.Password" placeholder="Password" autocomplete="new-password" aria-required="true" />
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        <input asp-for="Input.ConfirmPassword" placeholder="Confirm Password" autocomplete="new-password" aria-required="true" />
+                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                        <input id="registerSubmit" type="submit" value="Sign Up" />
+                        <p class="signup">
+                            Already have an account ?
+                            <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl" onclick="toggleForm();">Sign in.</a>
+                        </p>
+                    </form>
+                </div>
+@*                <div class="imgBx"><img src="https://raw.githubusercontent.com/WoojinFive/CSS_Playground/master/Responsive%20Login%20and%20Registration%20Form/img2.jpg" alt="" /></div>
+*@            </div>
+        </div>
+    </section>
 </body>
-
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script type="text/javascript">
+        const toggleForm = () => {
+            const container = document.querySelector('.container');
+            container.classList.toggle('active');
+        };
+    </script>
+}
 </html>
-

@@ -5,17 +5,13 @@
       "type": "mssql",
       "connectionId": "ConnectionStrings:WebScrapper_PrototypeContext"
     },
+    "secrets1": {
+      "type": "secrets"
+    },
     "mssql1": {
       "type": "mssql",
-      "connectionId": "ConnectionStrings:ApplicationDbContextConnection"
-    },
-    "mssql3": {
-      "type": "mssql",
-      "connectionId": "ConnectionStrings:WebScrapper_ProductContext"
-    },
-    "mssql4": {
-      "type": "mssql",
-      "connectionId": "ConnectionStrings:WebScrapper_PrototypeProductContext"
+      "connectionId": "ConnectionStrings:ApplicationDbContextConnection",
+      "dynamicId": null
     }
   }
 }

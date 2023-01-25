@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebScrapper_Prototype.Controllers
 {
@@ -20,9 +21,10 @@ namespace WebScrapper_Prototype.Controllers
             _webHostEnvironment = webHost;
             _httpContextAccessor = httpContextAccessor;
         }
-        public IActionResult Index()
-        {
-            List<Product> products = _context.Product.ToList();
+        [Authorize(Roles = "Administrator, Manager")]
+        public IActionResult Index()        
+        {   
+            List<Product> products = _context.Product.ToList();            
             return View(products);
         }
         [HttpGet]
@@ -40,6 +42,23 @@ namespace WebScrapper_Prototype.Controllers
             _context.Entry(product).State = EntityState.Added;
             _context.SaveChanges();
             return RedirectToAction(nameof(Index));
+        }
+        // GET: Productstt/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null || _context.Product == null)
+            {
+                return NotFound();
+            }
+
+            var product = await _context.Product
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return View(product);
         }
         public async Task<IActionResult> Edit(int? id)
         {
