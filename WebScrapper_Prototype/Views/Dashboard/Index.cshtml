@@ -1,0 +1,69 @@
+﻿@model WebScrapper_Prototype.Models.Product
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Swift Link</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/mdb.min.css" rel="stylesheet">
+    <link href="css/style.min.css" rel="stylesheet">
+    <link href="css/site.css" rel="stylesheet">
+    <link href="css/_products.css" rel="stylesheet">
+</head>
+<body>
+    <partial name="_AdminPartial" />
+    <div class="container">
+        <h1 style="margin-top:100px;">Dashboard</h1>
+        <p>
+            <h2>NOTICES</h2>
+            <h4>ALPHA 3.0</h4>
+            <ul>
+                <li>
+                    "Huge Saving"" are functional. If a product is less than half of the Vendor Price it is considered a "Huge Saving"
+                </li>
+            </ul>
+        </p>
+        @using (Html.BeginForm("Index", "Dashboard", FormMethod.Get))
+        {
+            <div class="card">
+                <div class="card-header">
+                    <h2>
+                        Manage Products
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <h3>Select the visibility of products you wish to view:</h3>
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
+                            @Html.ActionLink("Visible Products", "ListedProducts")
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
+                            @Html.ActionLink("Hidden Products", "HiddenProducts")
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
+                            @Html.ActionLink("All Products", "AllProducts")
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        }
+    </div>
+    <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="js/popper.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/mdb.min.js"></script>
+    <script type="text/javascript">new WOW().init();</script>
+</body>
+</html>

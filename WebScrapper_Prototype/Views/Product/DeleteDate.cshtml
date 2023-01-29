@@ -1,0 +1,7 @@
+﻿@model WebScrapper_Prototype.Models.Product
+    @using (Html.BeginForm("DeleteDate", "Product", FormMethod.Get))
+    {
+
+    @Html.ActionLink("2015", "DeleteDate",
+                    new { date = ViewBag.CreatedAt })
+    }

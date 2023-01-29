@@ -12,40 +12,15 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" type="text/css" href="/css/login.css">
 </head>
-<nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
-    <div class="container">
-        <a class="navbar-brand waves-effect" href="/">
-            <strong class="blue-text">SwiftLink</strong>
-        </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link waves-effect" href="#">
-                        Home
-                        <span class="sr-only">(current)</span>
-                    </a>
-                </li>
-            </ul>
-            <ul class="navbar-nav nav-flex-icons">
-                <li class="nav-item">
-                    <a href="#" class="nav-link waves-effect" target="_blank">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link waves-effect" target="_blank">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+
 <body>
+@*    <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
+        <div class="container">
+            <a class="navbar-brand waves-effect" href="/">
+                <strong class="blue-text">SwiftLink</strong>
+            </a>
+        </div>
+    </nav>*@
     <section>
         <div class="container">
             <div class="user signinBx">
@@ -78,8 +53,10 @@
 *@            </div>
         </div>
     </section>
-</body>
-@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script src="~/js/site.js" asp-append-version="true"></script>
     <partial name="_ValidationScriptsPartial" />
     <script type="text/javascript">
         const toggleForm = () => {
@@ -87,5 +64,9 @@
             container.classList.toggle('active');
         };
     </script>
-}
+    @section Scripts {
+
+    }
+</body>
+
 </html>

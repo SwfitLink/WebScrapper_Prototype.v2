@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
 using System.Security.Claims;
 using System.Web.Helpers;
 using WebScrapper_Prototype.Areas.Identity.Data;
-using Microsoft.Extensions.DependencyInjection;
 using WebScrapper_Prototype.Data;
 
 
@@ -42,7 +40,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-app.UseAuthentication();;
+app.UseAuthentication(); ;
 
 app.UseAuthorization();
 

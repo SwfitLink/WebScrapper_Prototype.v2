@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebScrapper_Prototype.Data;
 using WebScrapper_Prototype.Models;
@@ -22,7 +17,7 @@ namespace WebScrapper_Prototype.Controllers
         // GET: Productstt
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Product.ToListAsync());
+            return View(await _context.Product.ToListAsync());
         }
 
         // GET: Productstt/Details/5
@@ -54,7 +49,7 @@ namespace WebScrapper_Prototype.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,ProductName,ProductDescription,ProductStatus,ProductCategory,ActualPrice,ScrappedPrice,ImageURL,VendorSite,VendorProductURL")] Product product)
+        public async Task<IActionResult> Create([Bind("ID,ProductName,ProductDescription,ProductStatus,ProductCategory,ProductBasePrice,ProductSalePrice,ImageURL,VendorSite,VendorProductURL")] Product product)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +81,7 @@ namespace WebScrapper_Prototype.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,ProductName,ProductDescription,ProductStatus,ProductCategory,ActualPrice,ScrappedPrice,ImageURL,VendorSite,VendorProductURL")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,ProductName,ProductDescription,ProductStatus,ProductCategory,ProductBasePrice,ProductSalePrice,ImageURL,VendorSite,VendorProductURL")] Product product)
         {
             if (id != product.ID)
             {
@@ -148,14 +143,14 @@ namespace WebScrapper_Prototype.Controllers
             {
                 _context.Product.Remove(product);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ProductExists(int id)
         {
-          return _context.Product.Any(e => e.ID == id);
+            return _context.Product.Any(e => e.ID == id);
         }
     }
 }

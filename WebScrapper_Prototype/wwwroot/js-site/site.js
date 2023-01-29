@@ -21,3 +21,12 @@
         });
     }); // end DOM ready
 })(jQuery); // end jQuery
+
+$(document).ready(function () {
+
+    $('#mylinks a').click(function () {
+        $('#mylinks a').removeClass('highlight');
+        $(this).addClass('highlight');
+    });
+
+});

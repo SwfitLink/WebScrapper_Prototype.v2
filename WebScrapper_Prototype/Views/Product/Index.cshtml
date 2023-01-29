@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<WebScrapper_Prototype.Models.Product>
 @{
     ViewData["Title"] = "Products";
-    Layout = "_Layout";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -20,43 +20,167 @@
 </head>
 <body>
     <partial name="_AdminPartial" />
-    <h1 style="margin-top:100px;">Product List</h1>
+    <h1 style="margin-top:100px;">@ViewBag.setting Product List</h1>
+    @using (Html.BeginForm("Index", "Product", FormMethod.Get))
+    {
+        <div class="mb-3">
+            <div class="form-group">
+                Delete Data Batch<br>
+                Enter BatchNumber Here:@Html.TextBox("dataBatch")
+            </div>
+        </div>
+        <nav class="navbar navbar-expand-lg navbar-light mdb-color lighten-3" style="background-color:lightgreen!important">
+            <span class="navbar-brand">
+                <strong>
+                    Product Categories:
+                </strong>
+            </span>
 
-<table class="product-table" title="Product Table">
-    <thead>
-        <tr>
-            <th scope="col">Image</th>
-            <th scope="col">Name</th>
-            <th scope="col">Price</th>   
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td data-label="Image">                        
-                    <img src="~/Uploads/@item.ImageURL" height="50" width="50" />
-                    </td>
-                <td data-label="Model">
-                    <strong>
-                        @Html.DisplayFor(modelItem => item.ProductName)
-                        </strong>
-                    </td>
-                    <td data-label="Model">
-                        <strong>
-                            SwiftLink Price: R @Html.DisplayFor(modelItem => item.ScrappedPrice)
-                        </strong>
-                    </td>
-                <td data-label="Price" data-align="center">
-                    <a class="table-button" rel="nofollow noopener" asp-action="" asp-route-id="@item.ID">View</a>
-                        <a class="table-button" rel="nofollow noopener" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
-                    <a class="table-button" style=" background-color: red !important;" rel="nofollow noopener" rel="nofollow noopener" asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-                </td>
-            </tr>      
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
+                aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="basicExampleNav">
+
+                <!-- Links -->
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        @Html.ActionLink("All", "Index",
+                    new { findProduct = ViewBag.ProductCatParm },
+                    new {Class="nav-link"})
+                    </li>
+                    <li class="nav-item">
+                        @Html.ActionLink("Laptops", "Index",
+                    new { findProduct = ViewBag.LaptopParm },
+                    new {Class="nav-link"})
+                    </li>
+                    <li class="nav-item">
+                        @Html.ActionLink("Pre-Built Desktops", "Index",
+                    new { findProduct = ViewBag.DesktopParm },
+                    new {Class="nav-link"})
+                    </li>
+                    <li class="nav-item">
+                        @Html.ActionLink("Hardware", "Index",
+                    new { findProduct = ViewBag.HardwareParm},
+                    new {Class="nav-link"})
+                    </li>
+                    <li class="nav-item">
+                        @Html.ActionLink("Accessories", "Index",
+                    new { findProduct = ViewBag.AccessoriesParm},
+                    new {Class="nav-link"})
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <nav class="navbar navbar-expand-lg navbar-light mdb-color lighten-3 mt-3 mb-5" style="background-color:honeydew!important">
+            <span class="navbar-brand">
+                <strong>
+                    Sort Products:
+                </strong>
+            </span>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
+                aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="basicExampleNav">
+                <!-- Links -->
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        @Html.ActionLink("All", "Index",
+                    new { sortOrder = ViewBag.ProductSortParm, findProduct=ViewBag.CurrentProduct, view=ViewBag.setting},
+                    new {Class="nav-link"})
+                    </li>
+                    <li class="nav-item">
+                        @Html.ActionLink("Hidden", "Index",
+                    new { sortOrder = ViewBag.HiddenParm, findProduct=ViewBag.CurrentProduct},
+                    new {Class="nav-link"})
+                    </li>
+                    <li class="nav-item">
+                        @Html.ActionLink("Visible", "Index",
+                    new { sortOrder = ViewBag.VisibleParm,findProduct=ViewBag.CurrentProduct },
+                    new {Class="nav-link"})
+                    </li>
+@*                    <li class="nav-item">
+                        @Html.ActionLink("Huge Savings", "Index",
+                    new { sortOrder = ViewBag.SavingParm,findProduct=ViewBag.CurrentProduct },
+                    new {Class="nav-link"})
+                    </li>*@
+                    <li class="nav-item">
+                        @Html.ActionLink("Price(Descending)", "Index",
+                    new { sortOrder = ViewBag.PriceDescParm, findProduct=ViewBag.CurrentProduct },
+                    new {Class="nav-link"})
+                    </li>
+                    <li class="nav-item">
+                        @Html.ActionLink("Alphabetical", "Index",
+                    new { sortOrder = ViewBag.AlphabetParm, findProduct=ViewBag.CurrentProduct },
+                    new {Class="nav-link"})
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div style="margin:15px; padding:10px;">
+            @Html.TextBox("SearchString")
+            <button type="submit" style="background:transparent; border:none;">
+                <img src="/backbutton.png" height="20" width="20">
+            </button>
+        </div>
         }
-        </tbody>
-        </table>            
-        <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+        <table class="product-table" title="Product Table">
+            <thead>
+                <tr>
+                    <th scope="col">Category:</th>
+                    <th scope="col">Sort by:</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td data-label="Category">
+                        @ViewBag.CurrentProduct
+                    </td>
+                    <td data-label="Sort by">
+                        <strong>
+                            @ViewBag.CurrentSort
+                        </strong>
+                    </td>
+                </tr>
+            </tbody>
+        </table>                    
+    <table class="product-table" title="Product Table">
+            <thead>
+                <tr>
+                    <th scope="col">Image</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td data-label="Image">
+                            <img src="~/Uploads/@item.ImageURL" height="50" width="50" />
+                        </td>
+                        <td data-label="Product Name">
+                            <strong>
+                                @Html.DisplayFor(modelItem => item.ProductName)
+                            </strong>
+                        </td>
+                        <td data-label="Price">
+                            <strong>
+                                SwiftLink Price: R @Html.DisplayFor(modelItem => item.ProductSalePrice)
+                            </strong>
+                        </td>
+                        <td data-label="Manage" data-align="center">
+                            <a class="table-button" asp-action="Details" asp-route-id="@item.ID">View</a>
+                            <a class="table-button" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
+                            <a class="table-button" asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                        </td>
+                    </tr>
+                }         
+            </tbody>
+        </table>        
+    <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
     <script type="text/javascript" src="js/popper.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/mdb.min.js"></script>

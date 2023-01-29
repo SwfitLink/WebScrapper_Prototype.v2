@@ -1,0 +1,235 @@
+﻿@{
+    ViewData["Title"] = "Release Notes";
+
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Swift Link</title>
+    <link rel="stylesheet" type="text/css" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <link href="css/bootstrap.min.css" type="text/css" rel="stylesheet">
+    <link href="css/mdb.min.css" type="text/css" rel="stylesheet">
+    <link href="css/style.min.css" type="text/css" rel="stylesheet">
+    <link href="css/site.css" type="text/css" rel="stylesheet">
+
+</head>
+<body>
+
+    <section class="container">
+        <a class="btn btn-outline-white btn-lg" margin:15px;"rel="nofollow noopener" asp-action="Index">
+            <img src="~/Media/Navigation/Back.png" height="50" width="50" /> Home
+        </a>
+        <h1>@ViewData["Title"]</h1>
+        <h2>Alpha 3.0</h2>
+        <br />
+        <br />
+        <h3>Roadmap:</h3>
+        <table class="table">
+
+            <thead>
+                <tr>
+                    <th>
+                        Version
+                    </th>
+                    <th>
+                        Time Spent
+                    </th>
+                    <th>
+                        Progress
+                    </th>
+                    <th>
+                        Objectives
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                    <td>
+                        <strong>
+                            Alpha 1.0
+                        </strong>
+                        1
+                    </td>
+                    <td>
+                        2 Days
+                    </td>
+                    <td>
+                        100%
+                    </td>
+                    <td>
+                        <ul>
+                            <li>
+                                User Login/Registration Back-end
+
+                            </li>
+                            <li>
+                                Layout and Shared Views Scaffholding
+                                Product Scafholding
+                                User Scafholding
+                            </li>
+                            <li>
+                                Build Development enviroment and path finder
+                            </li>
+                            <li>
+                                Intial Database Migration
+                            </li>
+                        </ul>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>
+                        Alpha 2.0
+                    </td>
+                    <td>
+                        2 Days
+                    </td>
+                    <td>
+                        100%
+                    </td>
+                    <td>
+                        <ul>
+                            <li>
+                                Scafolding Admin Dashboard Back-end
+                            </li>
+                            <li>
+                                Intergration of Scafholding
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>
+                            Alpha 2.5
+                        </strong>
+                    </td>
+                    <td>
+                        1 Days
+                    </td>
+                    <td>
+                        80%
+                    </td>
+                    <td>
+                        <ul>
+                            <li>
+                                Products Page Intergrating into Homepage
+                            </li>
+                            <li>
+                                Webpage Responsiveness
+                            </li>
+                        </ul>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>
+                        <strong>
+                            Alpha 3.0
+                        </strong>
+                    </td>
+                    <td>
+                        1 Days
+                    </td>
+                    <td>
+                        25%
+                    </td>
+                    <td>
+                        <ul>
+                            <li>
+                                Product Search Functionalities
+                            </li>
+                            <li>
+                                Product Front and Backend overhaul
+                            </li>
+                            <li>
+                                Admin Dashboard Overhaul
+                            </li>
+
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+    <main>
+        <h2>!!RELEASE NOTES!!</h2>
+        <strong>Alpha 3.0</strong>
+        26/01/2023 (LIVE)
+        <p>
+            <h4>
+                Product Search Functionalities
+            </h4>
+            <ul>
+                <li>
+                    <strong>
+                        User can search a term and a list of relvant products will be returned
+                    </strong>
+                </li>
+                <li>
+                    User can apply product tag Filters:<br />
+                    <strong>New</strong><br />
+                    <strong>Huge Savings</strong><br />
+                    <strong>Lowest Prices</strong><br />
+                    User will get returned products relevant to product tag filter
+                </li>
+                <li>
+                    User can apply product Categories Filters:<br />
+                    <strong>Laptops</strong><br />
+                    <strong>Pre-Built Desktops</strong><br />
+                    <strong>Hardware</strong><br />
+                    <strong>Accessories</strong><br />
+                    User will get returned products relevant to product Category filter
+                </li>
+            </ul>
+            <h4>
+                Admin Dashboard
+            </h4>
+            <ul>
+                <li>
+                    <strong>
+                        Admin Dashboard is restricted to Admin and Manager Roles. No user is able to access backend.
+                    </strong>
+                </li>
+                <li>
+                    Product Detail/Edit/Create/Delete Front-end Overhauled
+                </li>
+                <li>
+                    Product List Front-end Overhauled
+                </li>
+            </ul>
+        </p>
+    </main>
+    <footer class="page-footer text-center font-small mt-4 wow fadeIn">
+        <p class="mb-4 d-none d-md-block">
+            <strong>
+                Owner's and Developers: <br />
+            </strong>
+            <h3>
+                <a href="www.linkedin.com/in/branden-developer/">
+                    Branden van Staden
+                </a>
+            </h3>
+            and
+            <h3>
+                James Muir
+            </h3>
+        </p>
+        <hr class="my-4">
+        <div class="footer-copyright py-3">
+            © 2023 Copyright:
+            <a href="" target="_blank"> SwiftLink.com </a>
+        </div>
+    </footer>
+    <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="js/popper.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/mdb.min.js"></script>
+    <script type="text/javascript">new WOW().init();</script>
+</body>
+</html>

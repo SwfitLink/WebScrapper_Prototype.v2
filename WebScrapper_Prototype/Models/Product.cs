@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Xml.Linq;
 
 namespace WebScrapper_Prototype.Models
 {
@@ -9,21 +9,19 @@ namespace WebScrapper_Prototype.Models
         [Key]
         public int ID { get; set; }
         [Required]
-        [StringLength(100)]
         public string? ProductName { get; set; }
         [Required]
-        [StringLength(255)]
+        public string? ProductStock { get; set; }
+        [Required]
         public string? ProductDescription { get; set; }
         [Required]
-        [StringLength(30)]
         public string? ProductStatus { get; set; }
         [Required]
-        [StringLength(100)]
         public string? ProductCategory { get; set; }
         [Required]
-        public float ActualPrice { get; set; }
+        public string? ProductBasePrice { get; set; }
         [Required]
-        public float ScrappedPrice { get; set; }
+        public string? ProductSalePrice { get; set; }
         [Required]
         public string? ImageURL { get; set; }
         [Required]
@@ -31,6 +29,9 @@ namespace WebScrapper_Prototype.Models
         [Required]
         public string? VendorProductURL { get; set; }
         [Required]
+        public string? Visible { get; set; }
+        [Required]
+        public string? dataBatch { get; set; }
         [NotMapped]
         public IFormFile? ProductPic { get; set; }
     }

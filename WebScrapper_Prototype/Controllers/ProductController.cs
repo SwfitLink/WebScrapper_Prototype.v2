@@ -1,12 +1,24 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using WebScrapper_Prototype.Data;
 using WebScrapper_Prototype.Models;
-using System.IO;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Authorization;
+using PagedList;
+using PagedList.Mvc;
+using System.Web.Mvc;
+using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using System.Web.Helpers;
+using CsvHelper;
+using System.Linq;
+using System.Globalization;
+using System.Collections.Generic;
+using System.Collections;
+using WebScrapper_Prototype.Services;
+using System.Data.Entity.Infrastructure;
+using X.PagedList;
 
 namespace WebScrapper_Prototype.Controllers
 {
@@ -20,11 +32,165 @@ namespace WebScrapper_Prototype.Controllers
             _context = context;
             _webHostEnvironment = webHost;
             _httpContextAccessor = httpContextAccessor;
+        } 
+
+        [HttpGet]
+        public IActionResult AutoProductCreateTest()
+        {
+            AddCSV product = new AddCSV();
+            return View(product);
         }
+        [HttpPost]
+        public ActionResult AutoProductCreateTest(AddCSV addCSV)
+        {
+            var _productService = new ProductService();            
+            string uniqueFileName = ProcessUploadedCSVFile(addCSV);
+            var location = "wwwroot\\Uploads\\" + uniqueFileName;
+            var rowData = _productService.ReadCSVFile(location);
+            foreach(Product item in rowData)
+            {
+                Product product = new Product();
+                product.ProductName = item.ProductName;
+                product.ProductStock= item.ProductStock;
+                product.ProductDescription = item.ProductDescription;
+                product.ProductStatus= "New";
+                product.ProductCategory = item.ProductCategory;
+                product.ProductBasePrice= item.ProductBasePrice;
+                product.ProductSalePrice= item.ProductSalePrice;
+                product.ImageURL= item.ImageURL;
+                product.VendorSite = "TESTSITE";
+                product.VendorProductURL = item.VendorProductURL;
+                product.Visible= "Hidden";
+                product.dataBatch = item.dataBatch;
+                _context.Attach(product);
+                _context.Entry(product).State = EntityState.Added;
+                _context.SaveChanges();
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        private string ProcessUploadedCSVFile(AddCSV model)
+        {
+            string uniqueFileName = "ERROR";
+            string path = Path.Combine(_webHostEnvironment.WebRootPath, "Uploads");
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+            if (model.CSVFile != null)
+            {
+                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "Uploads");
+                uniqueFileName = Guid.NewGuid().ToString() + "_" + model.CSVFile.FileName;
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    model.CSVFile.CopyTo(fileStream);
+                }
+            }
+            return uniqueFileName;
+        }            
+
         [Authorize(Roles = "Administrator, Manager")]
-        public IActionResult Index()        
-        {   
-            List<Product> products = _context.Product.ToList();            
+        public IActionResult Index(string view, string sortOrder, string findProduct, string currentFilter, string searchString, string dataBatch, int? page)
+        {
+            ViewBag.setting = view;
+            var products = from p in _context.Product
+                            select p;
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.ProductSortParm = String.IsNullOrEmpty(sortOrder) ? "all" : "";
+            ViewBag.HiddenParm = sortOrder == "hidden" ? "hidden" : "hidden";
+            ViewBag.VisibleParm = sortOrder == "visible" ? "visible" : "visible";
+            ViewBag.SavingParm = sortOrder == "saving" ? "saving" : "saving";
+            ViewBag.PriceDescParm = sortOrder == "price_desc" ? "price_desc" : "price_desc";
+            ViewBag.AlphabetParm = sortOrder == "alphabet" ? "alphabet" : "alphabet";
+
+            ViewBag.CurrentProduct = findProduct;
+            ViewBag.ProductCatParm = String.IsNullOrEmpty(findProduct) ? "all" : "";
+            ViewBag.LaptopParm = findProduct == "laptops" ? "laptops" : "laptops";
+            ViewBag.DesktopParm = findProduct == "desktop" ? "desktop" : "desktop";
+            ViewBag.HardwareParm = findProduct == "hardware" ? "hardware" : "hardware";
+            ViewBag.AccessoriesParm = findProduct == "accessories" ? "accessories" : "accessories";
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+
+            }
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                products = products.Where(s => s.ProductCategory.Contains(searchString)
+                       || s.ProductName.Contains(searchString));
+            }
+            switch (findProduct)
+            {
+                case "All":
+                    products = products.OrderBy(s => s.ProductCategory);                     
+                    break;
+                case "laptops":
+                    products = products.Where(s => s.ProductCategory.Contains("Laptops"));       
+                    break;
+                case "desktop":
+                    products = products.Where(s => s.ProductCategory.Contains("Pre-Built PC"));
+                    break;
+                case "hardware":
+                    products = products.Where(s => s.ProductCategory.Contains("Hardware"));         
+                    break;
+                case "accessories":
+                    products = products.Where(s => s.ProductCategory.Contains("Accessories"));
+                    break;
+                default:              
+                    break;
+            }
+            switch (sortOrder)
+            {
+                case "All":
+                    products = products.OrderBy(s => s.ProductSalePrice);
+                    break;
+                case "hidden":
+                    products = products.Where(s => s.Visible.Equals("Hidden"));
+                    ViewBag.setting = "visible";
+                    break;
+                case "visible":
+                    products = products.Where(s => s.Visible.Equals("Visible"));
+                    ViewBag.setting = "visible";
+                    break;
+                case "saving":
+                    //products = products.Where(s => s.ProductSalePrice < s.ProductBasePrice / 2);
+                    break;
+                case "price_desc":
+                    products = products.OrderByDescending(s => s.ProductSalePrice);
+                    break;
+                case "alphabet":
+                    products = products.OrderBy(s => s.ProductName);
+                    break;
+                default:
+                    break;
+            }
+            if (!String.IsNullOrEmpty(view))
+            {
+                switch (view)
+                {
+                    case "Visible":
+                        products = products.Where(q => q.Visible.Equals(view));
+                        break;
+                    case "Hidden":
+                        products = products.Where(q => q.Visible.Equals(view));
+                        break;
+                    case "All":
+                        return View(products);
+                }
+            }
+            if (!String.IsNullOrEmpty(dataBatch))
+            {
+                products = products.Where(s => s.dataBatch.Equals(dataBatch));
+                _context.AttachRange(products);
+                _context.RemoveRange(products);
+                _context.SaveChanges();
+                return RedirectToAction("Index");
+            }
             return View(products);
         }
         [HttpGet]
@@ -36,14 +202,13 @@ namespace WebScrapper_Prototype.Controllers
         [HttpPost]
         public ActionResult Create(Product product)
         {
-            string uniqueFileName = ProcessUploadedFile(product);
-            product.ImageURL= uniqueFileName;
+            string uniqueFileName = ProcessUploadedImageFile(product);
+            product.ImageURL = uniqueFileName;
             _context.Attach(product);
             _context.Entry(product).State = EntityState.Added;
             _context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
-        // GET: Productstt/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Product == null)
@@ -76,7 +241,7 @@ namespace WebScrapper_Prototype.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,ProductName,ProductDescription,ProductStatus,ProductCategory,ActualPrice,ScrappedPrice,ImageURL")] Product product)
+        public async Task<IActionResult> Edit(int id, Product product)
         {
             if (id != product.ID)
             {
@@ -89,8 +254,9 @@ namespace WebScrapper_Prototype.Controllers
                 {
                     _context.Update(product);
                     await _context.SaveChangesAsync();
+                    ViewBag.status = "Successfully Updated";
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (System.Data.Entity.Infrastructure.DbUpdateConcurrencyException)
                 {
                     if (!ProductExists(product.ID))
                     {
@@ -120,32 +286,14 @@ namespace WebScrapper_Prototype.Controllers
             }
 
             return View(product);
-        }
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Product == null)
-            {
-                return Problem("Entity set 'WebScrapper_PrototypeContext.Product'  is null.");
-            }
-            var product = await _context.Product.FindAsync(id);
-            if (product != null)
-            {
-                _context.
-                    Remove(product);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+        }     
 
         private bool ProductExists(int id)
         {
             return _context.Product.Any(e => e.ID == id);
         }
-    
-    private string ProcessUploadedFile(Product model)
+
+            private string ProcessUploadedImageFile(Product model)
         {
             string uniqueFileName = "ERROR";
             string path = Path.Combine(_webHostEnvironment.WebRootPath, "Uploads");
@@ -166,6 +314,10 @@ namespace WebScrapper_Prototype.Controllers
             }
 
             return uniqueFileName;
+        }
+        public IActionResult DeleteDate()
+        {
+            return View();
         }
     }
 }
