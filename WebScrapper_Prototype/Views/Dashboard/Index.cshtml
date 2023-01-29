@@ -24,10 +24,12 @@
         <h1 style="margin-top:100px;">Dashboard</h1>
         <p>
             <h2>NOTICES</h2>
-            <h4>ALPHA 3.0</h4>
+            <h4>ALPHA 4.0</h4>
+            (LIVE)
             <ul>
                 <li>
-                    "Huge Saving"" are functional. If a product is less than half of the Vendor Price it is considered a "Huge Saving"
+                    CSV Filer Reader is now functional
+                    <a href="/Home/ReleaseNotes">Release Notes</a>  
                 </li>
             </ul>
         </p>
@@ -43,19 +45,19 @@
                     <h3>Select the visibility of products you wish to view:</h3>
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item">
-                            @Html.ActionLink("Visible Products", "ListedProducts")
+                            @Html.ActionLink("Add a Product Manually", "ManualProductAdd")
                         </li>
                     </ul>
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item">
-                            @Html.ActionLink("Hidden Products", "HiddenProducts")
+                            @Html.ActionLink("Import a csv File (beta)", "BulkInsertProduct")
                         </li>
                     </ul>
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item">
-                            @Html.ActionLink("All Products", "AllProducts")
+                            @Html.ActionLink("View Products", "AllProducts")
                         </li>
-                    </ul>
+                    </ul>                                      
                 </div>
             </div>
         }

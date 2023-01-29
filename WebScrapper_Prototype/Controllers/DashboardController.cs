@@ -8,13 +8,13 @@ namespace WebScrapper_Prototype.Controllers
         {
             return View();
         }
-        public IActionResult ListedProducts()
+        public IActionResult ManualProductAdd()
         {
-            return (RedirectToAction("Index", "Product", new { view = "Visible" }));
+            return (RedirectToAction("Create", "Product", new { view = "Visible" }));
         }
-        public IActionResult HiddenProducts()
+        public IActionResult BulkInsertProduct()
         {
-            return (RedirectToAction("Index", "Product", new { view = "Hidden" }));
+            return (RedirectToAction("AutoProductCreateTest", "Product", new { view = "Hidden" }));
         }
         public IActionResult AllProducts()
         {

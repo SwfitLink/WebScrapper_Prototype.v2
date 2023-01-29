@@ -10,7 +10,6 @@ namespace WebScrapper_Prototype.Mappers
             Map(x => x.VendorSite).Name("web-scraper-start-url");
             Map(x => x.ProductName).Name("ProductName");
             Map(x => x.ProductStock).Name("ProductStock");
-            Map(x => x.ProductDescription).Name("ProductDescription");
             Map(x => x.ProductBasePrice).Name("ProductBasePrice");
             Map(x => x.ProductSalePrice).Name("ProductSalePrice");
             Map(x => x.VendorProductURL).Name("linked-href");
