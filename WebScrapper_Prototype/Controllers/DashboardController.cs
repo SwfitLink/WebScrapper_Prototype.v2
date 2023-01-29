@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WebScrapper_Prototype.Models;
 
 namespace WebScrapper_Prototype.Controllers
 {
     public class DashboardController : Controller
     {
         public IActionResult Index()
-        {            
+        {
             return View();
         }
         public IActionResult ListedProducts()

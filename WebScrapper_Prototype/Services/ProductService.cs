@@ -1,16 +1,12 @@
 ﻿using CsvHelper;
-using WebScrapper_Prototype.Mappers;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Text;
+using WebScrapper_Prototype.Mappers;
 using WebScrapper_Prototype.Models;
 
 namespace WebScrapper_Prototype.Services
 {
     public class ProductService
-    {    
+    {
         public List<Product> ReadCSVFile(string path)
         {
             Console.WriteLine(path);
@@ -25,7 +21,7 @@ namespace WebScrapper_Prototype.Services
                 }
             }
             catch (Exception e)
-            {                
+            {
                 throw new Exception(e.Message);
             }
         }
@@ -36,7 +32,7 @@ namespace WebScrapper_Prototype.Services
             {
                 csvw.WriteHeader<Product>();
                 csvw.NextRecord();
-                foreach(Product prod in product)
+                foreach (Product prod in product)
                 {
                     csvw.WriteRecord<Product>(prod);
                     csvw.NextRecord();

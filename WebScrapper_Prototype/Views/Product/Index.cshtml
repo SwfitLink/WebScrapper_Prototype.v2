@@ -101,11 +101,11 @@
                     new { sortOrder = ViewBag.VisibleParm,findProduct=ViewBag.CurrentProduct },
                     new {Class="nav-link"})
                     </li>
-@*                    <li class="nav-item">
+                    <li class="nav-item">
                         @Html.ActionLink("Huge Savings", "Index",
                     new { sortOrder = ViewBag.SavingParm,findProduct=ViewBag.CurrentProduct },
                     new {Class="nav-link"})
-                    </li>*@
+                    </li>
                     <li class="nav-item">
                         @Html.ActionLink("Price(Descending)", "Index",
                     new { sortOrder = ViewBag.PriceDescParm, findProduct=ViewBag.CurrentProduct },
@@ -125,61 +125,76 @@
                 <img src="/backbutton.png" height="20" width="20">
             </button>
         </div>
-        }
-        <table class="product-table" title="Product Table">
-            <thead>
+    }
+    <table class="product-table" title="Product Table">
+        <thead>
+            <tr>
+                <th scope="col">Category:</th>
+                <th scope="col">Sort by:</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td data-label="Category">
+                    @ViewBag.CurrentProduct
+                </td>
+                <td data-label="Sort by">
+                    <strong>
+                        @ViewBag.CurrentSort
+                    </strong>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="product-table" title="Product Table">
+        <thead>
+            <tr>
+                <th scope="col">Image</th>
+                <th scope="col">Name</th>
+                <th scope="col">Batch No.</th>
+                <th scope="col">Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
                 <tr>
-                    <th scope="col">Category:</th>
-                    <th scope="col">Sort by:</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td data-label="Category">
-                        @ViewBag.CurrentProduct
+                    <td data-label="Image">
+                        @if (item.ImageURL.Contains("www"))
+                        {
+                            <img src="@item.ImageURL" height="50" width="50" />
+                        }
+                        else
+                        {
+                            <img src="~/Uploads/@item.ImageURL" height="50" width="50" />
+
+                        }
+
                     </td>
-                    <td data-label="Sort by">
+                    <td data-label="Product Name">
                         <strong>
-                            @ViewBag.CurrentSort
+                            @Html.DisplayFor(modelItem => item.ProductName)
                         </strong>
                     </td>
+                    <td data-label="Product Name">
+                        <strong>
+                            @Html.DisplayFor(modelItem => item.dataBatch)
+                        </strong>
+                    </td>
+                    <td data-label="Price">
+                        <strong>
+                            SwiftLink Price: R @Html.DisplayFor(modelItem => item.ProductSalePrice)
+                        </strong>
+                    </td>
+                    <td data-label="Manage" data-align="center">
+                        <a class="table-button" asp-action="Details" asp-route-id="@item.ID">View</a>
+                        <a class="table-button" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
+                        <a class="table-button" asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    </td>
                 </tr>
-            </tbody>
-        </table>                    
-    <table class="product-table" title="Product Table">
-            <thead>
-                <tr>
-                    <th scope="col">Image</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Price</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td data-label="Image">
-                            <img src="~/Uploads/@item.ImageURL" height="50" width="50" />
-                        </td>
-                        <td data-label="Product Name">
-                            <strong>
-                                @Html.DisplayFor(modelItem => item.ProductName)
-                            </strong>
-                        </td>
-                        <td data-label="Price">
-                            <strong>
-                                SwiftLink Price: R @Html.DisplayFor(modelItem => item.ProductSalePrice)
-                            </strong>
-                        </td>
-                        <td data-label="Manage" data-align="center">
-                            <a class="table-button" asp-action="Details" asp-route-id="@item.ID">View</a>
-                            <a class="table-button" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
-                            <a class="table-button" asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-                        </td>
-                    </tr>
-                }         
-            </tbody>
-        </table>        
+            }
+        </tbody>
+    </table>
     <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
     <script type="text/javascript" src="js/popper.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebScrapper_Prototype.Models
@@ -19,9 +18,9 @@ namespace WebScrapper_Prototype.Models
         [Required]
         public string? ProductCategory { get; set; }
         [Required]
-        public string? ProductBasePrice { get; set; }
+        public decimal? ProductBasePrice { get; set; }
         [Required]
-        public string? ProductSalePrice { get; set; }
+        public decimal? ProductSalePrice { get; set; }
         [Required]
         public string? ImageURL { get; set; }
         [Required]

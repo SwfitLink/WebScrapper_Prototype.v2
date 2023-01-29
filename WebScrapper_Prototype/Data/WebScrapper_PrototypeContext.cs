@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WebScrapper_Prototype.Models;
 
 namespace WebScrapper_Prototype.Data
 {

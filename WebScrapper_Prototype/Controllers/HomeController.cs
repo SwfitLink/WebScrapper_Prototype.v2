@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PagedList;
-using PagedList.Mvc;
-using System.Web.Mvc;
 using System.Diagnostics;
 using WebScrapper_Prototype.Data;
 using WebScrapper_Prototype.Models;
-using X.PagedList.Mvc.Core;
 
 namespace WebScrapper_Prototype.Controllers
 {
@@ -59,7 +56,7 @@ namespace WebScrapper_Prototype.Controllers
                     productsT = productsT.OrderBy(s => s.ProductCategory);
                     break;
                 case "laptops":
-                    productsT = productsT.Where(s => s.ProductCategory.Contains("Laptops"));                    
+                    productsT = productsT.Where(s => s.ProductCategory.Contains("Laptops"));
                     break;
                 case "desktop":
                     productsT = productsT.Where(s => s.ProductCategory.Contains("Pre-Built PC"));
@@ -76,7 +73,7 @@ namespace WebScrapper_Prototype.Controllers
             switch (sortOrder)
             {
                 case "new":
-                    productsT = productsT.Where(s => s.ProductStatus.Equals("New"));                   
+                    productsT = productsT.Where(s => s.ProductStatus.Equals("New"));
                     break;
                 case "savings":
                     //productsT = productsT.Where(s =>

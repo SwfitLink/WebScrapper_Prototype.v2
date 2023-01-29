@@ -1,23 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using WebScrapper_Prototype.Data;
 using WebScrapper_Prototype.Models;
-using PagedList;
-using PagedList.Mvc;
-using System.Web.Mvc;
-using System.ComponentModel.DataAnnotations.Schema;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
-using System.Web.Helpers;
-using CsvHelper;
-using System.Linq;
-using System.Globalization;
-using System.Collections.Generic;
-using System.Collections;
 using WebScrapper_Prototype.Services;
-using System.Data.Entity.Infrastructure;
 using X.PagedList;
 
 namespace WebScrapper_Prototype.Controllers
@@ -32,7 +18,7 @@ namespace WebScrapper_Prototype.Controllers
             _context = context;
             _webHostEnvironment = webHost;
             _httpContextAccessor = httpContextAccessor;
-        } 
+        }
 
         [HttpGet]
         public IActionResult AutoProductCreateTest()
@@ -43,24 +29,24 @@ namespace WebScrapper_Prototype.Controllers
         [HttpPost]
         public ActionResult AutoProductCreateTest(AddCSV addCSV)
         {
-            var _productService = new ProductService();            
-            string uniqueFileName = ProcessUploadedCSVFile(addCSV);
-            var location = "wwwroot\\Uploads\\" + uniqueFileName;
+            var _productService = new ProductService();
+            string uniqueCSVFileName = ProcessUploadedCSVFile(addCSV);
+            var location = "wwwroot\\Uploads\\" + uniqueCSVFileName;
             var rowData = _productService.ReadCSVFile(location);
-            foreach(Product item in rowData)
+            foreach (Product item in rowData)
             {
                 Product product = new Product();
                 product.ProductName = item.ProductName;
-                product.ProductStock= item.ProductStock;
+                product.ProductStock = item.ProductStock;
                 product.ProductDescription = item.ProductDescription;
-                product.ProductStatus= "New";
+                product.ProductStatus = "New";
                 product.ProductCategory = item.ProductCategory;
-                product.ProductBasePrice= item.ProductBasePrice;
-                product.ProductSalePrice= item.ProductSalePrice;
-                product.ImageURL= item.ImageURL;
-                product.VendorSite = "TESTSITE";
+                product.ProductBasePrice = item.ProductBasePrice;
+                product.ProductSalePrice = item.ProductSalePrice;
+                product.ImageURL = item.ImageURL;
+                product.VendorSite = item.VendorSite;
                 product.VendorProductURL = item.VendorProductURL;
-                product.Visible= "Hidden";
+                product.Visible = item.Visible;
                 product.dataBatch = item.dataBatch;
                 _context.Attach(product);
                 _context.Entry(product).State = EntityState.Added;
@@ -68,7 +54,6 @@ namespace WebScrapper_Prototype.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
-
         private string ProcessUploadedCSVFile(AddCSV model)
         {
             string uniqueFileName = "ERROR";
@@ -88,14 +73,13 @@ namespace WebScrapper_Prototype.Controllers
                 }
             }
             return uniqueFileName;
-        }            
-
+        }
         [Authorize(Roles = "Administrator, Manager")]
         public IActionResult Index(string view, string sortOrder, string findProduct, string currentFilter, string searchString, string dataBatch, int? page)
         {
             ViewBag.setting = view;
             var products = from p in _context.Product
-                            select p;
+                           select p;
             ViewBag.CurrentSort = sortOrder;
             ViewBag.ProductSortParm = String.IsNullOrEmpty(sortOrder) ? "all" : "";
             ViewBag.HiddenParm = sortOrder == "hidden" ? "hidden" : "hidden";
@@ -127,21 +111,21 @@ namespace WebScrapper_Prototype.Controllers
             switch (findProduct)
             {
                 case "All":
-                    products = products.OrderBy(s => s.ProductCategory);                     
+                    products = products.OrderBy(s => s.ProductCategory);
                     break;
                 case "laptops":
-                    products = products.Where(s => s.ProductCategory.Contains("Laptops"));       
+                    products = products.Where(s => s.ProductCategory.Contains("Laptops"));
                     break;
                 case "desktop":
                     products = products.Where(s => s.ProductCategory.Contains("Pre-Built PC"));
                     break;
                 case "hardware":
-                    products = products.Where(s => s.ProductCategory.Contains("Hardware"));         
+                    products = products.Where(s => s.ProductCategory.Contains("Hardware"));
                     break;
                 case "accessories":
                     products = products.Where(s => s.ProductCategory.Contains("Accessories"));
                     break;
-                default:              
+                default:
                     break;
             }
             switch (sortOrder)
@@ -158,7 +142,7 @@ namespace WebScrapper_Prototype.Controllers
                     ViewBag.setting = "visible";
                     break;
                 case "saving":
-                    //products = products.Where(s => s.ProductSalePrice < s.ProductBasePrice / 2);
+                    products = products.Where(s => s.ProductSalePrice < s.ProductBasePrice / 2);
                     break;
                 case "price_desc":
                     products = products.OrderByDescending(s => s.ProductSalePrice);
@@ -286,14 +270,14 @@ namespace WebScrapper_Prototype.Controllers
             }
 
             return View(product);
-        }     
+        }
 
         private bool ProductExists(int id)
         {
             return _context.Product.Any(e => e.ID == id);
         }
 
-            private string ProcessUploadedImageFile(Product model)
+        private string ProcessUploadedImageFile(Product model)
         {
             string uniqueFileName = "ERROR";
             string path = Path.Combine(_webHostEnvironment.WebRootPath, "Uploads");
@@ -313,7 +297,7 @@ namespace WebScrapper_Prototype.Controllers
                 }
             }
 
-            return uniqueFileName;
+            return "LOCALIMG:" + uniqueFileName;
         }
         public IActionResult DeleteDate()
         {
