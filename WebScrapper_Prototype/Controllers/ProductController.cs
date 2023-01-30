@@ -19,13 +19,14 @@ namespace WebScrapper_Prototype.Controllers
             _webHostEnvironment = webHost;
             _httpContextAccessor = httpContextAccessor;
         }
-
+        [Authorize(Roles = "Administrator, Manager")]
         [HttpGet]
         public IActionResult AutoProductCreateTest()
         {
             AddCSV product = new AddCSV();
             return View(product);
         }
+        [Authorize(Roles = "Administrator, Manager")]
         [HttpPost]
         public ActionResult AutoProductCreateTest(AddCSV addCSV)
         {
@@ -54,6 +55,7 @@ namespace WebScrapper_Prototype.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+        [Authorize(Roles = "Administrator, Manager")]
         private string ProcessUploadedCSVFile(AddCSV model)
         {
             string uniqueFileName = "ERROR";
