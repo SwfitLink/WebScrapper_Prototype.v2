@@ -184,7 +184,16 @@
                         </tr>
                     </tbody>
                 </table>
-
+                <nav aria-label="Page navigation">
+                    <ul class="pagination flex-center">
+                        @Html.PagedListPager( (IPagedList)ViewBag.OnePageOfProducts,
+                    page => Url.Action("Index", new { page }) ,
+                    new X.PagedList.Web.Common.PagedListRenderOptions {
+                    LiElementClasses = new string[] { "page-item" },
+                    PageClasses = new string[] { "page-link" }
+                    })
+                    </ul>
+                </nav>
                 @foreach (var product in Model)
                 {
                     <div class="media">
