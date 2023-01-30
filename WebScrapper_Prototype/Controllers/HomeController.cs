@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PagedList;
 using System.Diagnostics;
 using WebScrapper_Prototype.Data;
 using WebScrapper_Prototype.Models;
+using X.PagedList;
 
 namespace WebScrapper_Prototype.Controllers
 {
@@ -83,11 +83,13 @@ namespace WebScrapper_Prototype.Controllers
                     productsT = productsT.OrderBy(s => s.ProductSalePrice);
                     break;
                 default:
-                    break;
+                    break;        
             }
-            int pageSize = 5;
+            int pageSize = 15;
             int pageNumber = (page ?? 1);
-            return View(productsT.ToPagedList(pageNumber, pageSize));
+            var onePageOfProducts = productsT.ToPagedList(pageNumber, pageSize);
+            ViewBag.OnePageOfProducts = onePageOfProducts;
+            return View(onePageOfProducts);
         }
         public static KeyValuePair<int, string> SearchDictionary(Dictionary<int, string> dict, string searchTerm)
         {

@@ -6,135 +6,201 @@
 @{
     Layout = "_Layout";
 }
-
-@if (SignInManager.IsSignedIn(User))
-{
-    @if(User.IsInRole("Manager"))
+<html lang="en">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+@*.selector-for-some-widget {
+  box-sizing: content-box;
+}*@
+<body class="bg-body">
+    @if (SignInManager.IsSignedIn(User))
     {
-        <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
-            <div class="container">
-                <a class="navbar-brand waves-effect" href="/" target="_blank">
-                    <strong class="blue-text">SwiftLink</strong>
-                </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav mr-auto">
-                        <li class="nav-item">
-                            <a class="nav-link waves-effect" href="/">
-                                Home
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link waves-effect" asp-area="" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
-                        </li>
-                    </ul>
-                    <ul class="navbar-nav nav-flex-icons">
-                        <li class="nav-item">
-                            <a id="manage" href="/Identity/Account/Manage/" title="Manage" class="nav-link border border-light rounded waves-effect">Welcome Back @User.Identity.Name</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link waves-effect" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">Logout</a>
-                        </li>
-                    </ul>
+        @if (User.IsInRole("Manager"))
+        {
+            <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
+                <div class="container-fluid">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+                        <a class="navbar-brand waves-effect" href="/">
+                            <strong class="blue-text">SwiftLink</strong>
+                        </a>
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link waves-effect" href="/">
+                                    Home
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Shop</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">PC Builder</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Dashboard" tabindex="-1" aria-disabled="true">Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a id="manage" href="/Identity/Account/Manage/" title="Manage" class="nav-link border border-light rounded waves-effect">
+                                    Welcome @User.Identity.Name
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link waves-effect" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">Logout</a>
+                                 <i class="fa fa-sign-out" aria-hidden="true"></i>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="d-flex p-2 bd-highlight">
+                        <form class="d-flex">
+                            @Html.TextBox("SearchString", ViewBag.CurrentFilter as string,
+                    new {Class="form-control me-2", PlaceHolder="Search"})
+                            <img class="icon" />
+                        </form>
+                    </div>
                 </div>
-            </div>
-        </nav>
+            </nav>
+        }
+        else
+        {
+            <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
+                <div class="container-fluid">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+                        <a class="navbar-brand waves-effect" href="/">
+                            <strong class="blue-text">SwiftLink</strong>
+                        </a>
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link waves-effect" href="/">
+                                    Home
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Shop</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">PC Builder</a>
+                            </li>
+                            <li class="nav-item">
+                                <a id="manage" href="/Identity/Account/Manage/" title="Manage" class="nav-link border border-light rounded waves-effect">
+                                    Welcome @User.Identity.Name
+                                </a>
+                            </li>
+                            @*                            <li class="nav-item">
+                    <a onclick="/Checkout" class="nav-link waves-effect">
+                    <span class="badge red z-depth-1 mr-1"> 0 </span>
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="clearfix d-none d-sm-inline-block"> Cart </span>
+                    </a>
+                    </li>*@
+                            <li class="nav-item">
+                                <a class="nav-link waves-effect" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                    <i class="fa fa-sign-out" aria-hidden="true"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="d-flex p-2 bd-highlight">
+                        <form class="d-flex">
+                            @Html.TextBox("SearchString", ViewBag.CurrentFilter as string,
+                    new {Class="form-control me-2", PlaceHolder="Search"})
+                            <img class="icon" />
+                        </form>
+                    </div>
+                </div>
+            </nav>
+        }
     }
     else
     {
         <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
-            <div class="container">
-                <a class="navbar-brand waves-effect" href="/" target="_blank">
-                    <strong class="blue-text">SwiftLink</strong>
-                </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav mr-auto">
+                <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+                    <a class="navbar-brand waves-effect" href="/">
+                        <strong class="blue-text">SwiftLink</strong>
+                    </a>
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
                             <a class="nav-link waves-effect" href="/">
                                 Home
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link waves-effect" href="#">About</a>
+                            <a class="nav-link" href="#">Shop</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">PC Builder</a>
+                        </li>
+                        <li class="nav-item">
+                            <a id="manage" href="/Identity/Account/Login" title="Manage" class="nav-link border border-light rounded waves-effect">
+                                Login/Sign up
+                            </a>
+                        </li>
+                        @*                            <li class="nav-item">
+                    <a onclick="/Checkout" class="nav-link waves-effect">
+                    <span class="badge red z-depth-1 mr-1"> 0 </span>
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="clearfix d-none d-sm-inline-block"> Cart </span>
+                    </a>
+                    </li>*@
                     </ul>
-                    <ul class="navbar-nav nav-flex-icons">
-                        <li class="nav-item">
-                            <a onclick="/Checkout" class="nav-link waves-effect">
-                                <span class="badge red z-depth-1 mr-1"> 0 </span>
-                                <i class="fas fa-shopping-cart"></i>
-                                <span class="clearfix d-none d-sm-inline-block"> Cart </span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link waves-effect" target="_blank">
-                                <i class="fab fa-facebook-f"></i>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link waves-effect" target="_blank">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a id="manage" href="/Identity/Account/Manage/" title="Manage" class="nav-link border border-light rounded waves-effect">Welcome Back @User.Identity.Name</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link waves-effect" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">Logout</a>
-                        </li>
-                    </ul>
+                </div>
+                <div class="d-flex p-2 bd-highlight">
+                    <form class="d-flex">
+                        @Html.TextBox("SearchString", ViewBag.CurrentFilter as string,
+                    new {Class="form-control me-2", PlaceHolder="Search"})
+                        <img class="icon" />
+                    </form>
                 </div>
             </div>
         </nav>
     }
-}
-else
-{
-    <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
-        <div class="container">
-            <a class="navbar-brand waves-effect" href="/">
-                <strong class="blue-text">SwiftLink</strong>
-            </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link waves-effect" href="/">
-                            Home
-                        </a>
-                    </li>                                    
-                </ul>
-                <ul class="navbar-nav nav-flex-icons">
-                    <li class="nav-item">
-                        <a href="#" class="nav-link waves-effect">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link waves-effect">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/Identity/Account/Login" class="nav-link border border-light rounded waves-effect">
-                            Login/Sign up
-                        </a>
-                    </li>
-                </ul>
-
+</body>
+@*<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-3">
+                <img src="/" class="img-thumbnail" alt="logo">
             </div>
-
+            <div class="col-sm-9">
+                <div class="row">
+                    <div class="col-8 col-sm-6">
+                        SOME TEXT...
+                    </div>
+                    <div class="col-4 col-sm-6">
+                        <h2>useful links:</h2>
+                        <ul class="navbar-nav nav-flex-icons">
+                            <li class="nav-item">
+                                <a href="#" class="nav-link waves-effect" target="_blank">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link waves-effect" target="_blank">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                            </li>
+                            <div class="nav-item">
+                                <a class="nav-link">
+                                    Home
+                                </a>
+                            </div>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
-    </nav>
+    </div>
+</footer>*@
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
-}
+</html>
