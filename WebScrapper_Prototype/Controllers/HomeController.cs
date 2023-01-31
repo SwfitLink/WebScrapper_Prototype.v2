@@ -18,7 +18,7 @@ namespace WebScrapper_Prototype.Controllers
 
         }
 
-        public IActionResult Index(string sortOrder, string findProduct, string currentFilter, string searchString, int? page)
+        public IActionResult Index(string sortOrder, string findProduct, string brand, string currentFilter, string searchString, int? page)
         {
             ViewBag.CurrentSort = sortOrder;
             ViewBag.CurrentProduct = findProduct;
@@ -32,7 +32,12 @@ namespace WebScrapper_Prototype.Controllers
             ViewBag.DesktopParm = findProduct == "desktop" ? "desktop" : "desktop";
             ViewBag.HardwareParm = findProduct == "hardware" ? "hardware" : "hardware";
             ViewBag.AccessoriesParm = findProduct == "accessories" ? "accessories" : "accessories";
-            if (searchString != null)
+
+			ViewBag.ProductBrand = String.IsNullOrEmpty(brand) ? "All" : "";
+			ViewBag.IntelBrand = brand == "intel" ? "intel" : "intel";
+			ViewBag.AMDBrand = brand == "amd" ? "amd" : "amd";
+			ViewBag.NvidiaBrand = brand == "nvidia" ? "nvidia" : "nvidia";
+			if (searchString != null)
             {
                 page = 1;
             }
@@ -85,7 +90,21 @@ namespace WebScrapper_Prototype.Controllers
                 default:
                     break;        
             }
-            int pageSize = 15;
+			switch (brand)
+			{
+				case "intel":
+					productsT = productsT.Where(s => s.ProductName.Contains("Intel"));
+					break;
+				case "amd":
+                    productsT = productsT.Where(s => s.ProductName.Contains("AMD"));
+					break;
+				case "nvidia":
+					productsT = productsT.Where(s => s.ProductName.Contains("Nvidia"));
+					break;
+				default:
+					break;
+			}
+			int pageSize = 15;
             int pageNumber = (page ?? 1);
             var onePageOfProducts = productsT.ToPagedList(pageNumber, pageSize);
             ViewBag.OnePageOfProducts = onePageOfProducts;
