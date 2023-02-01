@@ -59,7 +59,7 @@ namespace WebScrapper_Prototype.Controllers
             return View();
         }
 		[HttpGet]
-		public IActionResult Index(string sortOrder, string findProduct, string filter, string currentFilter, string searchString, string location, int? page)
+		public IActionResult Index(string sortOrder, string findProduct, string filter,Boolean state, string currentFilter, string searchString, string location, int? page)
         {
             ViewBag.CurrentSort = sortOrder;
             ViewBag.CurrentProduct = findProduct;
