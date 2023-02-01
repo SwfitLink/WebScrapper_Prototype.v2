@@ -1214,7 +1214,7 @@ Version:1.0
 }
 .hero-slider .single-slider {
 	height: auto;
-	background-image: url('https://via.placeholder.com/1900x700');
+	background-image: url('/Media/1.png');
 	background-size: cover;
 	background-position: center;
 	background-repeat: no-repeat;
@@ -3668,7 +3668,7 @@ Version:1.0
 	position:relative;
 }
 .cown-down .content .heading-block{
-	position:absolute;
+	position: absolute;
 	left:0;
 	top:50%;
 	transform:translateY(-50%);

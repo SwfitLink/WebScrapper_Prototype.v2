@@ -1,4 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.CodeAnalysis;
+using System.Collections.Generic;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.Diagnostics;
 using WebScrapper_Prototype.Data;
 using WebScrapper_Prototype.Models;
@@ -15,10 +19,47 @@ namespace WebScrapper_Prototype.Controllers
         {
             _logger = logger;
             _context = context;
-
         }
+        [HttpPost]
+		public IActionResult CountDownProduct()
+		{
+			return View();
+		}
+		[HttpGet]
+		public IActionResult CountDownProduct(int? page)
+        {
+			var products = from p in _context.Product
+						   select p;
+            decimal? HighDiff = 0;
+			Dictionary<int, decimal?> dic = new Dictionary<int, decimal?>();
+			List<decimal> arr = new List<decimal>();
+            foreach(var item in products)
+            {
+                decimal? diff = item.ProductBasePrice + item.ProductSalePrice;
 
-        public IActionResult Index(string sortOrder, string findProduct, string brand, string currentFilter, string searchString, int? page)
+				if (diff > HighDiff)
+                {
+                    HighDiff = diff;
+                    dic.Add(item.ID, HighDiff);
+                }
+			}
+            foreach(KeyValuePair<int, decimal?> pair in dic)
+            {
+				if (!dic.ContainsValue(HighDiff))
+				{
+                    dic.Remove(pair.Key);
+                }
+                products = products.Where(a => a.ID.Equals(pair.Key));
+			}     
+            return View(products);            
+		}
+		[HttpPost]
+		public IActionResult Index()
+        {
+            return View();
+        }
+		[HttpGet]
+		public IActionResult Index(string sortOrder, string findProduct, string filter, string currentFilter, string searchString, string location, int? page)
         {
             ViewBag.CurrentSort = sortOrder;
             ViewBag.CurrentProduct = findProduct;
@@ -33,10 +74,6 @@ namespace WebScrapper_Prototype.Controllers
             ViewBag.HardwareParm = findProduct == "hardware" ? "hardware" : "hardware";
             ViewBag.AccessoriesParm = findProduct == "accessories" ? "accessories" : "accessories";
 
-			ViewBag.ProductBrand = String.IsNullOrEmpty(brand) ? "All" : "";
-			ViewBag.IntelBrand = brand == "intel" ? "intel" : "intel";
-			ViewBag.AMDBrand = brand == "amd" ? "amd" : "amd";
-			ViewBag.NvidiaBrand = brand == "nvidia" ? "nvidia" : "nvidia";
 			if (searchString != null)
             {
                 page = 1;
@@ -47,30 +84,30 @@ namespace WebScrapper_Prototype.Controllers
 
             }
             ViewBag.CurrentFilter = searchString;
-            var productsT = from p in _context.Product
+            var products = from p in _context.Product
                             select p;
-            productsT = productsT.Where(s => s.Visible.Contains("Visible"));
+            products = products.Where(s => s.Visible.Contains("Visible"));
             if (!String.IsNullOrEmpty(searchString))
             {
-                productsT = productsT.Where(s => s.ProductCategory.Contains(searchString)
+                products = products.Where(s => s.ProductCategory.Contains(searchString)
                        || s.ProductName.Contains(searchString));
             }
             switch (findProduct)
             {
                 case "All":
-                    productsT = productsT.OrderBy(s => s.ProductCategory);
+                    products = products.OrderBy(s => s.ProductCategory);
                     break;
                 case "laptops":
-                    productsT = productsT.Where(s => s.ProductCategory.Contains("Laptops"));
+                    products = products.Where(s => s.ProductCategory.Contains("Laptops"));
                     break;
                 case "desktop":
-                    productsT = productsT.Where(s => s.ProductCategory.Contains("Pre-Built PC"));
+                    products = products.Where(s => s.ProductCategory.Contains("Pre-Built PC"));
                     break;
                 case "hardware":
-                    productsT = productsT.Where(s => s.ProductCategory.Contains("Hardware"));
+                    products = products.Where(s => s.ProductCategory.Contains("Hardware"));
                     break;
                 case "accessories":
-                    productsT = productsT.Where(s => s.ProductCategory.Contains("Accessories"));
+                    products = products.Where(s => s.ProductCategory.Contains("Accessories"));
                     break;
                 default:
                     break;
@@ -78,39 +115,29 @@ namespace WebScrapper_Prototype.Controllers
             switch (sortOrder)
             {
                 case "new":
-                    productsT = productsT.Where(s => s.ProductStatus.Equals("New"));
+                    products = products.Where(s => s.ProductStatus.Equals("New"));
                     break;
                 case "savings":
-                    //productsT = productsT.Where(s =>
+                    //products = products.Where(s =>
                     //s.ProductSalePrice < s.ProductBasePrice / 2);
                     break;
                 case "price_desc":
-                    productsT = productsT.OrderBy(s => s.ProductSalePrice);
+                    products = products.OrderBy(s => s.ProductSalePrice);
                     break;
                 default:
                     break;        
             }
-			switch (brand)
-			{
-				case "intel":
-					productsT = productsT.Where(s => s.ProductName.Contains("Intel"));
-					break;
-				case "amd":
-                    productsT = productsT.Where(s => s.ProductName.Contains("AMD"));
-					break;
-				case "nvidia":
-					productsT = productsT.Where(s => s.ProductName.Contains("Nvidia"));
-					break;
-				default:
-					break;
-			}
-			int pageSize = 15;
+            if (!String.IsNullOrEmpty(filter))
+            {
+                products = products.Where(a => a.ProductName.Contains(filter));
+            }
+			int pageSize = 12;
             int pageNumber = (page ?? 1);
-            var onePageOfProducts = productsT.ToPagedList(pageNumber, pageSize);
+            var onePageOfProducts = products.ToPagedList(pageNumber, pageSize);
             ViewBag.OnePageOfProducts = onePageOfProducts;
             return View(onePageOfProducts);
         }
-        public static KeyValuePair<int, string> SearchDictionary(Dictionary<int, string> dict, string searchTerm)
+		public static KeyValuePair<int, string> SearchDictionary(Dictionary<int, string> dict, string searchTerm)
         {
             foreach (KeyValuePair<int, string> pair in dict)
             {
@@ -121,7 +148,7 @@ namespace WebScrapper_Prototype.Controllers
             }
             return new KeyValuePair<int, string>(-1, "Search term not found.");
         }
-        public IActionResult ReleaseNotes()
+		public IActionResult ReleaseNotes()
         {
             return View();
         }

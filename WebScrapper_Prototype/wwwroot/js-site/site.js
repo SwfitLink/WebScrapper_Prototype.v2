@@ -30,3 +30,15 @@ $(document).ready(function () {
     });
 
 });
+$(document).ready(function () {
+    $('#reloadDiv').click(function () {
+        $.ajax({
+            type: "GET",
+            url: "/Home/FeaturedProducts",
+            data: { brand: "amd", location: "AMD Products" },
+            success: function (data) {
+                $('#divToReload').html(data);
+            }
+        });
+    });
+});
