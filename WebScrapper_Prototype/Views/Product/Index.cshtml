@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WebScrapper_Prototype.Models.Product>
+﻿@model IEnumerable<WebScrapper_Prototype.Models.ProductModel>
 @{
     ViewData["Title"] = "Products";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -21,7 +21,7 @@
 <body>
     <partial name="_AdminPartial" />
     <h1 style="margin-top:100px;">@ViewBag.setting Product List</h1>
-    @using (Html.BeginForm("Index", "Product", FormMethod.Get))
+    @using (Html.BeginForm("Index", "Products", FormMethod.Get))
     {
         <div class="mb-3">
             <div class="form-group">

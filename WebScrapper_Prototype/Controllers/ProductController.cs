@@ -34,9 +34,9 @@ namespace WebScrapper_Prototype.Controllers
             string uniqueCSVFileName = ProcessUploadedCSVFile(addCSV);
             var location = "wwwroot\\Uploads\\" + uniqueCSVFileName;
             var rowData = _productService.ReadCSVFile(location);
-            foreach (Product item in rowData)
+            foreach (ProductModel item in rowData)
             {
-                Product product = new Product();
+                ProductModel product = new ProductModel();
                 product.ProductName = item.ProductName;
                 product.ProductStock = item.ProductStock;
                 product.ProductDescription = item.ProductDescription;
@@ -80,7 +80,7 @@ namespace WebScrapper_Prototype.Controllers
         public IActionResult Index(string view, string sortOrder, string findProduct, string currentFilter, string searchString, string dataBatch, int? page)
         {
             ViewBag.setting = view;
-            var products = from p in _context.Product
+            var products = from p in _context.Products
                            select p;
             ViewBag.CurrentSort = sortOrder;
             ViewBag.ProductSortParm = String.IsNullOrEmpty(sortOrder) ? "all" : "";
@@ -144,7 +144,7 @@ namespace WebScrapper_Prototype.Controllers
                     ViewBag.setting = "visible";
                     break;
                 case "saving":
-                    products = products.Where(s => s.ProductSalePrice < s.ProductBasePrice / 2);
+                    //products = products.Where(s => s.ProductSalePrice < s.ProductBasePrice / 2);
                     break;
                 case "price_desc":
                     products = products.OrderByDescending(s => s.ProductSalePrice);
@@ -182,11 +182,11 @@ namespace WebScrapper_Prototype.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            Product product = new Product();
+            ProductModel product = new ProductModel();
             return View(product);
         }
         [HttpPost]
-        public ActionResult Create(Product product)
+        public ActionResult Create(ProductModel product)
         {
             string uniqueFileName = ProcessUploadedImageFile(product);
             product.ImageURL = uniqueFileName;
@@ -197,12 +197,12 @@ namespace WebScrapper_Prototype.Controllers
         }
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Product == null)
+            if (id == null || _context.Products == null)
             {
                 return NotFound();
             }
 
-            var product = await _context.Product
+            var product = await _context.Products
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (product == null)
             {
@@ -213,12 +213,12 @@ namespace WebScrapper_Prototype.Controllers
         }
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Product == null)
+            if (id == null || _context.Products == null)
             {
                 return NotFound();
             }
 
-            var product = await _context.Product.FindAsync(id);
+            var product = await _context.Products.FindAsync(id);
             if (product == null)
             {
                 return NotFound();
@@ -227,7 +227,7 @@ namespace WebScrapper_Prototype.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Product product)
+        public async Task<IActionResult> Edit(int id, ProductModel product)
         {
             if (id != product.ID)
             {
@@ -259,12 +259,12 @@ namespace WebScrapper_Prototype.Controllers
         }
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Product == null)
+            if (id == null || _context.Products == null)
             {
                 return NotFound();
             }
 
-            var product = await _context.Product
+            var product = await _context.Products
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (product == null)
             {
@@ -276,10 +276,10 @@ namespace WebScrapper_Prototype.Controllers
 
         private bool ProductExists(int id)
         {
-            return _context.Product.Any(e => e.ID == id);
+            return _context.Products.Any(e => e.ID == id);
         }
 
-        private string ProcessUploadedImageFile(Product model)
+        private string ProcessUploadedImageFile(ProductModel model)
         {
             string uniqueFileName = "ERROR";
             string path = Path.Combine(_webHostEnvironment.WebRootPath, "Uploads");

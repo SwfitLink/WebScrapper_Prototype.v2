@@ -3,7 +3,7 @@ using WebScrapper_Prototype.Models;
 
 namespace WebScrapper_Prototype.Mappers
 {
-    public sealed class ProductMap : ClassMap<Product>
+    public sealed class ProductMap : ClassMap<ProductModel>
     {
         public ProductMap()
         {

@@ -1,4 +1,4 @@
-﻿@model WebScrapper_Prototype.Models.Product
+﻿@model WebScrapper_Prototype.Models.ProductModel
 @{
     ViewData["Title"] = "Dashboard";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -45,7 +45,7 @@
                     <h3>Select the visibility of products you wish to view:</h3>
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item">
-                            @Html.ActionLink("Add a Product Manually", "ManualProductAdd")
+                            @Html.ActionLink("Add a Products Manually", "ManualProductAdd")
                         </li>
                     </ul>
                     <ul class="navbar-nav mr-auto">

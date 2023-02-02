@@ -21,7 +21,7 @@ namespace WebScrapper_Prototype.Controllers
 		}
 		public IActionResult Index(int? page)
 		{
-			var products = from p in _context.Product
+			var products = from p in _context.Products
 			select p;
 			products = products.Where(s => s.Visible.Contains("Visible"));
 			int pageSize = 25;

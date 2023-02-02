@@ -6,13 +6,6 @@
     },
     "secrets1": {
       "type": "secrets.user"
-    },
-    "mssql1": {
-      "secretStore": "LocalSecretsFile",
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/webscrapper-prototypedbserver/databases/WebScrapper_Db",
-      "type": "mssql.azure",
-      "connectionId": "ConnectionStrings:ApplicationDbContextConnection",
-      "dynamicId": null
     }
   }
 }

@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis;
 using System.Collections.Generic;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.Diagnostics;
+using System.Drawing.Printing;
 using WebScrapper_Prototype.Data;
 using WebScrapper_Prototype.Models;
 using X.PagedList;
@@ -25,118 +26,69 @@ namespace WebScrapper_Prototype.Controllers
 		{
 			return View();
 		}
-		[HttpGet]
-		public IActionResult CountDownProduct(int? page)
-        {
-			var products = from p in _context.Product
-						   select p;
-            decimal? HighDiff = 0;
-			Dictionary<int, decimal?> dic = new Dictionary<int, decimal?>();
-			List<decimal> arr = new List<decimal>();
-            foreach(var item in products)
-            {
-                decimal? diff = item.ProductBasePrice + item.ProductSalePrice;
-
-				if (diff > HighDiff)
-                {
-                    HighDiff = diff;
-                    dic.Add(item.ID, HighDiff);
-                }
-			}
-            foreach(KeyValuePair<int, decimal?> pair in dic)
-            {
-				if (!dic.ContainsValue(HighDiff))
-				{
-                    dic.Remove(pair.Key);
-                }
-                products = products.Where(a => a.ID.Equals(pair.Key));
-			}     
-            return View(products);            
-		}
 		[HttpPost]
-		public IActionResult Index()
+		public IActionResult Index(int id)
         {
-            return View();
-        }
+			var products = from p in _context.Products
+						   select p;
+			if (id > 0)
+			{
+				products = products.Where(a => a.ID== id);
+
+			}
+			return View(products.ToPagedList());
+		}
 		[HttpGet]
-		public IActionResult Index(string sortOrder, string findProduct, string filter,Boolean state, string currentFilter, string searchString, string location, int? page)
-        {
-            ViewBag.CurrentSort = sortOrder;
-            ViewBag.CurrentProduct = findProduct;
-            ViewBag.ProductStatusSortParm = String.IsNullOrEmpty(sortOrder) ? "new" : "";
-            ViewBag.LowestPriceParm = sortOrder == "price_desc" ? "price_desc" : "price_desc";
-            ViewBag.SavingParm = sortOrder == "savings" ? "savings" : "savings";
+		public IActionResult Index(string sortOrder, string findProduct, string filter, int id, string currentFilter, string searchString, string location, int? page)
+		{
+			ViewBag.CurrentSort = sortOrder;
+			ViewBag.CurrentProduct = findProduct;
+			ViewBag.ProductStatusSortParm = String.IsNullOrEmpty(sortOrder) ? "new" : "";
+			ViewBag.LowestPriceParm = sortOrder == "price_desc" ? "price_desc" : "price_desc";
+			ViewBag.SavingParm = sortOrder == "savings" ? "savings" : "savings";
 
 
-            ViewBag.ProductCatParm = String.IsNullOrEmpty(findProduct) ? "All" : "";
-            ViewBag.LaptopParm = findProduct == "laptops" ? "laptops" : "laptops";
-            ViewBag.DesktopParm = findProduct == "desktop" ? "desktop" : "desktop";
-            ViewBag.HardwareParm = findProduct == "hardware" ? "hardware" : "hardware";
-            ViewBag.AccessoriesParm = findProduct == "accessories" ? "accessories" : "accessories";
-
+			ViewBag.ProductCatParm = String.IsNullOrEmpty(findProduct) ? "All" : "";
+			ViewBag.LaptopParm = findProduct == "laptops" ? "laptops" : "laptops";
+			ViewBag.DesktopParm = findProduct == "desktop" ? "desktop" : "desktop";
+			ViewBag.HardwareParm = findProduct == "hardware" ? "hardware" : "hardware";
+			ViewBag.AccessoriesParm = findProduct == "accessories" ? "accessories" : "accessories";
+			var products = from p in _context.Products
+						   select p;
+			products = products.Where(p => p.Visible.Equals("Visible"));
 			if (searchString != null)
-            {
-                page = 1;
-            }
-            else
-            {
-                searchString = currentFilter;
+			{
+				page = 1;
+			}
+			else
+			{
+				searchString = currentFilter;
+			}
+			ViewBag.CurrentFilter = searchString;
+			if (!String.IsNullOrEmpty(searchString))
+			{
+				products = products.Where(s => s.ProductCategory.Contains(searchString)
+					   || s.ProductName.Contains(searchString));
+			}
 
-            }
-            ViewBag.CurrentFilter = searchString;
-            var products = from p in _context.Product
-                            select p;
-            products = products.Where(s => s.Visible.Contains("Visible"));
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                products = products.Where(s => s.ProductCategory.Contains(searchString)
-                       || s.ProductName.Contains(searchString));
-            }
-            switch (findProduct)
-            {
-                case "All":
-                    products = products.OrderBy(s => s.ProductCategory);
-                    break;
-                case "laptops":
-                    products = products.Where(s => s.ProductCategory.Contains("Laptops"));
-                    break;
-                case "desktop":
-                    products = products.Where(s => s.ProductCategory.Contains("Pre-Built PC"));
-                    break;
-                case "hardware":
-                    products = products.Where(s => s.ProductCategory.Contains("Hardware"));
-                    break;
-                case "accessories":
-                    products = products.Where(s => s.ProductCategory.Contains("Accessories"));
-                    break;
-                default:
-                    break;
-            }
-            switch (sortOrder)
-            {
-                case "new":
-                    products = products.Where(s => s.ProductStatus.Equals("New"));
-                    break;
-                case "savings":
-                    //products = products.Where(s =>
-                    //s.ProductSalePrice < s.ProductBasePrice / 2);
-                    break;
-                case "price_desc":
-                    products = products.OrderBy(s => s.ProductSalePrice);
-                    break;
-                default:
-                    break;        
-            }
-            if (!String.IsNullOrEmpty(filter))
-            {
-                products = products.Where(a => a.ProductName.Contains(filter));
-            }
+			if (!String.IsNullOrEmpty(filter))
+			{
+				Console.WriteLine("Looking for Products that contain:" + filter);
+				switch (filter)
+				{
+					case "Intel":
+						products = products.Where(s => s.ProductName.Contains(filter));
+						break;
+					case "AMD":
+						break;
+					case "Nvidia":
+						break;
+				}
+			}			
 			int pageSize = 12;
-            int pageNumber = (page ?? 1);
-            var onePageOfProducts = products.ToPagedList(pageNumber, pageSize);
-            ViewBag.OnePageOfProducts = onePageOfProducts;
-            return View(onePageOfProducts);
-        }
+			int pageNumber = (page ?? 1);
+			return View(products.ToPagedList(pageNumber, pageSize));
+		}
 		public static KeyValuePair<int, string> SearchDictionary(Dictionary<int, string> dict, string searchTerm)
         {
             foreach (KeyValuePair<int, string> pair in dict)
@@ -152,8 +104,7 @@ namespace WebScrapper_Prototype.Controllers
         {
             return View();
         }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });

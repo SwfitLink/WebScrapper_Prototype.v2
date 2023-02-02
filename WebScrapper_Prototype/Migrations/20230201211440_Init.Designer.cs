@@ -12,8 +12,8 @@ using WebScrapper_Prototype.Areas.Identity.Data;
 namespace WebScrapper_Prototype.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230122103237_init-AzureDb")]
-    partial class initAzureDb
+    [Migration("20230201211440_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

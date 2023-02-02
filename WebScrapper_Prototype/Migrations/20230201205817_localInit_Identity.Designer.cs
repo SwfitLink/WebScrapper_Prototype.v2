@@ -12,8 +12,8 @@ using WebScrapper_Prototype.Areas.Identity.Data;
 namespace WebScrapper_Prototype.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230125141545_ClaimMigration")]
-    partial class ClaimMigration
+    [Migration("20230201205817_localInit_Identity")]
+    partial class localInit_Identity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

@@ -22,7 +22,7 @@ namespace WebScrapper_Prototype.Migrations.WebScrapper_Prototype
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("WebScrapper_Prototype.Models.Product", b =>
+            modelBuilder.Entity("WebScrapper_Prototype.Models.ProductModel", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -80,7 +80,7 @@ namespace WebScrapper_Prototype.Migrations.WebScrapper_Prototype
 
                     b.HasKey("ID");
 
-                    b.ToTable("Product");
+                    b.ToTable("Products");
                 });
 #pragma warning restore 612, 618
         }
