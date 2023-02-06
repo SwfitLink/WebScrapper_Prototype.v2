@@ -144,7 +144,7 @@ namespace WebScrapper_Prototype.Controllers
                     ViewBag.setting = "visible";
                     break;
                 case "saving":
-                    //products = products.Where(s => s.ProductSalePrice < s.ProductBasePrice / 2);
+                    products = products.Where(s => s.ProductSalePrice < s.ProductBasePrice / 2);
                     break;
                 case "price_desc":
                     products = products.OrderByDescending(s => s.ProductSalePrice);
@@ -175,7 +175,7 @@ namespace WebScrapper_Prototype.Controllers
                 _context.AttachRange(products);
                 _context.RemoveRange(products);
                 _context.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
             return View(products);
         }

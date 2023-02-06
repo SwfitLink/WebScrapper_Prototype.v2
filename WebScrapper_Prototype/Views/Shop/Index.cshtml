@@ -136,9 +136,7 @@
 							<div class="top-search"><a href="#0"><i class="ti-search"></i></a></div>
 							<!-- Search Form -->
 							<div class="search-top">
-								<form class="search-form">
-									@Html.TextBox("SearchString", ViewBag.CurrentFilter as string,
-									new {Class="form-control me-2", PlaceHolder="Search Products Here..."})
+								<form class="search-form">				
 									<button value="search" type="submit"><i class="ti-search"></i></button>
 								</form>
 							</div>
@@ -147,22 +145,24 @@
 						<!--/ End Search Form -->
 						<div class="mobile-nav"></div>
 					</div>
-					<div class="col-lg-8 col-md-7 col-12">
-						<div class="search-bar-top">
-							<div class="search-bar">
-								<select>
-									<option selected="selected">All Category</option>
-									<option>watch</option>
-									<option>mobile</option>
-									<option>kid’s item</option>
-								</select>
-								<form>
-									<input name="search" placeholder="Search Products Here....." type="search">
-									<button class="btnn"><i class="ti-search"></i></button>
-								</form>
+						<div class="col-lg-8 col-md-7 col-12">
+							<div class="search-bar-top">
+								<div class="search-bar">
+									<select>
+										<option selected="selected">All Category</option>
+										<option>.</option>
+										<option>..</option>
+										<option>...</option>
+									</select>
+									<form>
+										@Html.TextBox("SearchString",
+									new {Class="form-control me-2", PlaceHolder="Search Products Here..."})
+										<button class="btnn" type="submit"><i class="ti-search"></i></button>
+									</form>
+								</div>
 							</div>
-						</div>
-					</div>					<div class="col-lg-2 col-md-3 col-12">
+						</div>					
+					<div class="col-lg-2 col-md-3 col-12">
 						<div class="right-bar">
 							<!-- Search Form -->
 							<div class="sinlge-bar">
@@ -172,37 +172,61 @@
 								<a href="#" class="single-icon"><i class="fa fa-user-circle-o" aria-hidden="true"></i></a>
 							</div>
 							<div class="sinlge-bar shopping">
-								<a href="#" class="single-icon"><i class="ti-bag"></i> <span class="total-count">2</span></a>
+								<a href="#" class="single-icon"><i class="ti-bag"></i> <span class="total-count">*</span></a>
 								<!-- Shopping Item -->
-								<div class="shopping-item">
-									<div class="dropdown-cart-header">
-										<span>2 Items</span>
-										<a href="#">View Cart</a>
-									</div>
-									<ul class="shopping-list">
-										<li>
-											<a href="#" class="remove" title="Remove this item"><i class="fa fa-remove"></i></a>
-											<a class="cart-img" href="#"><img src="https://via.placeholder.com/70x70" alt="#"></a>
-											<h4><a href="#">Woman Ring</a></h4>
-											<p class="quantity">1x - <span class="amount">R1000</span></p>
-										</li>
-										<li>
-											<a href="#" class="remove" title="Remove this item"><i class="fa fa-remove"></i></a>
-											<a class="cart-img" href="#"><img src="https://via.placeholder.com/70x70" alt="#"></a>
-											<h4><a href="#">Woman Necklace</a></h4>
-											<p class="quantity">1x - <span class="amount">$R1000</span></p>
-										</li>
-									</ul>
-									<div class="bottom">
-										<div class="total">
-											<span>Total</span>
-											<span class="total-amount">R2000</span>
-										</div>
-										<a href="checkout.html" class="btn animate">Checkout</a>
-									</div>
+								<div id="shoppingbasket" class="shopping-item">
+									<script type="text/javascript">
+										$(document).ready(function () {
+											$('.single-icon').mouseenter(function () {
+												let basketId = 1;
+												$.ajax({
+													type: 'GET',
+													url: '/Shop/Index',
+													data: { basketId: basketId },
+													success: function (r) {
+														$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
+													},
+													error: function () {
+														$("#productInfo h2").text("Product is no Longer in Stock!");
+													}
+												});
+											});
+										});
+									</script>
+									@if (User.IsInRole("User") || User.IsInRole("Manager"))
+									{
+										@if (ViewBag.BasketLoad == 1)
+										{
+											@foreach (var product in Model)
+											{
+												<div class="dropdown-cart-header">
+													<span>@ViewBag.ProductCount</span>
+													<a href="#">
+														View Cart
+													</a>
+												</div>
+												<ul class="shopping-list">
+													<li>
+														<a href="#" class="remove" title="Remove this item" onclick="loadDeleteCart('@product.ID')"><i class="fa fa-remove"></i></a>
+														<a class="cart-img" href="#"><img src="@product.ImageURL" alt="#"></a>
+														<h4><a href="#">@product.ProductName</a></h4>
+														<p class="quantity">1x - <span class="amount">@product.ProductSalePrice</span></p>
+													</li>
+												</ul>
+												<div class="bottom">
+													<div class="total">
+														<span>Total8</span>
+														<span class="total-amount">@ViewBag.Total</span>
+													</div>
+													<a href="checkout.html" class="btn animate">Checkout</a>
+												</div>
+											}
+										}
+									}
 								</div>
 								<!--/ End Shopping Item -->
 							</div>
+
 						</div>
 					</div>
 				</div>
@@ -214,28 +238,38 @@
 			<div class="cat-nav-head">
 				<div class="row">
 					<div class="col-12">
-						<div class="menu-area">
+						<div id="shopmenu" class="menu-area">
 							<!-- Main Menu -->
 							<nav class="navbar navbar-expand-lg">
 								<div class="navbar-collapse">
 									<div class="nav-inner">
 										<ul class="nav main-menu menu navbar-nav">
-											<li class="active"><a href="#">Home</a></li>
-											<li><a href="#">Product</a></li>
-											<li><a href="#">Service</a></li>
+											<li class="active"><a href="/Shop/Index">Home</a></li>					
 											<li>
 												<a href="#">Shop<i class="ti-angle-down"></i><span class="new">New</span></a>
-												<ul class="dropdown">
-													<li><a href="shop-grid.html">Shop Grid</a></li>
-													<li><a href="cart.html">Cart</a></li>
-													<li><a href="checkout.html">Checkout</a></li>
+												<ul class="dropdown">																														
+													<li><a href="#">View Cart</a></li>
+													<li><a href="#">Checkout</a></li>
+													<li><a href="#">Shipping</a></li>
 												</ul>
 											</li>
-											<li><a href="#">Pages</a></li>
-											<li>
-												<a href="#">Blog<i class="ti-angle-down"></i></a>
+												<li>
+													<a href="#">
+														Pages<i class="ti-angle-down"></i>
+														</a>
 												<ul class="dropdown">
-													<li><a href="blog-single-sidebar.html">Blog Single Sidebar</a></li>
+													<li><a href="#">All Products</a></li>
+													<li><a href="#">Mega Sale</a></li>
+													<li><a href="#">Limited Time Offers</a></li>
+													<li><a href="#">Checkout</a></li>
+												</ul>
+												</li>
+											<li>
+												<a href="#">PC Builder<i class="ti-angle-down"></i></a>
+												<ul class="dropdown">
+													<li><a href="#">Pre-built</a></li>
+														<li><a href="#">Check Compatibility</a></li>
+													<li><a href="#">DIY</a></li>
 												</ul>
 											</li>
 											<li><a href="contact.html">Contact Us</a></li>
@@ -260,7 +294,7 @@
 					<div class="col-12">
 						<div class="bread-inner">
 							<ul class="bread-list">
-								<li><a href="index1.html">Home<i class="ti-arrow-right"></i></a></li>
+								<li><a href="/">Home<i class="ti-arrow-right"></i></a></li>
 								<li class="active"><a href="blog-single.html">Shop Grid</a></li>
 							</ul>
 						</div>
@@ -279,14 +313,54 @@
 								<div class="single-widget category">
 									<h3 class="title">Categories</h3>
 									<ul class="categor-list">
-								<li><a href="#">GPUs</a></li>
-								<li><a href="#">CPUs</a></li>
-								<li><a href="#">RAM</a></li>
-								<li><a href="#">Motherboards</a></li>
-								<li><a href="#">SSDs</a></li>
-								<li><a href="#">Tower Cases</a></li>
-								<li><a href="#">PSUs</a></li>
-								<li><a href="#">Hard Drives</a></li>
+								<li>
+									<a href="#">
+										@Html.ActionLink("GPUs", "Index",
+										"Shop", new {categories = "GPUs"}, null)
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										@Html.ActionLink("CPUs", "Index",
+										"Shop", new {categories = "CPUs"}, null)
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										@Html.ActionLink("Memory", "Index",
+										"Shop", new {categories = "Memory"}, null)
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										@Html.ActionLink("Motherboards", "Index",
+										"Shop", new {categories = "Motherboards"}, null)
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										@Html.ActionLink("SSDs", "Index",
+										"Shop", new {categories = "SSDs"}, null)
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										@Html.ActionLink("Chassis", "Index",
+										"Shop", new {categories = "Chassis"}, null)
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										@Html.ActionLink("PSUs", "Index",
+										"Shop", new {categories = "PSUs"}, null)
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										@Html.ActionLink("Peripherals", "Index",
+										"Shop", new {categories = "Peripherals"}, null)
+									</a>
+								</li>
 									</ul>
 								</div>
 								<!--/ End Single Widget -->
@@ -396,7 +470,7 @@
 									</ul>
 								</div>
 		
-							</script>
+					
 								<!--/ End Shop Top -->
 							</div>
 						</div>
@@ -421,12 +495,15 @@
 										</a>
 										<div class="button-head">
 											<div class="product-action">
-												<a data-toggle="modal" data-target="#exampleModal" title="Quick View" href="#"><i class=" ti-eye"></i><span>Quick Shop</span></a>
+												<a data-toggle="modal" data-target="#Modal" title="Quick View" href="#" onclick="loadQuickShop('@product.ID')" class="filterA">
+																	<i class="ti-eye"></i>
+																	<span>QuickShop</span>
+																</a>
 												<a title="Wishlist" href="#"><i class=" ti-heart "></i><span>Add to Wishlist</span></a>
 												<a title="Compare" href="#"><i class="ti-bar-chart-alt"></i><span>Add to Compare</span></a>
 											</div>
 											<div class="product-action-2">
-												<a title="Add to cart" href="#">Add to cart</a>
+												<a id="addToCart" title="Add to cart" href="#" onclick="loadAddToCart('@product.ID')">Add To Cart</a>
 											</div>
 										</div>
 									</div>
@@ -455,7 +532,6 @@
 				</div>
 			</div>
 		</section>
-
 		<!--/ End Product Style 1  -->	
 		<!-- Start Shop Newsletter  -->
 		<section class="shop-newsletter section">
@@ -480,110 +556,95 @@
 		</section>
 		<!-- End Shop Newsletter -->
 		<!-- Modal -->
-		<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog">
+	<div id="Modal" class="modal fade" tabindex="-1" role="dialog">
 		<div class="modal-dialog" role="document">
-			<div class="modal-content">
+			<div id="productInfo" class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span class="ti-close" aria-hidden="true"></span></button>
 				</div>
-				<div class="modal-body">
-					<div class="row no-gutters">
-						<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
-							<!-- Product Slider -->
-							<div class="product-gallery">
-								<div class="quickview-slider-active">
-									<div class="single-slider">
-										<img src="https://via.placeholder.com/569x528" alt="#">
+				@foreach (var ViewBag in Model)
+				{
+					<div class="modal-body">
+						<div class="row no-gutters">
+							<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+								<!-- Product Slider -->
+								<div class="product-gallery">
+									<div class="quickview-slider-active">
+										<div class="single-slider">
+											<img src="@ViewBag.ImageURL" alt="#">
+										</div>
+										@*					<div class="single-slider">
+									<img src="@ViewBag.ImageURL" alt="#">
 									</div>
 									<div class="single-slider">
-										<img src="https://via.placeholder.com/569x528" alt="#">
+									<img src="@ViewBag.ImageURL" alt="#">
 									</div>
 									<div class="single-slider">
-										<img src="https://via.placeholder.com/569x528" alt="#">
+									<img src="@ViewBag.ImageURL" alt="#">
+									</div>*@
 									</div>
-									<div class="single-slider">
-										<img src="https://via.placeholder.com/569x528" alt="#">
+								</div>
+								<!-- End Product slider -->
+							</div>
+							<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+								<div class="quickview-content">
+									<h2>@ViewBag.ProductName</h2>
+									<div class="quickview-ratting-review">
+										<div class="quickview-ratting-wrap">
+											<div class="quickview-ratting">
+												<i class="yellow fa fa-star"></i>
+												<i class="yellow fa fa-star"></i>
+												<i class="yellow fa fa-star"></i>
+												<i class="yellow fa fa-star"></i>
+												<i class="fa fa-star"></i>
+											</div>
+											<a href="#"> (1 customer review)</a>
+										</div>
+										<div class="quickview-stock">
+											<span><i class="fa fa-check-circle-o">@ViewBag.ProductStock</i></span>
+										</div>
+									</div>
+									<h3>@ViewBag.ProductSalePrice</h3>
+									<div class="quickview-peragraph">
+										<p>@ViewBag.ProductDescription</p>
+									</div>
+									<div class="quantity">
+										<!-- Input Order -->
+										<div class="input-group">
+											<div class="button minus">
+												<button type="button" class="btn btn-primary btn-number" disabled="disabled" data-type="minus" data-field="quant[1]">
+													<i class="ti-minus"></i>
+												</button>
+											</div>
+											<input type="text" name="quant[1]" class="input-number" data-min="1" data-max="1000" value="1">
+											<div class="button plus">
+												<button type="button" class="btn btn-primary btn-number" data-type="plus" data-field="quant[1]">
+													<i class="ti-plus"></i>
+												</button>
+											</div>
+										</div>
+										<!--/ End Input Order -->
+									</div>
+									<div class="add-to-cart">
+										<a id="addToCart" href="#" class="btn">Add to cart</a>
+										<a href="#" class="btn min"><i class="ti-heart"></i></a>
+										<a href="#" class="btn min"><i class="fa fa-compress"></i></a>
+									</div>
+									<div class="default-social">
+										<h4 class="share-now">Share:</h4>
+										<ul>
+											<li><a class="facebook" href="#"><i class="fa fa-facebook"></i></a></li>
+											<li><a class="twitter" href="#"><i class="fa fa-twitter"></i></a></li>
+											<li><a class="youtube" href="#"><i class="fa fa-pinterest-p"></i></a></li>
+											<li><a class="dribbble" href="#"><i class="fa fa-google-plus"></i></a></li>
+										</ul>
 									</div>
 								</div>
 							</div>
-							<!-- End Product slider -->
-						</div>
-						<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
-							<div class="quickview-content">
-								<h2>Peladn Gaming GeForce RTX 3080 Ti 12G</h2>
-								<div class="quickview-ratting-review">
-									<div class="quickview-ratting-wrap">
-										<div class="quickview-ratting">
-											<i class="yellow fa fa-star"></i>
-											<i class="yellow fa fa-star"></i>
-											<i class="yellow fa fa-star"></i>
-											<i class="yellow fa fa-star"></i>
-											<i class="fa fa-star"></i>
-										</div>
-										<a href="#"> (1 customer review)</a>
-									</div>
-									<div class="quickview-stock">
-										<span><i class="fa fa-check-circle-o"></i> in stock</span>
-									</div>
-								</div>
-								<h3>$29.00</h3>
-								<div class="quickview-peragraph">
-									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia iste laborum ad impedit pariatur esse optio tempora sint ullam autem deleniti nam in quos qui nemo ipsum numquam.</p>
-								</div>
-								<div class="size">
-									<div class="row">
-										<div class="col-lg-6 col-12">
-											<h5 class="title">Size</h5>
-											<select>
-												<option selected="selected">12GB</option>
-												<option>10GB</option>
-												<option>8GB</option>
-											</select>
-										</div>
-										<div class="col-lg-6 col-12">
-											<h5 class="title">Color</h5>
-											<select>
-												<option selected="selected">Triple Fans</option>
-												<option>Double Fans</option>
-											</select>
-										</div>
-									</div>
-								</div>
-								<div class="quantity">
-									<!-- Input Order -->
-									<div class="input-group">
-										<div class="button minus">
-											<button type="button" class="btn btn-primary btn-number" disabled="disabled" data-type="minus" data-field="quant[1]">
-												<i class="ti-minus"></i>
-											</button>
-										</div>
-										<input type="text" name="quant[1]" class="input-number" data-min="1" data-max="1000" value="1">
-										<div class="button plus">
-											<button type="button" class="btn btn-primary btn-number" data-type="plus" data-field="quant[1]">
-												<i class="ti-plus"></i>
-											</button>
-										</div>
-									</div>
-									<!--/ End Input Order -->
-								</div>
-								<div class="add-to-cart">
-									<a href="#" class="btn">Add to cart</a>
-									<a href="#" class="btn min"><i class="ti-heart"></i></a>
-									<a href="#" class="btn min"><i class="fa fa-compress"></i></a>
-								</div>
-								<div class="default-social">
-									<h4 class="share-now">Share:</h4>
-									<ul>
-										<li><a class="facebook" href="#"><i class="fa fa-facebook"></i></a></li>
-										<li><a class="twitter" href="#"><i class="fa fa-twitter"></i></a></li>
-										<li><a class="youtube" href="#"><i class="fa fa-pinterest-p"></i></a></li>
-										<li><a class="dribbble" href="#"><i class="fa fa-google-plus"></i></a></li>
-									</ul>
-								</div>
-							</div>
+
 						</div>
 					</div>
-				</div>
+				}
 			</div>
 		</div>
 	</div>
@@ -680,7 +741,9 @@
 		</div>
 	</footer>
 	<!-- /End Footer Area -->
-
+	@section Scripts {
+		<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+	}
 
 	<!-- Jquery -->
 	<script src="js/jquery.min.js"></script>
@@ -718,5 +781,67 @@
 	<script src="js/easing.js"></script>
 	<!-- Active JS -->
 	<script src="js/active.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script>
+		$("#addToCart").click(function (event) {
+			event.preventDefault(); // prevent the default link behavior		
+			var quantity = 1; // replace this with the desired quantity
+			function loadQuickShop(itemId) {
+			$.ajax({
+				type: "POST",
+				url: "/Shop/AddToCart",
+				data: { itemId: itemId, quantity: quantity },
+				success: function () {
+					alert("Item has been added to cart!");
+				}
+			});
+			}
+		});
+
+
+	</script>
+	<script>
+		function loadQuickShop(id) {
+			$.ajax({
+				type: 'POST',
+				url: '/Shop/Index',
+				data: { id: id },
+				success: function (r) {
+					$("#productInfo").html($(r).find("#productInfo").html());
+				},
+				error: function () {
+					$("#productInfo h2").text("Product is no Longer in Stock!");
+				}
+			});
+		}
+	</script>
+	<script type="text/javascript">
+		function loadAddToCart(productId) {
+			$.ajax({
+				type: 'GET',
+				url: '/Shop/Index',
+				data: { productId: productId },
+				success: function (r) {
+					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
+				},
+				error: function () {
+					$("#productInfo h2").text("Product is no Longer in Stock!");
+				}
+			});
+		}
+		function loadDeleteCart(productId) {
+			$.ajax({
+				type: 'POST',
+				url: '/Shop/DeleteConfirmed',
+				data: { BasketRemovePID: productId },
+				success: function (r) {
+					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
+				},
+				error: function () {
+					$("#productInfo h2").text("Product is no Longer in Stock!");
+				}
+			});
+		}
+	</script>
 </body>
 </html>

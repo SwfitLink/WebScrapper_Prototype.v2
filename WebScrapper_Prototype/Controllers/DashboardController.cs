@@ -10,15 +10,15 @@ namespace WebScrapper_Prototype.Controllers
         }
         public IActionResult ManualProductAdd()
         {
-            return (RedirectToAction("Create", "Products", new { view = "Visible" }));
+            return (RedirectToAction("Create", "Product", new { view = "Visible" }));
         }
         public IActionResult BulkInsertProduct()
         {
-            return (RedirectToAction("AutoProductCreateTest", "Products", new { view = "Hidden" }));
+            return (RedirectToAction("AutoProductCreateTest", "Product", new { view = "Hidden" }));
         }
         public IActionResult AllProducts()
         {
-            return (RedirectToAction("Index", "Products", new { view = "All" }));
+            return (RedirectToAction("Index", "Product", new { view = "All" }));
         }
     }
 }

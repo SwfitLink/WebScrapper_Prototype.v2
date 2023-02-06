@@ -128,7 +128,7 @@ namespace WebScrapper_Prototype.Areas.Identity.Pages.Account
                 user.LastName = Input.LastName;
                 user.PhoneNumber = Input.Cellphone;
                 user.CountryCode = Input.CountryCode;
-                user.UserName = Input.FirstName;
+                user.UserName = Input.FirstName;         
 
 
                 //await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);

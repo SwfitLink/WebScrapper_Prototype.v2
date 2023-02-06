@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebScrapper_Prototype.Data;
 
@@ -11,9 +12,10 @@ using WebScrapper_Prototype.Data;
 namespace WebScrapper_Prototype.Migrations.WebScrapper_Prototype
 {
     [DbContext(typeof(WebScrapper_PrototypeContext))]
-    partial class WebScrapper_PrototypeContextModelSnapshot : ModelSnapshot
+    [Migration("20230203184832_ShoppingCart")]
+    partial class ShoppingCart
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -92,10 +94,10 @@ namespace WebScrapper_Prototype.Migrations.WebScrapper_Prototype
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("BasketId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ProductId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.HasKey("Id");

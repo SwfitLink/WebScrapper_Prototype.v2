@@ -21,14 +21,18 @@
 <body>
     <partial name="_AdminPartial" />
     <h1 style="margin-top:100px;">@ViewBag.setting Product List</h1>
-    @using (Html.BeginForm("Index", "Products", FormMethod.Get))
+    @using (Html.BeginForm("Index", "Product", FormMethod.Get))
     {
         <div class="mb-3">
             <div class="form-group">
                 Delete Data Batch<br>
                 Enter BatchNumber Here:@Html.TextBox("dataBatch")
+                <button type="submit" style="background:transparent; border:none;">
+                    <img src="/backbutton.png" height="20" width="20">
+                </button>
             </div>
         </div>
+    }
         <nav class="navbar navbar-expand-lg navbar-light mdb-color lighten-3" style="background-color:lightgreen!important">
             <span class="navbar-brand">
                 <strong>
@@ -119,13 +123,15 @@
                 </ul>
             </div>
         </nav>
+        @using (Html.BeginForm("Index", "Product", FormMethod.Get))
+        {
         <div style="margin:15px; padding:10px;">
             @Html.TextBox("SearchString")
             <button type="submit" style="background:transparent; border:none;">
                 <img src="/backbutton.png" height="20" width="20">
             </button>
         </div>
-    }
+        }
     <table class="product-table" title="Product Table">
         <thead>
             <tr>

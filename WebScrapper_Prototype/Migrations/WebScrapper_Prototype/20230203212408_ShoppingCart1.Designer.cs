@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebScrapper_Prototype.Data;
 
@@ -11,9 +12,10 @@ using WebScrapper_Prototype.Data;
 namespace WebScrapper_Prototype.Migrations.WebScrapper_Prototype
 {
     [DbContext(typeof(WebScrapper_PrototypeContext))]
-    partial class WebScrapper_PrototypeContextModelSnapshot : ModelSnapshot
+    [Migration("20230203212408_ShoppingCart1")]
+    partial class ShoppingCart1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,6 +64,9 @@ namespace WebScrapper_Prototype.Migrations.WebScrapper_Prototype
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("ShoppingBasketId")
+                        .HasColumnType("int");
+
                     b.Property<string>("VendorProductURL")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -79,6 +84,8 @@ namespace WebScrapper_Prototype.Migrations.WebScrapper_Prototype
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("ShoppingBasketId");
 
                     b.ToTable("Products");
                 });
@@ -101,6 +108,18 @@ namespace WebScrapper_Prototype.Migrations.WebScrapper_Prototype
                     b.HasKey("Id");
 
                     b.ToTable("ShopingBasket");
+                });
+
+            modelBuilder.Entity("WebScrapper_Prototype.Models.ProductModel", b =>
+                {
+                    b.HasOne("WebScrapper_Prototype.Models.ShoppingBasket", null)
+                        .WithMany("Products")
+                        .HasForeignKey("ShoppingBasketId");
+                });
+
+            modelBuilder.Entity("WebScrapper_Prototype.Models.ShoppingBasket", b =>
+                {
+                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }
