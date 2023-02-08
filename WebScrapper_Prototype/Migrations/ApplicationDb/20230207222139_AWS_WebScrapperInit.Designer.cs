@@ -9,11 +9,11 @@ using WebScrapper_Prototype.Areas.Identity.Data;
 
 #nullable disable
 
-namespace WebScrapper_Prototype.Migrations
+namespace WebScrapper_Prototype.Migrations.ApplicationDb
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230201205817_localInit_Identity")]
-    partial class localInit_Identity
+    [Migration("20230207222139_AWS_WebScrapperInit")]
+    partial class AWS_WebScrapperInit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

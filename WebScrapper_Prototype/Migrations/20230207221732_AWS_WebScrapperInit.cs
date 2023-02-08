@@ -2,9 +2,9 @@
 
 #nullable disable
 
-namespace WebScrapper_Prototype.Migrations.WebScrapper_Prototype
+namespace WebScrapper_Prototype.Migrations
 {
-    public partial class ProductModelInit : Migration
+    public partial class AWS_WebScrapperInit : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -31,12 +31,29 @@ namespace WebScrapper_Prototype.Migrations.WebScrapper_Prototype
                 {
                     table.PrimaryKey("PK_Products", x => x.ID);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "ShopingBasket",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BasketId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShopingBasket", x => x.Id);
+                });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
                 name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "ShopingBasket");
         }
     }
 }

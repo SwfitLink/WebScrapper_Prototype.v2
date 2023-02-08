@@ -65,20 +65,47 @@ Version:1.0
 		
 		/*=======================
 		  Slider Range JS
-		=========================*/ 
-		$( function() {
-			$( "#slider-range" ).slider({
-			  range: true,
-			  min: 0,
-			  max: 500,
-			  values: [ 120, 250 ],
-			  slide: function( event, ui ) {
-				$( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
-			  }
-			});
-			$( "#amount" ).val( "$" + $( "#slider-range" ).slider( "values", 0 ) +
-			  " - $" + $( "#slider-range" ).slider( "values", 1 ) );
-		} );
+		=========================*/
+		//$( function() {
+		//	$( "#slider-range" ).slider({
+		//	  range: true,
+		//	  min: 0,
+		//	  max: 35000,
+		//	  values: [ 800, 1500 ],
+		//	  slide: function( event, ui ) {
+		//		$( "#amount" ).val( "R" + ui.values[ 0 ] + " - R" + ui.values[ 1 ] );
+		//	  }
+		//	});
+		//	$( "#amount" ).val( "R" + $( "#slider-range" ).slider( "values", 0 ) +
+		//	  " - R" + $( "#slider-range" ).slider( "values", 1 ) );
+		//} );
+		 $(function () {
+			 $("#slider-range").slider({
+				 range: true,
+				 min: 0,
+				 max: 35000,
+				 values: [800, 1500],
+				 slide: function (event, ui) {
+					 $("#amount").val("R" + ui.values[0] + " - R" + ui.values[1]);
+					 getProductsInRange(ui.values[0], ui.values[1]);
+				 }
+			 });
+
+			 $("#amount").val("R" + $("#slider-range").slider("values", 0) +
+				 " - R" + $("#slider-range").slider("values", 1));
+
+			 function getProductsInRange(minValue, maxValue) {
+				 $.ajax({
+					 type: "GET",
+					 url: "/Shop/GetProductsInRange",
+					 data: { minValue: minValue, maxValue: maxValue },
+					 success: function (result) {
+						 // Do something with the response here
+					 }
+				 });
+			 }
+		 });
+
 		
 		/*=======================
 		  Home Slider JS
@@ -297,19 +324,19 @@ Version:1.0
 	/*=====================================
 	 Others JS
 	======================================*/ 	
-	$( function() {
-		$( "#slider-range" ).slider({
-			range: true,
-			min: 0,
-			max: 500,
-			values: [ 0, 500 ],
-			slide: function( event, ui ) {
-				$( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
-			}
-		});
-		$( "#amount" ).val( "$" + $( "#slider-range" ).slider( "values", 0 ) +
-		  " - $" + $( "#slider-range" ).slider( "values", 1 ) );
-	} );
+	//$( function() {
+	//	$( "#slider-range" ).slider({
+	//		range: true,
+	//		min: 0,
+	//		max: 500,
+	//		values: [ 0, 500 ],
+	//		slide: function( event, ui ) {
+	//			$( "#amount" ).val( "R" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+	//		}
+	//	});
+	//	$( "#amount" ).val( "$" + $( "#slider-range" ).slider( "values", 0 ) +
+	//	  " - $" + $( "#slider-range" ).slider( "values", 1 ) );
+	//} );
 	
 	/*=====================================
 	  Preloader JS

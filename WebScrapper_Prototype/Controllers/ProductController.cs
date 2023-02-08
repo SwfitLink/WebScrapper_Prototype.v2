@@ -34,9 +34,9 @@ namespace WebScrapper_Prototype.Controllers
             string uniqueCSVFileName = ProcessUploadedCSVFile(addCSV);
             var location = "wwwroot\\Uploads\\" + uniqueCSVFileName;
             var rowData = _productService.ReadCSVFile(location);
-            foreach (ProductModel item in rowData)
+            foreach (Product item in rowData)
             {
-                ProductModel product = new ProductModel();
+                Product product = new Product();
                 product.ProductName = item.ProductName;
                 product.ProductStock = item.ProductStock;
                 product.ProductDescription = item.ProductDescription;
@@ -182,11 +182,11 @@ namespace WebScrapper_Prototype.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            ProductModel product = new ProductModel();
+            Product product = new Product();
             return View(product);
         }
         [HttpPost]
-        public ActionResult Create(ProductModel product)
+        public ActionResult Create(Product product)
         {
             string uniqueFileName = ProcessUploadedImageFile(product);
             product.ImageURL = uniqueFileName;
@@ -227,7 +227,7 @@ namespace WebScrapper_Prototype.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, ProductModel product)
+        public async Task<IActionResult> Edit(int id, Product product)
         {
             if (id != product.ID)
             {
@@ -279,7 +279,7 @@ namespace WebScrapper_Prototype.Controllers
             return _context.Products.Any(e => e.ID == id);
         }
 
-        private string ProcessUploadedImageFile(ProductModel model)
+        private string ProcessUploadedImageFile(Product model)
         {
             string uniqueFileName = "ERROR";
             string path = Path.Combine(_webHostEnvironment.WebRootPath, "Uploads");

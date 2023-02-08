@@ -54,7 +54,7 @@ namespace WebScrapper_Prototype.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,ProductName,ProductStock,ProductDescription,ProductStatus,ProductCategory,ProductBasePrice,ProductSalePrice,ImageURL,VendorSite,VendorProductURL,Visible,dataBatch")] ProductModel productModel)
+        public async Task<IActionResult> Create([Bind("ID,ProductName,ProductStock,ProductDescription,ProductStatus,ProductCategory,ProductBasePrice,ProductSalePrice,ImageURL,VendorSite,VendorProductURL,Visible,dataBatch")] Product productModel)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +86,7 @@ namespace WebScrapper_Prototype.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,ProductName,ProductStock,ProductDescription,ProductStatus,ProductCategory,ProductBasePrice,ProductSalePrice,ImageURL,VendorSite,VendorProductURL,Visible,dataBatch")] ProductModel productModel)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,ProductName,ProductStock,ProductDescription,ProductStatus,ProductCategory,ProductBasePrice,ProductSalePrice,ImageURL,VendorSite,VendorProductURL,Visible,dataBatch")] Product productModel)
         {
             if (id != productModel.ID)
             {

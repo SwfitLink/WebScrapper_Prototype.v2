@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebScrapper_Prototype.Models
 {
-	public class ShoppingBasket
+	public class Basket
 	{
 		[Key]
 		public int Id { get; set; }

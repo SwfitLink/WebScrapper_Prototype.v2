@@ -5,7 +5,7 @@
 @using WebScrapper_Prototype.Areas.Identity.Data;
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
-@model X.PagedList.IPagedList<WebScrapper_Prototype.Models.ProductModel>
+@model X.PagedList.IPagedList<WebScrapper_Prototype.Models.Product>
 @{
 	ViewData["Title"] = "Welcome";
 	ViewBag.Title = "Home";
@@ -41,6 +41,7 @@
 	<link rel="stylesheet" href="css/reset.css">
 	<link rel="stylesheet" href="css/style.css">
 	<link rel="stylesheet" href="css/responsive.css">
+	<link rel="stylesheet" href="css/site.css">
 	<link href="~/Content/PagedList.css" type="text/css" rel="stylesheet">
 </head>
 <body class="js">
@@ -136,95 +137,86 @@
 						<div class="search-bar-top">
 							<div class="search-bar">
 								<select>
-									<option selected="selected">All Category</option>
-									<option>
-										@Html.ActionLink("Laptops", "Index",
-										new { findProduct = ViewBag.LaptopParm, currentFilter=ViewBag.CurrentFilter })
-									</option>
-									<option>
-										@Html.ActionLink("Pre-Built Desktops", "Index",
-										new { findProduct = ViewBag.DesktopParm, currentFilter=ViewBag.CurrentFilter })
-									</option>
-									<option>
-										<li class="nav-item">
-											@Html.ActionLink("Hardware", "Index",
-											new { findProduct = ViewBag.HardwareParm, currentFilter=ViewBag.CurrentFilter })
-									</option>
+									<option selected="selected">All Categories</option>
 								</select>
 								<form>
-									<input name="search" placeholder="Search Products Here....." type="search">
-									<button class="btnn"><i class="ti-search"></i></button>
+									@Html.TextBox("SearchString", ViewBag.CurrentFilter as string,
+									new {Class="form-control me-2", PlaceHolder="Search Products Here..."})
+										<button class="btnn" type="submit"><i class="ti-search"></i></button>
 								</form>
 							</div>
 						</div>
 					</div>
-					<div class="col-lg-2 col-md-3 col-12">
-						<div class="right-bar">
-							<!-- Search Form -->
-							<div class="sinlge-bar">
-								<a href="#" class="single-icon"><i class="fa fa-heart-o" aria-hidden="true"></i></a>
-							</div>
-							<div class="sinlge-bar">
-								<a href="#" class="single-icon"><i class="fa fa-user-circle-o" aria-hidden="true"></i></a>
-							</div>
-							<div class="sinlge-bar shopping">
-								<a href="#" onclick="loadCart()" class="single-icon"><i class="ti-bag"></i> <span class="total-count">*</span></a>
-								<!-- Shopping Item -->
-								<div id="shoppingbasket" class="shopping-item">
-									<script type="text/javascript">
-										$(document).ready(function () {
-											$('.single-icon').mouseenter(function () {
-												let basketId = 1;
-												$.ajax({
-													type: 'GET',
-													url: '/Home/Index',
-													data: { basketId: basketId },
-													success: function (r) {
-														$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
-													},
-													error: function () {
-														$("#productInfo h2").text("Product is no Longer in Stock!");
-													}
+					@if (User.IsInRole("User"))
+					{
+						<div class="col-lg-2 col-md-3 col-12">
+							<div class="right-bar">
+								<!-- Search Form -->
+								<div class="sinlge-bar">
+									<a href="#" class="single-icon"><i class="fa fa-heart-o" aria-hidden="true"></i></a>
+								</div>
+								<div class="sinlge-bar">
+									<a href="#" class="single-icon"><i class="fa fa-user-circle-o" aria-hidden="true"></i></a>
+								</div>
+								<div class="sinlge-bar shopping">
+									<a href="#" onclick="loadCart()" class="single-icon"><i class="ti-bag"></i> <span class="total-count">*</span></a>
+									<!-- Shopping Item -->
+									<div id="shoppingbasket" class="shopping-item">
+										<script type="text/javascript">
+											$(document).ready(function () {
+												$('.single-icon').mouseenter(function () {
+													let basketId = 1;
+													$.ajax({
+														type: 'GET',
+														url: '/Home/Index',
+														data: { basketId: basketId },
+														success: function (r) {
+															$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
+														},
+														error: function () {
+															$("#productInfo h2").text("Product is no Longer in Stock!");
+														}
+													});
 												});
 											});
-										});
-									</script>
-									@if(User.IsInRole("User") || User.IsInRole("Manager"))
-									{
-										@if(ViewBag.BasketLoad == 1)
+										</script>
+										@if (User.IsInRole("User") || User.IsInRole("Manager"))
 										{
-											@foreach (var product in Model)
+											@if (ViewBag.BasketLoad == 1)
 											{
-												<div class="dropdown-cart-header">
-													<span>@ViewBag.ProductCount</span>
-													<a href="#">													
-														View Cart
-													</a>
-												</div>
-												<ul class="shopping-list">
-													<li>
-														<a href="#" class="remove" title="Remove this item" onclick="loadDeleteCart('@product.ID')"><i class="fa fa-remove"></i></a>
-														<a class="cart-img" href="#"><img src="@product.ImageURL" alt="#"></a>
-														<h4><a href="#">@product.ProductName</a></h4>
-														<p class="quantity">1x - <span class="amount">@product.ProductSalePrice</span></p>
-													</li>
-												</ul>
-												<div class="bottom">
-													<div class="total">
-														<span>Total8</span>
-														<span class="total-amount">@ViewBag.Total</span>
+												@foreach (var product in Model)
+												{
+													<div class="dropdown-cart-header">
+														<span>@ViewBag.ProductCount</span>
+														<a href="#">
+															View Cart
+														</a>
 													</div>
-													<a href="checkout.html" class="btn animate">Checkout</a>
-												</div>
+													<ul class="shopping-list">
+														<li>
+															<a href="#" class="remove" title="Remove this item" onclick="loadDeleteCart('@product.ID')"><i class="fa fa-remove"></i></a>
+															<a class="cart-img" href="#"><img src="@product.ImageURL" alt="#"></a>
+															<h4><a href="#">@product.ProductName</a></h4>
+															<p class="quantity">1x - <span class="amount">@product.ProductSalePrice</span></p>
+														</li>
+													</ul>
+													<div class="bottom">
+														<div class="total">
+															<span>Total8</span>
+															<span class="total-amount">@ViewBag.Total</span>
+														</div>
+														<a href="checkout.html" class="btn animate">Checkout</a>
+													</div>
+												}
 											}
 										}
-									}
+									</div>
+									<!--/ End Shopping Item -->
 								</div>
-								<!--/ End Shopping Item -->
-							</div>
 
+							</div>
 						</div>
-					</div>					
+					}
 				</div>
 			</div>
 		</div>
@@ -241,16 +233,14 @@
 										<a href="#">Laptops <i class="fa fa-angle-right" aria-hidden="true"></i></a>
 										<ul class="sub-category">
 											<li>
-												<a href="#">										
-													@Html.ActionLink("Dell", "Index",
-													"Shop", new {categories = "Notebooks", brand = "DELL"}, null)										
-											</a>
+											
+													@Html.ActionLink("Dell", "Index", "Shop", new { brand = "Dell", categories = "Notebooks" })
+											
 										</li>
 											<li>
-												<a href="#">
-													@Html.ActionLink("ASUS", "Index",
-													"Shop", new {categories = "Notebooks", brand = "ASUS"}, null)
-												</a>
+											
+													@Html.ActionLink("ASUS", "Index", "Shop", new { brand = "ASUS", categories = "Notebooks" })
+																	
 											</li>
 										</ul>
 									</li>
@@ -293,52 +283,50 @@
 										</ul>
 									</li>
 									<li>
-										<a href="#">
+								
 											@Html.ActionLink("GPUs", "Index",
 											"Shop", new {categories = "GPUs"}, null)
-										</a>
+							
+									</li>
+									<li>								
+										@Html.ActionLink("CPUs", "Index",
+											"Shop", new {categories = "CPUs"}, null)							
 									</li>
 									<li>
-										<a href="#">
-											@Html.ActionLink("CPUs", "Index",
-											"Shop", new {categories = "CPUs"}, null)
-										</a>
-									</li>
-									<li>
-										<a href="#">
+								
 											@Html.ActionLink("Memory", "Index",
 											"Shop", new {categories = "Memory"}, null)
-										</a>
+									
 									</li>
 									<li>
-										<a href="#">
+									
 											@Html.ActionLink("Motherboards", "Index",
 											"Shop", new {categories = "Motherboards"}, null)
-										</a>
+									
 									</li>
 									<li>
-										<a href="#">
+									
 											@Html.ActionLink("SSDs", "Index",
 											"Shop", new {categories = "SSDs"}, null)
-										</a>
+									
 									</li>
 									<li>
-										<a href="#">
+								
 											@Html.ActionLink("Chassis", "Index",
 											"Shop", new {categories = "Chassis"}, null)
-										</a>
+							
 									</li>
 									<li>
-										<a href="#">
+							
 											@Html.ActionLink("PSUs", "Index",
 											"Shop", new {categories = "PSUs"}, null)
-										</a>
+								
 									</li>
 									<li>
-										<a href="#">
+							
 											@Html.ActionLink("Peripherals", "Index",
 											"Shop", new {categories = "Peripherals"}, null)
-										</a>
+								
 									</li>
 								</ul>
 							</div>
@@ -351,25 +339,24 @@
 										<div class="nav-inner">
 											<ul class="nav main-menu menu navbar-nav">
 												<li class="active"><a href="/">Home</a></li>
-												<li><a href="/Shop">Shop</a></li>
-												<li><a href="#">Mega Sale</a></li>
-												<li><a href="#">PC Builder</a></li>
+												<li><a href="#">Mega Sale</a></li>										
 												<li>
 													<a href="#">Shop<i class="ti-angle-down"></i><span class="new">New</span></a>
 													<ul class="dropdown">
-														<li><a href="shop-grid.html">Nvidia</a></li>
-														<li><a href="cart.html">AMD</a></li>
-														<li><a href="checkout.html">Intel</a></li>
+														<li><a href="/Shop">Shop</a></li>																												
+														<li><a href="#">Cart</a></li>
+														<li><a href="#">Wish-list</a></li>
 													</ul>
 												</li>
+												<li><a href="#">PC Builder</a></li>
 												<li><a href="#">Tutorials</a></li>
 												<li>
 													<a href="#">Blog<i class="ti-angle-down"></i></a>
 													<ul class="dropdown">
-														<li><a href="blog-single-sidebar.html">Trending</a></li>
+														<li><a href="#">Trending</a></li>
 													</ul>
 												</li>
-												<li><a href="contact.html">Contact Us</a></li>
+												<li><a href="#">Contact Us</a></li>
 											</ul>
 										</div>
 									</div>
@@ -457,11 +444,14 @@
 	<!--/ End Small Banner -->
 	<!-- Start Product Area -->
 	<div id="products" class="product-area section">
+		<div id="progressBarContainer">
+			<div id="progressBar"></div>
+		</div>
 		<div class="container">
 			<div class="row">
 				<div class="col-12">
 					<div class="section-title">
-						<h2>Products</h2>
+						<h2>Top Products</h2>
 					</div>
 				</div>
 			</div>
@@ -636,97 +626,7 @@
 	</section>
 	<!-- End Shop Newsletter -->
 	<!-- Modal -->
-	<div id="ModalCheckout" class="modal fade" tabindex="-1" role="dialog">
-		<div class="modal-dialog" role="document">
-			<div id="checkoutInfo" class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span class="ti-close" aria-hidden="true"></span></button>
-				</div>
-				@foreach (var ViewBag in Model)
-				{
-					<div class="modal-body">
-						<div class="row no-gutters">
-							<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
-								<!-- Product Slider -->
-								<div class="product-gallery">
-									<div class="quickview-slider-active">
-										<div class="single-slider">
-											<img src="@ViewBag.ImageURL" alt="#">
-										</div>
-					@*					<div class="single-slider">
-											<img src="@ViewBag.ImageURL" alt="#">
-										</div>
-										<div class="single-slider">
-											<img src="@ViewBag.ImageURL" alt="#">
-										</div>
-										<div class="single-slider">
-											<img src="@ViewBag.ImageURL" alt="#">
-										</div>*@
-									</div>
-								</div>
-								<!-- End Product slider -->
-							</div>
-							<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
-								<div class="quickview-content">
-									<h2>@ViewBag.ProductName</h2>
-									<div class="quickview-ratting-review">
-										<div class="quickview-ratting-wrap">
-											<div class="quickview-ratting">
-												<i class="yellow fa fa-star"></i>
-												<i class="yellow fa fa-star"></i>
-												<i class="yellow fa fa-star"></i>
-												<i class="yellow fa fa-star"></i>
-												<i class="fa fa-star"></i>
-											</div>
-											<a href="#"> (1 customer review)</a>
-										</div>
-										<div class="quickview-stock">
-											<span><i class="fa fa-check-circle-o">@ViewBag.ProductStock</i></span>
-										</div>
-									</div>
-									<h3>@ViewBag.ProductSalePrice</h3>
-									<div class="quickview-peragraph">
-										<p>@ViewBag.ProductDescription</p>
-									</div>
-									<div class="quantity">
-										<!-- Input Order -->
-										<div class="input-group">
-											<div class="button minus">
-												<button type="button" class="btn btn-primary btn-number" disabled="disabled" data-type="minus" data-field="quant[1]">
-													<i class="ti-minus"></i>
-												</button>
-											</div>
-											<input type="text" name="quant[1]" class="input-number" data-min="1" data-max="1000" value="1">
-											<div class="button plus">
-												<button type="button" class="btn btn-primary btn-number" data-type="plus" data-field="quant[1]">
-													<i class="ti-plus"></i>
-												</button>
-											</div>
-										</div>
-										<!--/ End Input Order -->
-									</div>
-									<div class="add-to-cart">																										
-										<a href="#" class="btn min"><i class="ti-heart"></i></a>
-										<a href="#" class="btn min"><i class="fa fa-compress"></i></a>
-									</div>
-									<div class="default-social">
-										<h4 class="share-now">Share:</h4>
-										<ul>
-											<li><a class="facebook" href="#"><i class="fa fa-facebook"></i></a></li>
-											<li><a class="twitter" href="#"><i class="fa fa-twitter"></i></a></li>
-											<li><a class="youtube" href="#"><i class="fa fa-pinterest-p"></i></a></li>
-											<li><a class="dribbble" href="#"><i class="fa fa-google-plus"></i></a></li>
-										</ul>
-									</div>
-								</div>
-							</div>
 
-						</div>
-					</div>
-				}
-			</div>
-		</div>
-	</div>
 	<!-- Modal end -->
 	<!-- Modal -->
 	<div id="Modal" class="modal fade" tabindex="-1" role="dialog">
@@ -951,6 +851,21 @@
 	<!-- Active JS -->
 	<script src="js/active.js"></script>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script>
+		function loadQuickShop(id) {
+			$.ajax({
+				type: 'POST',
+				url: '/Home/Index',
+				data: { id: id },
+				success: function (r) {
+					$("#productInfo").html($(r).find("#productInfo").html());
+				},
+				error: function () {
+					$("#productInfo h2").text("Product is no Longer in Stock!");
+				}
+			});
+		}
+	</script>
 	<script type="text/javascript">
 		$(document).on("click", ".filter-link", function (e) {
 			e.preventDefault();
@@ -969,20 +884,23 @@
 			});
 		});
 	</script>
-	<script type="text/javascript">
-		function loadQuickShop(id) {
+		<script type="text/javascript">
+		$(document).on("click", "#Call", function (e) {
+			e.preventDefault();
+			var brand = $(this).data("brand");
 			$.ajax({
-				type: 'POST',
-				url: '/Home/Index',
-				data: { id: id},
-				success: function (r) {
-					$("#productInfo").html($(r).find("#productInfo").html());
+				type: "GET",
+				url: "/Shop/Index",
+				data: { brand: brand },
+				success: function (result) {
+					window.location = "/Shop"
 				},
-				error: function () {
-					$("#productInfo h2").text("Product is no Longer in Stock!");
+				error: function (xhr, status, error) {
+					console.error(error);
 				}
+
 			});
-		}
+		});
 	</script>
 	<script type="text/javascript">							
 		function loadAddToCart(productId) {
@@ -1025,6 +943,36 @@
 				}
 			});
 		}
+	</script>
+	<script>
+		const progressBarContainer = document.querySelector("#progressBarContainer");
+		const progressBar = document.querySelector("#progressBar");
+		let totalPageHeight = document.body.scrollHeight - window.innerHeight;
+		let debounceResize;
+
+		window.addEventListener("scroll", () => {
+			let newProgressHeight = window.pageYOffset / totalPageHeight;
+			progressBar.style.transform = `scale(1,${newProgressHeight})`;
+			progressBar.style.opacity = `${newProgressHeight}`;
+		}, {
+			capture: true,
+			passive: true
+		});
+
+		window.addEventListener("resize", () => {
+			clearTimeout(debounceResize);
+			debounceResize = setTimeout(() => {
+				totalPageHeight = document.body.scrollHeight - window.innerHeight;
+			}, 250);
+		});
+
+		progressBarContainer.addEventListener("click", (e) => {
+			let newPageScroll = e.clientY / progressBarContainer.offsetHeight * totalPageHeight;
+			window.scrollTo({
+				top: newPageScroll,
+				behavior: 'smooth'
+			});
+		});
 	</script>
 </body>
 </html>

@@ -1,24 +1,15 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.Diagnostics;
-using System.Drawing.Printing;
-using WebMatrix.WebData;
 using WebScrapper_Prototype.Areas.Identity.Data;
 using WebScrapper_Prototype.Data;
-using WebScrapper_Prototype.Migrations.WebScrapper_Prototype;
 using WebScrapper_Prototype.Models;
 using X.PagedList;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
-using System.Linq;
-using Microsoft.VisualStudio.Web.CodeGeneration.Utils;
-using NuGet.ContentModel;
 
 namespace WebScrapper_Prototype.Controllers
 {
@@ -39,9 +30,8 @@ namespace WebScrapper_Prototype.Controllers
 			var products = from p in _context.Products
 						   select p;
 			if (id > 0)
-			{
+			{			
 				products = products.Where(a => a.ID == id);
-
 			}
 			return View(products.ToPagedList());
 		}
@@ -149,7 +139,7 @@ namespace WebScrapper_Prototype.Controllers
 			if (productId > 0)
 			{
 				prod = prod.Where(p => p.ID == productId);
-				ShoppingBasket shoppingBasket = new ShoppingBasket();
+				Basket shoppingBasket = new Basket();
 				shoppingBasket.ProductId = productId;
 				shoppingBasket.BasketId = getUser().Result;
 				_context.Attach(shoppingBasket);
@@ -163,7 +153,7 @@ namespace WebScrapper_Prototype.Controllers
 		[HttpPost]
 		public ActionResult CreateBasket()
 		{
-			ShoppingBasket basket = new ShoppingBasket
+			Basket basket = new Basket
 			{
 				BasketId = getUser().Result,
 				ProductId = 0

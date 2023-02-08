@@ -9,11 +9,11 @@ using WebScrapper_Prototype.Data;
 
 #nullable disable
 
-namespace WebScrapper_Prototype.Migrations.WebScrapper_Prototype
+namespace WebScrapper_Prototype.Migrations
 {
     [DbContext(typeof(WebScrapper_PrototypeContext))]
-    [Migration("20230203213637_ShoppingCart2")]
-    partial class ShoppingCart2
+    [Migration("20230207221732_AWS_WebScrapperInit")]
+    partial class AWS_WebScrapperInit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,7 +24,27 @@ namespace WebScrapper_Prototype.Migrations.WebScrapper_Prototype
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("WebScrapper_Prototype.Models.ProductModel", b =>
+            modelBuilder.Entity("WebScrapper_Prototype.Models.Basket", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("BasketId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ShopingBasket");
+                });
+
+            modelBuilder.Entity("WebScrapper_Prototype.Models.Product", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -83,26 +103,6 @@ namespace WebScrapper_Prototype.Migrations.WebScrapper_Prototype
                     b.HasKey("ID");
 
                     b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("WebScrapper_Prototype.Models.ShoppingBasket", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("BasketId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("ProductId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ShopingBasket");
                 });
 #pragma warning restore 612, 618
         }

@@ -7,7 +7,7 @@ namespace WebScrapper_Prototype.Services
 {
     public class ProductService
     {
-        public List<ProductModel> ReadCSVFile(string path)
+        public List<Product> ReadCSVFile(string path)
         {
             Console.WriteLine(path);
             try
@@ -16,7 +16,7 @@ namespace WebScrapper_Prototype.Services
                 using (var csv = new CsvReader(reader))
                 {
                     csv.Configuration.RegisterClassMap<ProductMap>();
-                    var rows = csv.GetRecords<ProductModel>().ToList();
+                    var rows = csv.GetRecords<Product>().ToList();
                     return rows;
                 }
             }
@@ -25,16 +25,16 @@ namespace WebScrapper_Prototype.Services
                 throw new Exception(e.Message);
             }
         }
-        public void SaveCSVFile(string path, List<ProductModel> product)
+        public void SaveCSVFile(string path, List<Product> product)
         {
             using (StreamWriter sw = new StreamWriter(path, false, new UTF8Encoding(true)))
             using (CsvWriter csvw = new CsvWriter(sw))
             {
-                csvw.WriteHeader<ProductModel>();
+                csvw.WriteHeader<Product>();
                 csvw.NextRecord();
-                foreach (ProductModel prod in product)
+                foreach (Product prod in product)
                 {
-                    csvw.WriteRecord<ProductModel>(prod);
+                    csvw.WriteRecord<Product>(prod);
                     csvw.NextRecord();
                 }
             }

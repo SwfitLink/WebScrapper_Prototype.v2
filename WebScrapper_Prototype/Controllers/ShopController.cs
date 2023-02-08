@@ -3,6 +3,7 @@ using WebScrapper_Prototype.Data;
 using WebScrapper_Prototype.Models;
 using System.Diagnostics;
 using X.PagedList;
+using X.PagedList.Web.Common;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Identity;
 using WebScrapper_Prototype.Areas.Identity.Data;
@@ -39,10 +40,11 @@ namespace WebScrapper_Prototype.Controllers
 			return View(products.ToPagedList());
 		}
 		[HttpGet]
-		public IActionResult Index(int basketId, int productId, string brand, string searchString, string currentFilter, int? page)
+		public IActionResult Index(int basketId, int productId, string brand, string categories, string searchString, string currentFilter, int? page, int pageSize)
 		{
-
-			ViewBag.CurrentFilter = currentFilter;		
+			ViewBag.CurrentFilter = currentFilter;
+			ViewBag.Categories = categories;
+			ViewBag.Manufacturers = brand;
 			var products = from p in _context.Products
 						   select p;
 			var basket = from b in _context.ShopingBasket
@@ -58,7 +60,7 @@ namespace WebScrapper_Prototype.Controllers
 			{
 				searchString = currentFilter;
 			}
-			ViewBag.CurrentFilter = searchString;
+			ViewBag.CurrentFilter = searchString;	
 			if (!String.IsNullOrEmpty(searchString))
 			{
 				var words = searchString.Split(' ');
@@ -82,11 +84,27 @@ namespace WebScrapper_Prototype.Controllers
 			{
 				ViewBag.BasketLoad = 0;
 			}
+			if(!String.IsNullOrEmpty(brand)) 
+			{
+				products = products.Where(s => s.ProductName.Contains(brand));
 
-			int pageSize = 25;
+			}
+			if (!String.IsNullOrEmpty(categories))
+			{				
+				products = products.Where(s => s.ProductCategory.Contains(categories));
+			}	
+			if (pageSize == 0)
+			{
+				pageSize = 25;
+			}
+			else
+			{
+				Console.WriteLine(pageSize + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+			}
 			int pageNumber = (page ?? 1);
 			var onePageOfProducts = products.ToPagedList(pageNumber, pageSize);
 			ViewBag.OnePageOfProducts = onePageOfProducts;
+			ViewBag.ProductCount = onePageOfProducts.Count;
 			return View(onePageOfProducts);
 		}
 		public async Task<string> getUser()
@@ -104,7 +122,7 @@ namespace WebScrapper_Prototype.Controllers
 			if (productId > 0)
 			{
 				prod = prod.Where(p => p.ID == productId);
-				ShoppingBasket shoppingBasket = new ShoppingBasket();
+				Basket shoppingBasket = new Basket();
 				shoppingBasket.ProductId = productId;
 				shoppingBasket.BasketId = getUser().Result;
 				_context.Attach(shoppingBasket);
@@ -115,6 +133,17 @@ namespace WebScrapper_Prototype.Controllers
 			}
 			return null;
 		}
+		[HttpGet]
+		public IActionResult GetProductsInRange(decimal? minValue, decimal? maxVaue)
+		{
+			var products = from p in _context.Products
+						   select p;
+			products = products.Where(s => s.ProductSalePrice > minValue && s.ProductSalePrice < maxVaue);
+			int pageSize = 25;
+			var onePageOfProducts = products.ToPagedList(0, pageSize);
+			return View(nameof(Index), onePageOfProducts);
+		}
+
 		[HttpPost]
 		public async Task<IActionResult> DeleteConfirmed(int BasketRemovePID)
 		{
