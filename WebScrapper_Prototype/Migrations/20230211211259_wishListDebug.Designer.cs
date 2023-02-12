@@ -12,8 +12,8 @@ using WebScrapper_Prototype.Data;
 namespace WebScrapper_Prototype.Migrations
 {
     [DbContext(typeof(WebScrapper_PrototypeContext))]
-    [Migration("20230207221732_AWS_WebScrapperInit")]
-    partial class AWS_WebScrapperInit
+    [Migration("20230211211259_wishListDebug")]
+    partial class wishListDebug
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -103,6 +103,30 @@ namespace WebScrapper_Prototype.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("WebScrapper_Prototype.Models.UserWishList", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProductName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("UserWishList");
                 });
 #pragma warning restore 612, 618
         }

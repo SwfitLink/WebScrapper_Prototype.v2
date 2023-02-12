@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -126,6 +127,13 @@ namespace WebScrapper_Prototype.Areas.Identity.Pages.Account
                         var roleClaim = string.Join(",", roles);
                         claims.Add(new Claim("Roles", roleClaim));
                     }
+                    else
+                    {
+                        await _signInManager.UserManager.AddToRoleAsync(user, "User");
+						var roleClaim = string.Join(",", roles);
+						claims.Add(new Claim("Roles", roleClaim));
+					}
+ 
 
                     await _signInManager.SignInWithClaimsAsync(user, Input.RememberMe, claims);
 

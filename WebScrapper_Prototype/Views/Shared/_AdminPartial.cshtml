@@ -38,7 +38,7 @@
                     </ul>
                     <ul class="navbar-nav nav-flex-icons">
                         <li class="nav-item">
-                            <a id="manage" href="/Identity/Account/Manage/" title="Manage" class="nav-link border border-light rounded waves-effect">Welcome Back @User.Identity.Name</a>
+                        <a id="manage" asp-area="Identity" asp-page="/Account/Manage" asp-route-returnUrl="@Url.Action("Index", "Account")" title="Manage" class="nav-link border border-light rounded waves-effect">Welcome Back @User.Identity.Name</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link waves-effect" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">Logout</a>

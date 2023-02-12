@@ -10,6 +10,8 @@ using WebScrapper_Prototype.Areas.Identity.Data;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.CodeAnalysis;
+using System.Drawing.Printing;
 
 namespace WebScrapper_Prototype.Controllers
 {
@@ -27,6 +29,43 @@ namespace WebScrapper_Prototype.Controllers
 			_userManager = userManager;
 
 		}
+		[Authorize(Roles = "User, Manager")]
+		[HttpGet]
+		public IActionResult Cart(int basketId)
+		{
+			Queue<decimal?> basePrice = new Queue<decimal?>();
+			Queue<decimal?> salePrice = new Queue<decimal?>();
+			Queue<decimal?> cartTotal = new Queue<decimal?>();
+			var products = from p in _context.Products
+						   select p;
+			var query = from p in _context.Products
+						join b in _context.ShopingBasket
+						on p.ID equals b.ProductId
+						select new { p, b };
+			products = query.Select(q => q.p);
+			query = query.Where(s => s.b.BasketId.Contains(getUser().Result));
+			foreach (var item in products)
+			{
+				basePrice.Enqueue(item.ProductBasePrice);
+				salePrice.Enqueue(item.ProductBasePrice);				
+			}
+			if(salePrice.Sum() > 1500)
+			{
+				ViewBag.ShippingCost = "FREE";				
+			}
+			else
+			{
+				ViewBag.ShippingCost = 300;
+				ViewBag.GetFreeShipping = 1000 - salePrice.Sum();
+			}
+			ViewBag.BasketCount = products.Count();
+			ViewBag.Savings = basePrice.Sum() - salePrice.Sum();
+			ViewBag.CartTotalSale = salePrice.Sum();
+			ViewBag.CartTotalBase = basePrice.Sum();
+			basePrice.Clear();
+			salePrice.Clear();
+			return View(products.ToPagedList(1, 100));
+		}
 		[HttpPost]
 		public IActionResult Index(int id)
 		{
@@ -40,18 +79,55 @@ namespace WebScrapper_Prototype.Controllers
 			return View(products.ToPagedList());
 		}
 		[HttpGet]
-		public IActionResult Index(int basketId, int productId, string brand, string categories, string searchString, string currentFilter, int? page, int pageSize)
-		{
-			ViewBag.CurrentFilter = currentFilter;
-			ViewBag.Categories = categories;
-			ViewBag.Manufacturers = brand;
+		public IActionResult Index(int basketId, string priceRange, int productId, string manufacturer, string category, string searchString, string currentFilter, int? page, int pageSize)
+		{			
+			Queue<decimal?> basePrice = new Queue<decimal?>();
+			Queue<decimal?> salePrice = new Queue<decimal?>();
+			Queue<decimal?> cartTotal = new Queue<decimal?>();
+			Queue<string?> test = new Queue<string?>();
+			ViewBag.CurrentFilter = currentFilter;		
 			var products = from p in _context.Products
 						   select p;
 			var basket = from b in _context.ShopingBasket
 						 select b;
 			products = products.Where(p => p.Visible.Equals("Visible"));
+			if (productId > 0)
+			{
 			var a = AddToCart(productId);
 			basket = basket.Where(b => b.BasketId.Equals(a));
+			}
+			if (!String.IsNullOrEmpty(priceRange))
+			{
+				ViewBag.PriceRange = "Price Range: " + priceRange;
+				switch (priceRange)
+				{
+					case "All":
+						products = products.OrderBy(s => s.ProductBasePrice);
+						ViewBag.PriceRange = " ";
+
+						break;
+					case "R0 - R 1000":
+						products = products.OrderBy(s => 
+						s.ProductSalePrice).Where(s => 
+						s.ProductSalePrice <= 1000);
+						break;
+					case "R1 000 - R 5000":
+						products = products.OrderBy(s =>
+						s.ProductSalePrice).Where(s =>
+						s.ProductSalePrice >= 1000 && s.ProductSalePrice <= 5000);
+						break;
+					case "R5 000 - R10 000":
+						products = products.OrderBy(s =>
+						s.ProductSalePrice).Where(s =>
+						s.ProductSalePrice >= 5000 && s.ProductSalePrice <= 10000);
+						break;
+					case "R10 000 - R20 000":
+						products = products.OrderBy(s =>
+						s.ProductSalePrice).Where(s =>
+						s.ProductSalePrice >= 10000 && s.ProductSalePrice <= 20000);
+						break;
+				}
+			}
 			if (searchString != null)
 			{
 				page = 1;
@@ -77,22 +153,77 @@ namespace WebScrapper_Prototype.Controllers
 							on p.ID equals b.ProductId
 							select new { p, b };
 				products = query.Select(q => q.p);
+				query = query.Where(s => s.b.BasketId.Contains(getUser().Result));
+				foreach (var item in products)
+				{
+					basePrice.Enqueue(item.ProductBasePrice);
+					salePrice.Enqueue(item.ProductBasePrice);
+				}
+				if (salePrice.Sum() > 1500)
+				{
+					ViewBag.ShippingCost = "FREE";
+				}
+				else
+				{
+					ViewBag.ShippingCost = 300;
+					ViewBag.GetFreeShipping = 1000 - salePrice.Sum();
+				}
+				ViewBag.BasketCount = products.Count();
+				ViewBag.Savings = basePrice.Sum() - salePrice.Sum();
+				ViewBag.CartTotalSale = salePrice.Sum();
+				ViewBag.CartTotalBase = basePrice.Sum();
+				basePrice.Clear();
+				salePrice.Clear();
 				ViewBag.BasketLoad = 1;
-				return View(products.ToPagedList(1, 10));
+				ViewBag.BasketCount = products.Count();
+				return View(products.ToPagedList(1, 100));
 			}
 			else
 			{
 				ViewBag.BasketLoad = 0;
 			}
-			if(!String.IsNullOrEmpty(brand)) 
+			if(!String.IsNullOrEmpty(manufacturer)) 
 			{
-				products = products.Where(s => s.ProductName.Contains(brand));
-
+				products = products.Where(s => s.ProductName.Contains(manufacturer));
+				ViewBag.Manufacturer = "Manufacturer: " + manufacturer;
 			}
-			if (!String.IsNullOrEmpty(categories))
-			{				
-				products = products.Where(s => s.ProductCategory.Contains(categories));
-			}	
+			if (!String.IsNullOrEmpty(category))
+			{
+				if (category.Equals("All"))
+				{
+					products = products.OrderBy(s => s.ProductCategory);
+				}
+				else
+				{
+					products = products.Where(s => s.ProductCategory.Equals(category));
+					ViewBag.Category = "Category: " + category;
+				}
+				var product = from p in _context.Products
+							   select p;
+				var p1 = product;
+				p1 = product.OrderBy(s =>
+				s.ProductSalePrice).Where(s =>
+				s.ProductSalePrice <= 1000 && s.ProductCategory.Equals(category));
+				ViewBag.PriceRange1 = p1.Count();
+
+				var p2 = product;
+				p2 = product.OrderBy(s =>
+				s.ProductSalePrice).Where(s =>
+				s.ProductSalePrice >= 1000 && s.ProductSalePrice <= 5000 && s.ProductCategory.Equals(category));
+				ViewBag.PriceRange2 = p2.Count();
+
+				var p3 = product;
+				p3 = product.OrderBy(s =>
+				s.ProductSalePrice).Where(s =>
+				s.ProductSalePrice >= 5000 && s.ProductSalePrice <= 10000 && s.ProductCategory.Equals(category));
+				ViewBag.PriceRange3 = p3.Count();
+
+				var p4 = product;
+				p4 = product.OrderBy(s =>
+				s.ProductSalePrice).Where(s =>
+				s.ProductSalePrice >= 10000 && s.ProductSalePrice <= 20000 && s.ProductCategory.Equals(category));
+				ViewBag.PriceRange4 = p4.Count();
+			}			
 			if (pageSize == 0)
 			{
 				pageSize = 25;
@@ -107,7 +238,31 @@ namespace WebScrapper_Prototype.Controllers
 			ViewBag.ProductCount = onePageOfProducts.Count;
 			return View(onePageOfProducts);
 		}
-		public async Task<string> getUser()
+        [HttpPost]
+        public IActionResult Product(int id)
+        {
+			var products = from p in _context.Products
+						   select p;
+			if (id > 0)
+			{
+				products = products.Where(a => a.ID == id);
+
+			}
+			return View(products.ToPagedList());
+		}
+        [HttpGet]
+        public IActionResult Product(int id, int basketId, int productId, string brand, string categories, string searchString, string currentFilter, int? page, int pageSize)
+        {
+			var products = from p in _context.Products
+						   select p;
+			if (id > 0)
+			{
+				products = products.Where(a => a.ID == id);
+
+			}
+			return View(products.ToPagedList());
+		}
+        public async Task<string> getUser()
 		{
 			var user = await _userManager.GetUserAsync(User);
 			var email = user.Email;
@@ -131,7 +286,7 @@ namespace WebScrapper_Prototype.Controllers
 
 				return shoppingBasket.BasketId;
 			}
-			return null;
+			return "Error: Either Login or reload page.";
 		}
 		[HttpGet]
 		public IActionResult GetProductsInRange(decimal? minValue, decimal? maxVaue)
@@ -143,7 +298,6 @@ namespace WebScrapper_Prototype.Controllers
 			var onePageOfProducts = products.ToPagedList(0, pageSize);
 			return View(nameof(Index), onePageOfProducts);
 		}
-
 		[HttpPost]
 		public async Task<IActionResult> DeleteConfirmed(int BasketRemovePID)
 		{

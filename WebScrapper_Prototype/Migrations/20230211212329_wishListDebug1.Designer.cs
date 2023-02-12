@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebScrapper_Prototype.Data;
 
@@ -11,9 +12,10 @@ using WebScrapper_Prototype.Data;
 namespace WebScrapper_Prototype.Migrations
 {
     [DbContext(typeof(WebScrapper_PrototypeContext))]
-    partial class WebScrapper_PrototypeContextModelSnapshot : ModelSnapshot
+    [Migration("20230211212329_wishListDebug1")]
+    partial class wishListDebug1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,7 +41,7 @@ namespace WebScrapper_Prototype.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ShopingBasket", (string)null);
+                    b.ToTable("ShopingBasket");
                 });
 
             modelBuilder.Entity("WebScrapper_Prototype.Models.Product", b =>
@@ -100,7 +102,7 @@ namespace WebScrapper_Prototype.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("WebScrapper_Prototype.Models.UserWishList", b =>
@@ -120,7 +122,7 @@ namespace WebScrapper_Prototype.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserWishList", (string)null);
+                    b.ToTable("UserWishList");
                 });
 #pragma warning restore 612, 618
         }
