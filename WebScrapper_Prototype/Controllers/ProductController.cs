@@ -76,8 +76,21 @@ namespace WebScrapper_Prototype.Controllers
             }
             return uniqueFileName;
         }
-        [Authorize(Roles = "Administrator, Manager")]
-        public IActionResult Index(string view, string sortOrder, string findProduct, string currentFilter, string searchString, string dataBatch, int? page)
+		[Authorize(Roles = "Administrator, Manager")]
+		[HttpPost]
+		public IActionResult Index(int id)
+		{
+			var products = from p in _context.Products
+						   select p;
+			if (id > 0)
+			{
+				products = products.Where(a => a.ID == id);
+			}
+			return View(products);
+		}
+		[Authorize(Roles = "Administrator, Manager")]
+		[HttpGet]
+		public IActionResult Index(string view, string sortOrder, string findProduct, string currentFilter, string searchString, string dataBatch, int? page)
         {
             ViewBag.setting = view;
             var products = from p in _context.Products
@@ -179,13 +192,15 @@ namespace WebScrapper_Prototype.Controllers
             }
             return View(products);
         }
-        [HttpGet]
+        [Authorize(Roles = "Administrator, Manager")]
+		[HttpGet]
         public IActionResult Create()
         {
             Product product = new Product();
             return View(product);
         }
-        [HttpPost]
+		[Authorize(Roles = "Administrator, Manager")]
+		[HttpPost]
         public ActionResult Create(Product product)
         {
             string uniqueFileName = ProcessUploadedImageFile(product);
@@ -273,12 +288,10 @@ namespace WebScrapper_Prototype.Controllers
 
             return View(product);
         }
-
         private bool ProductExists(int id)
         {
             return _context.Products.Any(e => e.ID == id);
         }
-
         private string ProcessUploadedImageFile(Product model)
         {
             string uniqueFileName = "ERROR";
@@ -287,7 +300,6 @@ namespace WebScrapper_Prototype.Controllers
             {
                 Directory.CreateDirectory(path);
             }
-
             if (model.ProductPic != null)
             {
                 string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "Uploads");
@@ -298,12 +310,7 @@ namespace WebScrapper_Prototype.Controllers
                     model.ProductPic.CopyTo(fileStream);
                 }
             }
-
-            return "LOCALIMG:" + uniqueFileName;
-        }
-        public IActionResult DeleteDate()
-        {
-            return View();
+            return uniqueFileName;
         }
     }
 }

@@ -126,13 +126,11 @@ namespace WebScrapper_Prototype.Areas.Identity.Pages.Account
 
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
+                user.Email = Input.Email;
                 user.PhoneNumber = Input.Cellphone;
-                user.CountryCode = Input.CountryCode;
-                user.UserName = Input.FirstName;         
+                user.CountryCode = Input.CountryCode;           
 
-
-                //await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)

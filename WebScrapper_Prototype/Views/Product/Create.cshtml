@@ -3,160 +3,117 @@
 @{
     ViewData["Title"] = "Create";
 }
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Swift Link</title>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/mdb.min.css" rel="stylesheet">
-    <link href="css/style.min.css" rel="stylesheet">
-    <link href="css/site.css" rel="stylesheet">
-</head>
-<a class="btn btn-outline-white btn-lg" margin:15px;"rel="nofollow noopener" asp-action="Index">
-    <img src="~/Media/Navigation/Back.png" height="50" width="50" /> Home
-</a>
 
-<body>
-    <section class="mb-4">
-        <div style="padding:25px;">
-            <h1 style="top:100px;">Add a Product</h1>
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-4">
-                        <form enctype="multipart/form-data" asp-action="Create">
-                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            <label asp-for="ProductName" class="control-label"></label>
-                            <div class="mb-3">
-                                <div class="form-group">
-                                    <input asp-for="ProductName" class="form-control" />
-                                    <span asp-validation-for="ProductName" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <label asp-for="ProductStock" class="control-label"></label>
-                            <div class="mb-3">
-                                <div class="form-group">
-                                    <input asp-for="ProductStock" class="form-control" />
-                                    <span asp-validation-for="ProductStock" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <label asp-for="ProductDescription" class="control-label"></label>
-                            <div class="mb-3">
-                                <div class="form-group">
-                                    <textarea asp-for="ProductDescription" class="form-control rounded-0" rows="15"></textarea>
-                                    <span asp-validation-for="ProductDescription" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <label asp-for="ProductStatus" class="control-label"></label>
-                            <div class="mb-3">
-                                <div class="form-group">
-                                    <select name="ProductStatus" asp-for="ProductStatus">
-                                        <option asp-for="ProductStatus" class="form-control dropdown-item" value=" ">Non</option>
-                                        <option asp-for="ProductStatus" class="form-control dropdown-item" value="New">New</option>
-                                        <option asp-for="ProductStatus" class="form-control dropdown-item" value="BestSeller">BestSeller</option>
-                                        <option asp-for="ProductStatus" class="form-control dropdown-item" value="Limited">Limited</option>
-                                    </select>
-                                    <span asp-validation-for="ProductStatus" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <label asp-for="ProductCategory" class="control-label"></label>
-                            <div class="mb-3">
-                                <div class="form-group">
-                                    <select name="ProductCategory" asp-for="ProductCategory">
-                                        <option asp-for="ProductCategory" class="form-control dropdown-item " value="Laptops">Laptops</option>
-                                        <option asp-for="ProductCategory" class="form-control dropdown-item" value="Hardware">Hardware</option>
-                                        <option asp-for="ProductCategory" class="form-control dropdown-item" value="Accessories">Accessories</option>
-                                        <option asp-for="ProductCategory" class="form-control dropdown-item" value="Pre-Built PC">Pre-Built PC</option>
-                                    </select>
-                                    <span asp-validation-for="ProductCategory" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <label asp-for="Visible" class="control-label"></label>
-                            <div class="mb-3">
-                                <div class="form-group">
-                                    <select name="Visible" asp-for="Visible">
-                                        <option asp-for="Visible" class="form-control dropdown-item" value="Visible">Visible</option>
-                                        <option asp-for="Visible" class="form-control dropdown-item" value="Hidden">Hidden</option>
-                                    </select>
-                                    <span asp-validation-for="Visible" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <label asp-for="ProductBasePrice" class="control-label"></label>
-                            <div class="mb-3">
-                                <div class="form-group">
-                                    <input asp-for="ProductBasePrice" class="form-control" />
-                                    <span asp-validation-for="ProductBasePrice" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <label asp-for="ProductSalePrice" class="control-label"></label>
-                            <div class="mb-3">
-                                <div class="form-group">
-                                    <input asp-for="ProductSalePrice" class="form-control" />
-                                    <span asp-validation-for="ProductSalePrice" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label asp-for="VendorSite" class="control-label"></label>
-                                <div class="form-group">
-                                    <input asp-for="VendorSite" class="form-control" />
-                                    <span asp-validation-for="VendorSite" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label asp-for="VendorProductURL" class="control-label"></label>
-                                <div class="form-group">
-                                    <input asp-for="VendorProductURL" class="form-control" />
-                                    <span asp-validation-for="VendorProductURL" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label asp-for="dataBatch" class="control-label"></label>
-                                <div class="form-group">
-                                    <input asp-for="dataBatch" class="form-control" />
-                                    <span asp-validation-for="dataBatch" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="ProductPic" class="control-label">Product Image</label>
-                                <div class="custom-file">
-                                    <input asp-for="ProductPic" class="custom-file-input" id="FLFrontImage" onchange="document.getElementById('FrontImagePrv').src = window.URL.createObjectURL(this.files[0])">
-                                </div>
-                                <span asp-validation-for="ProductPic" class="text-danger"></span>
-                                <img id="FrontImagePrv" src="" data="image" width="150" height="150" style="border:1px; margin-top:20px; margin-left:120px" alt="Nothing to show" />
-                            </div>
-                            <input class="btn btn-outline-white btn-lg" style="background-color: cadetblue !important; margin-top:10px;" type="submit" value="Add Product" />
-                        </form>
-                    </div>
-                </div>
+<h1>Create</h1>
+<h4 style="color:red;">TESTING... Image Upload seems to not be working... Mildly Frustrating...</h4>
+<h4>Product</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ProductName" class="control-label"></label>
+                <input asp-for="ProductName" class="form-control" />
+                <span asp-validation-for="ProductName" class="text-danger"></span>
             </div>
-        </div>
-    </section>
-    <footer class="page-footer text-center font-small mt-4 wow fadeIn">
-        <hr class="my-4">
-        <div class="footer-copyright py-3">
-            © 2023 Copyright:
-            <a href="/" target="_blank">SwiftLink.com</a>
-        </div>
-    </footer>
+            <div class="form-group">
+                <label asp-for="ProductStock" class="control-label"></label>
+                <input asp-for="ProductStock" class="form-control" />
+                <span asp-validation-for="ProductStock" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProductDescription" class="control-label"></label>
+                <input asp-for="ProductDescription" class="form-control" />
+                <span asp-validation-for="ProductDescription" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProductStatus" class="control-label"></label>
+                        <select name="ProductStatus" asp-for="ProductStatus">
+                            <option asp-for="ProductStatus" class="form-control dropdown-item" value=" ">Non</option>
+                            <option asp-for="ProductStatus" class="form-control dropdown-item" value="New">New</option>
+                            <option asp-for="ProductStatus" class="form-control dropdown-item" value="BestSeller">BestSeller</option>
+                            <option asp-for="ProductStatus" class="form-control dropdown-item" value="Limited">Limited</option>
+                        </select>
+                        <span asp-validation-for="ProductStatus" class="text-danger"></span>                        
+       
+@*                <input asp-for="ProductStatus" class="form-control" />*@                
+<span asp-validation-for="ProductStatus" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProductCategory" class="control-label"></label>
+        <select name="ProductCategory" asp-for="ProductCategory">
+            <option asp-for="ProductCategory" class="form-control dropdown-item " value="Laptops">Laptops</option>
+            <option asp-for="ProductCategory" class="form-control dropdown-item" value="Hardware">Hardware</option>
+            <option asp-for="ProductCategory" class="form-control dropdown-item" value="Accessories">Accessories</option>
+            <option asp-for="ProductCategory" class="form-control dropdown-item" value="Pre-Built PC">Pre-Built PC</option>
+        </select>
+@*                <input asp-for="ProductCategory" class="form-control" />
+*@                <span asp-validation-for="ProductCategory" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProductBasePrice" class="control-label"></label>
+                <input asp-for="ProductBasePrice" class="form-control" />
+                <span asp-validation-for="ProductBasePrice" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProductSalePrice" class="control-label"></label>
+                <input asp-for="ProductSalePrice" class="form-control" />
+                <span asp-validation-for="ProductSalePrice" class="text-danger"></span>
+            </div>
+@*            <div class="form-group">
+                <label asp-for="ImageURL" class="control-label"></label>
+                <input asp-for="ImageURL" class="form-control" />
+                <span asp-validation-for="ImageURL" class="text-danger"></span>
+            </div>*@
+            <div class="form-group">
+                <label asp-for="VendorSite" class="control-label"></label>
+                <input asp-for="VendorSite" class="form-control" />
+                <span asp-validation-for="VendorSite" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="VendorProductURL" class="control-label"></label>
+                <input asp-for="VendorProductURL" class="form-control" />
+                <span asp-validation-for="VendorProductURL" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Visible" class="control-label"></label>
+                <select name="Visible" asp-for="Visible">
+                    <option asp-for="Visible" class="form-control dropdown-item " value="Laptops">Visible</option>
+                    <option asp-for="Visible" class="form-control dropdown-item" value="Hardware">Hidden</option>
+        </select>
+@*                <input asp-for="Visible" class="form-control" />
+*@                <span asp-validation-for="Visible" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="dataBatch" class="control-label"></label>
+                <input asp-for="dataBatch" class="form-control" />
+                <span asp-validation-for="dataBatch" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProductPic" class="control-label">Product Image</label>
+                <div class="custom-file">
+                    <input asp-for="ProductPic" class="custom-file-input" id="FLFrontImage" onchange="document.getElementById('FrontImagePrv').src = window.URL.createObjectURL(this.files[0])">
+                </div>
+                <span asp-validation-for="ProductPic" class="text-danger"></span>
+                <img id="FrontImagePrv" src="" data="image" width="150" height="150" style="border:1px; margin-top:20px; margin-left:120px" alt="Nothing to show" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
 
-</body>
-</html>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+<script>
+    $(".custom-file-input").on("change", function () {
+        var fileName = $(this).val().split("\\").pop();
+        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    });
+   </script>
 @section Scripts {
-    <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
-    <script type="text/javascript" src="js/popper.min.js"></script>
-    <script type="text/javascript" src="js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="js/mdb.min.js"></script>
-    <script type="text/javascript">new WOW().init();</script>
-    <script>
-        $(".custom-file-input").on("change", function () {
-            var fileName = $(this).val().split("\\").pop();
-            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
-        });
-    </script>
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

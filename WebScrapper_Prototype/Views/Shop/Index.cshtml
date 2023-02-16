@@ -49,6 +49,8 @@
 	<link rel="stylesheet" href="css/owl-carousel.css">
 	<!-- Slicknav -->
 	<link rel="stylesheet" href="css/slicknav.min.css">
+	<link rel="stylesheet" href="~/alertifyjs/css/alertify.min.css" />
+	<link rel="stylesheet" href="~/alertifyjs/css/themes/default.min.css" />
 
 	<!-- StyleSheet -->
 	<link rel="stylesheet" href="css/reset.css">
@@ -90,7 +92,7 @@
 							@if (User.IsInRole("Manager"))
 							{
 								<ul class="list-main">
-									<li><i class="ti-alarm-clock"></i><a href="/">Shop</a></li>
+									<li><i class="ti-bag"></i><a href="/Shop/Cart">Cart</a></li>
 									<li><i class="ti-dashboard"></i><a href="/Dashboard">Dashboard</a></li>
 									<li><i class="ti-power-off"></i><a asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home" , new { area="" })">Logout</a></li>
 								</ul>
@@ -98,15 +100,14 @@
 							else if (User.IsInRole("User"))
 							{
 								<ul class="list-main">
-									<li><i class="ti-alarm-clock"></i> <a href="/">Shop</a></li>
+									<li><i class="ti-bag"></i><a href="/Shop/Cart">Cart</a></li>
 									<li><i class="ti-power-off"></i><a asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action(" Index", "Home" , new { area="" })">Logout</a></li>
 								</ul>
 							}
 							else
 							{
 								<ul class="list-main">
-									<li><i class="ti-location-pin"></i> Store location</li>
-									<li><i class="ti-alarm-clock"></i> <a href="#">MegaSale</a></li>
+									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
 									<li><i class="ti-power-off"></i><a href="/Identity/Account/Login">Login</a></li>
 								</ul>
 							}
@@ -162,50 +163,125 @@
 						<div class="col-lg-2 col-md-3 col-12">
 							<div class="right-bar">
 								<!-- Search Form -->
-								<div class="sinlge-bar">
-									<a href="#" class="single-icon"><i class="fa fa-heart-o" aria-hidden="true"></i></a>
-								</div>
-								<div class="sinlge-bar">
-									<a href="#" class="single-icon"><i class="fa fa-user-circle-o" aria-hidden="true"></i></a>
-								</div>																
 								<div class="sinlge-bar shopping">
-									<a href="#" onclick="loadCart()" class="single-icon"><i class="ti-bag"></i><span class="total-count">@ViewBag.BasketCount</span></a>
-									<!-- Shopping Item -->
-									<div id="shoppingbasket" class="shopping-item">
-										@if (User.IsInRole("User") || User.IsInRole("Manager"))
+									<a href="#" onclick="loadWishlist()" class="single-icon"><i class="fa fa-heart-o"></i></a>
+									<!-- Wishlist Item -->
+									<div id="Wishlistbasket" class="shopping-item">
+										@if (ViewBag.Wishlist == 1)
 										{
-											@if (ViewBag.BasketLoad == 1)
+											@if (Model.Count() > 0)
 											{
+												<div class="dropdown-cart-header">
+													<span>Items: @Model.Count</span>
+													<a href="/Shop/Cart">
+														My Wishlist
+													</a>
+												</div>
 												@foreach (var product in Model)
 												{
-													<div class="dropdown-cart-header">
-														<span>Items: @Model.Count</span>
-														<a href="/Shop/Cart">
-															View Cart
-														</a>
-													</div>
 													<ul class="shopping-list">
 														<li>
 															<a href="#" class="remove" title="Remove this item" onclick="loadDeleteCart('@product.ID')"><i class="fa fa-remove"></i></a>
-															<a class="cart-img" href="#"><img src="@product.ImageURL" alt="#"></a>
-															<h4><a href="#">@product.ProductName</a></h4>
-															<p class="quantity">1x - <span class="amount">@product.ProductSalePrice</span></p>
+															<a class="cart-img" href="/Shop/Product/@product.ID"><img src="@product.ImageURL" alt="#"></a>
+															<h4><a href="/Shop/Product/@product.ID">@product.ProductName.Substring(0,20) ...</a></h4>
+															<p class="quantity">1x - <span class="amount" style="text-decoration-line:line-through;">R @product.ProductBasePrice</span>
+															<span class="amount" style="color:red;font-weight:800;">R @product.ProductSalePrice</span></p>														</li>
+													</ul>
+												}
+												<div class="bottom"></div>
+											}
+											else
+											{
+												<p>Your Wish list is Empty</p>
+											}
+										}
+										else
+										{
+											<p onclick="loadCart()">Click to load</p>
+										}
+									</div>
+								</div>
+								<!--/ End Wishlist Item -->
+								<div class="sinlge-bar">
+									<a href="#" class="single-icon"><i class="fa fa-user-circle-o" aria-hidden="true"></i></a>
+								</div>
+								<div class="sinlge-bar shopping">
+									<a href="#" onclick="loadCart()" class="single-icon">
+										<i class="ti-bag"></i>
+										<span class="total-count">
+											@ViewBag.BasketCount
+										</span>
+									</a>
+									<!-- Shopping Item -->
+									<div id="shoppingbasket" class="shopping-item">
+										<script type="text/javascript">
+											$(document).ready(function () {
+												$('.single-icon').mouseenter(function () {
+													let basketId = 1;
+													$.ajax({
+														type: 'GET',
+														url: '/Home/Index',
+														data: { basketId: basketId },
+														success: function (r) {
+															$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
+														},
+														error: function () {
+															$("#productInfo h2").text("Product is no Longer in Stock!");
+														}
+													});
+												});
+											});
+										</script>
+										@if (ViewBag.BasketLoad == 1)
+										{
+											@if (Model.Count() > 0)
+											{
+												<div class="dropdown-cart-header">
+													<span>Items: @Model.Count</span>
+													<a href="/Shop/Cart">
+														View Cart
+													</a>
+												</div>
+												@foreach (var product in Model)
+												{
+													<ul class="shopping-list">
+														<li>
+															<a href="#" class="remove" title="Remove this item" onclick="loadDeleteCart('@product.ID')"><i class="fa fa-remove"></i></a>
+															<a class="cart-img" href="/Shop/Product/@product.ID"><img src="@product.ImageURL" alt="#"></a>
+															<h4><a href="/Shop/Product/@product.ID">@product.ProductName.Substring(0,20) ...</a></h4>																		
+															<p class="quantity">1x - <span class="amount" style="text-decoration-line:line-through;">R @product.ProductBasePrice</span>
+															<span class="amount" style="color:red;font-weight:800;">R @product.ProductSalePrice</span></p>
 														</li>
 													</ul>
-													<div class="bottom">
-														<div class="total">
-															<span>Total:</span>
-															<span class="total-amount">R @ViewBag.Total</span>
-														</div>
-														<a href="#" class="btn animate">Checkout</a>
-													</div>
 												}
+												<div class="bottom">
+													<div class="total">
+														<span>Sub Total:</span>
+														<span class="total-amount" style="text-decoration-line:line-through">R @ViewBag.CartTotalBase</span>
+													</div>
+													<div class="total">
+														<span>Discount:</span>
+														<span class="total-amount" style="color:red;font-weight:800;">R @ViewBag.Savings</span>
+													</div>
+													<div class="total">
+														<span>Total:</span>
+														<span class="total-amount" style="text-decoration-line:underline">R @ViewBag.CartTotalSale</span>
+													</div>
+													<a href="#" class="btn animate">Checkout</a>
+												</div>
 											}
+											else
+											{
+												<p>Your Cart is Empty</p>
+											}
+										}
+										else
+										{
+											<p onclick="loadCart()">Click to load</p>
 										}
 									</div>
 									<!--/ End Shopping Item -->
 								</div>
-
 							</div>
 						</div>
 					}
@@ -228,9 +304,8 @@
 												<li class="active">
 													<a href="/">Shop<i class="ti-angle-down"></i></a>
 													<ul class="dropdown">
-														<li><a href="#">View Cart</a></li>
+														<li><a href="/Cart">View Cart</a></li>
 														<li><a href="#">Checkout</a></li>
-														<li><a href="/">Shop</a></li>
 													</ul>
 												</li>
 												<li>
@@ -318,16 +393,6 @@
 						<!-- Shop By Price -->
 						<div class="single-widget range">
 							<h3 class="title">Shop by Price</h3>
-							@*							<div class="price-filter">
-							<div class="price-filter-inner">
-							<div id="slider-range"></div>
-							<div class="price_slider_amount">
-							<div class="label-input">
-							<span>Range:</span><input type="text" id="amount" name="price" placeholder="Add Your Price" />
-							</div>
-							</div>
-							</div>
-							</div>*@
 							<ul class="check-box-list">
 										<li>
 									<label class="checkbox-inline" for="0"><input name="news" id="0" type="checkbox">All</label>
@@ -347,75 +412,10 @@
 							</ul>
 						</div>
 						<!--/ End Shop By Price -->
-						@*<!-- Single Widget -->
-						<div class="single-widget recent-post">
-							<h3 class="title">Recent post</h3>
-							<!-- Single Post -->
-							@foreach (var product in Model.Where(s => s.ProductBasePrice > 10000))
-							{
-								<div class="single-post first">
-									<div class="image">
-										@if (product.ImageURL.Contains("www"))
-										{
-											<img src="@product.ImageURL" alt="#">
-										}
-										else
-										{
-											<img src="~/Uploads/@product.ImageURL" alt="#">
-										}
-									</div>
-									<div class="content">
-										<h5><a href="#">@product.ProductName.Substring(0, 20) ...</a></h5>
-										<p class="price">@product.ProductBasePrice</p>
-										<ul class="reviews">
-											@if (Convert.ToDouble(product.ProductSalePrice) < Convert.ToDouble(product.ProductBasePrice) * 0.8)
-											{
-												<li class="yellow"><i class="ti-star"></i></li>
-												<li class="yellow"><i class="ti-star"></i></li>
-												<li class="yellow"><i class="ti-star"></i></li>
-												<li class="yellow"><i class="ti-star"></i></li>
-												<li><i class="ti-star"></i></li>
-											}
-											else
-											{
-												<li class="yellow"><i class="ti-star"></i></li>
-												<li class="yellow"><i class="ti-star"></i></li>
-												<li class="yellow"><i class="ti-star"></i></li>
-												<li><i class="ti-star"></i></li>
-												<li><i class="ti-star"></i></li>
-											}
-
-										</ul>
-									</div>
-								</div>
-							}
-							<!-- End Single Post -->
-						</div>
-						<!--/ End Single Widget -->*@
-@*						<!-- Single Widget -->
-						<div class="single-widget category">
-							<h3 class="title">Manufacturers</h3>
-							<ul id= class="categor-list">
-								<li>
-									<a href="#" onclick="filterProductsMan('Intel')">Intel</a>
-								</li>
-								<li>
-									<a href="#" onclick="filterProductsMan('AMD')">AMD</a>
-								</li>
-								<li>
-									<a href="#" onclick="filterProductsMan('Nvidia')">Nvidia</a>
-								</li>
-								<li>
-									<a href="#" onclick="filterProductsMan('Dell')">Dell</a>
-								</li>
-								<li>
-									<a href="#" onclick="filterProductsMan('Samsung')">Samsung</a>
-								</li>
-							</ul>
-						</div>
-						<!--/ End Single Widget -->*@
 					</div>
 				</div>
+				@if(ViewBag.CurrentFilter != null || ViewBag.Category != null || ViewBag.PriceRange != null)
+				{			
 				<div id="products" class="col-lg-9 col-md-8 col-12">
 					<div class="row">
 						<div class="col-12">
@@ -432,16 +432,11 @@
 										<label><strong>@ViewBag.PriceRange</strong></label>
 									</div>
 								</div>
-@*								<ul class="view-mode">
-									<li class="active"><a href="#"><i class="fa fa-th-large"></i></a></li>
-									<li><a href="#l"><i class="fa fa-th-list"></i></a></li>
-								</ul>*@
 							</div>
 							<!--/ End Shop Top -->
 						</div>
 					</div>
 					<div id="products" class="row">
-
 						@foreach (var product in Model)
 						{
 							<div class="col-lg-4 col-md-6 col-12">
@@ -462,14 +457,13 @@
 										<div class="button-head">
 											<div class="product-action">
 												<a data-toggle="modal" data-target="#Modal" title="Quick View" href="#" onclick="loadQuickShop('@product.ID')"><i class=" ti-eye"></i><span>Quick Shop</span></a>
-												<a title="Wishlist" href="#"><i class=" ti-heart "></i><span>Add to Wishlist</span></a>
+												<a title="Wishlist" href="#" onclick="loadAddToWishlist('@product.ID')"><i class=" ti-heart "></i><span>Add to Wishlist</span></a>
 												<a title="Compare" href="#"><i class="ti-bar-chart-alt"></i><span>Add to Compare</span></a>
 											</div>
 											<div class="product-action-2">
 												@if (User.IsInRole("User") || User.IsInRole("Manager"))
 												{
 													<a href="#" class="btn" onclick="loadAddToCart('@product.ID')">Add to cart</a>
-
 												}
 												else
 												{
@@ -480,10 +474,10 @@
 										</div>
 									</div>
 									<div class="product-content">
-										<h3><a href="#">@product.ProductName</a></h3>
+										<h3><a href="/Shop/Product/@product.ID">@product.ProductName</a></h3>
 										<div class="product-price">
 											<span class="old">R @product.ProductBasePrice</span>
-											<span>R @product.ProductSalePrice</span>
+												<span style="color:red; font-weight:800;">R @product.ProductSalePrice</span>
 										</div>
 									</div>
 								</div>
@@ -503,9 +497,399 @@
 							</ul>
 						</nav>
 					}
-				</div>
-			</div>
-		</div>
+					</div>
+				}
+				else
+				{
+					<div id="products" class="col-lg-9 col-md-8 col-12">
+						<div class="row">
+							<div class="col-12">
+								<!-- Shop Top -->
+								<div class="shop-top" style="background-color:#ffdeadc1;">
+									<div class="content" style="width:100%;">
+										<p><span>Limited Stock</span></p>
+										<h3>Fast and Furious<span style="color:orange"> AMD</span></h3>
+									</div>									
+								</div>								
+								<!--/ End Shop Top -->
+							</div>
+						</div>						
+						<div id="products" class="row">	
+								@foreach(var product in Model)					
+							{
+								@if (product.ProductCategory.Equals("CPUs"))
+								{
+									<div class="col-lg-4 col-md-6 col-12">
+										<div class="single-product">
+											<div class="product-img">
+												<a href="/Shop/Product/@product.ID">
+													@if (product.ImageURL.Contains("www"))
+													{
+														<img class="default-img" src="@product.ImageURL" alt="#">
+														<img class="hover-img" src="@product.ImageURL" alt="#">
+													}
+													else
+													{
+														<img class="default-img" src="~/Uploads/@product.ImageURL" alt="#">
+														<img class="hover-img" src="~/Uploads/@product.ImageURL" alt="#">
+													}
+												</a>
+												<div class="button-head">
+													<div class="product-action">
+														<a data-toggle="modal" data-target="#Modal" title="Quick View" href="#" onclick="loadQuickShop('@product.ID')"><i class=" ti-eye"></i><span>Quick Shop</span></a>
+														<a title="Wishlist" href="#" onclick="loadAddToWishlist('@product.ID')"><i class=" ti-heart "></i><span>Add to Wishlist</span></a>
+														<a title="Compare" href="#"><i class="ti-bar-chart-alt"></i><span>Add to Compare</span></a>
+													</div>
+													<div class="product-action-2">
+														@if (User.IsInRole("User") || User.IsInRole("Manager"))
+														{
+															<a href="#" class="btn" onclick="loadAddToCart('@product.ID')">Add to cart</a>
+														}
+														else
+														{
+															<a href="/Identity/Account/Login" class="btn">Add to cart</a>
+
+														}
+													</div>
+												</div>
+											</div>
+											<div class="product-content">
+												<h3><a href="/Shop/Product/@product.ID">@product.ProductName</a></h3>
+												<div class="product-price">
+													<span class="old">R @product.ProductBasePrice</span>
+													<span style="color:red; font-weight:800;">R @product.ProductSalePrice</span>
+												</div>
+											</div>
+										</div>
+									</div>
+								}
+							}
+						</div>
+
+						<div class="row" style="padding:50px 0;">
+							<div class="col-12">
+								<!-- Shop Top -->
+								<div class="shop-top" style="background-color:#ffdeadc1;">
+									<div class="content" style="width:100%;">
+										<p><span>Limited Stock</span></p>
+										<h3>Don't Miss Out on These Unbeatable Deals on Our New <span style="color:orange">Graphic Cards</span></h3>
+									</div>
+								</div>
+								<!--/ End Shop Top -->
+							</div>
+						</div>
+						<div id="products" class="row">
+							@foreach(var product in Model)
+							{
+								@if (product.ProductCategory.Equals("GPUs"))
+								{
+									<div class="col-lg-4 col-md-6 col-12">
+										<div class="single-product">
+											<div class="product-img">
+												<a href="/Shop/Product/@product].ID">
+													@if (product.ImageURL.Contains("www"))
+													{
+														<img class="default-img" src="@product.ImageURL" alt="#">
+														<img class="hover-img" src="@product.ImageURL" alt="#">
+													}
+													else
+													{
+														<img class="default-img" src="~/Uploads/@product.ImageURL" alt="#">
+														<img class="hover-img" src="~/Uploads/@product.ImageURL" alt="#">
+													}
+												</a>
+												<div class="button-head">
+													<div class="product-action">
+														<a data-toggle="modal" data-target="#Modal" title="Quick View" href="#" onclick="loadQuickShop('@product.ID')"><i class=" ti-eye"></i><span>Quick Shop</span></a>
+														<a title="Wishlist" href="#" onclick="loadAddToWishlist('@product.ID')"><i class=" ti-heart "></i><span>Add to Wishlist</span></a>
+														<a title="Compare" href="#"><i class="ti-bar-chart-alt"></i><span>Add to Compare</span></a>
+													</div>
+													<div class="product-action-2">
+														@if (User.IsInRole("User") || User.IsInRole("Manager"))
+														{
+															<a href="#" class="btn" onclick="loadAddToCart('@product.ID')">Add to cart</a>
+														}
+														else
+														{
+															<a href="/Identity/Account/Login" class="btn">Add to cart</a>
+
+														}
+													</div>
+												</div>
+											</div>
+											<div class="product-content">
+												<h3><a href="/Shop/Product/@product.ID">@product.ProductName</a></h3>
+												<div class="product-price">
+													<span class="old">R @product.ProductBasePrice</span>
+													<span style="color:red; font-weight:800;">R @product.ProductSalePrice</span>
+												</div>
+											</div>
+										</div>
+									</div>
+								}
+							}
+						</div>
+
+						<div class="row" style="padding:50px 0;">
+							<div class="col-12">
+								<!-- Shop Top -->
+								<div class="shop-top" style="background-color:#ffdeadc1;">
+									<div class="content" style="width:100%;">
+										<p><span>Limited Stock</span></p>
+										<h3>Build in Style With Our Wide Range of Selected <span style="color:orange">PC Cases</span></h3>
+									</div>
+								</div>
+								<!--/ End Shop Top -->
+							</div>
+						</div>
+						<div id="products" class="row">
+							@foreach (var product in Model)
+							{
+								@if (product.ProductCategory.Equals("Chassis"))
+								{
+									<div class="col-lg-4 col-md-6 col-12">
+										<div class="single-product">
+											<div class="product-img">
+												<a href="/Shop/Product/@product].ID">
+													@if (product.ImageURL.Contains("www"))
+													{
+														<img class="default-img" src="@product.ImageURL" alt="#">
+														<img class="hover-img" src="@product.ImageURL" alt="#">
+													}
+													else
+													{
+														<img class="default-img" src="~/Uploads/@product.ImageURL" alt="#">
+														<img class="hover-img" src="~/Uploads/@product.ImageURL" alt="#">
+													}
+												</a>
+												<div class="button-head">
+													<div class="product-action">
+														<a data-toggle="modal" data-target="#Modal" title="Quick View" href="#" onclick="loadQuickShop('@product.ID')"><i class=" ti-eye"></i><span>Quick Shop</span></a>
+														<a title="Wishlist" href="#" onclick="loadAddToWishlist('@product.ID')"><i class=" ti-heart "></i><span>Add to Wishlist</span></a>
+														<a title="Compare" href="#"><i class="ti-bar-chart-alt"></i><span>Add to Compare</span></a>
+													</div>
+													<div class="product-action-2">
+														@if (User.IsInRole("User") || User.IsInRole("Manager"))
+														{
+															<a href="#" class="btn" onclick="loadAddToCart('@product.ID')">Add to cart</a>
+														}
+														else
+														{
+															<a href="/Identity/Account/Login" class="btn">Add to cart</a>
+
+														}
+													</div>
+												</div>
+											</div>
+											<div class="product-content">
+												<h3><a href="/Shop/Product/@product.ID">@product.ProductName</a></h3>
+												<div class="product-price">
+													<span class="old">R @product.ProductBasePrice</span>
+													<span style="color:red; font-weight:800;">R @product.ProductSalePrice</span>
+												</div>
+											</div>
+										</div>
+									</div>
+								}
+							}
+						</div>	
+						
+						<div class="row" style="padding:50px 0;">
+							<div class="col-12">
+								<!-- Shop Top -->
+								<div class="shop-top" style="background-color:#ffdeadc1;">
+									<div class="content" style="width:100%;">
+										<p><span>Limited Stock</span></p>
+										<h3>Reach Your Potential with High End<span style="color:orange"> Peripherals</span></h3>
+									</div>									
+								</div>								
+								<!--/ End Shop Top -->
+							</div>
+						</div>						
+						<div id="products" class="row">	
+								@foreach(var product in Model)					
+							{
+								@if (product.ProductCategory.Equals("Peripherals"))
+								{
+									<div class="col-lg-4 col-md-6 col-12">
+										<div class="single-product">
+											<div class="product-img">
+												<a href="/Shop/Product/@product.ID">
+													@if (product.ImageURL.Contains("www"))
+													{
+														<img class="default-img" src="@product.ImageURL" alt="#">
+														<img class="hover-img" src="@product.ImageURL" alt="#">
+													}
+													else
+													{
+														<img class="default-img" src="~/Uploads/@product.ImageURL" alt="#">
+														<img class="hover-img" src="~/Uploads/@product.ImageURL" alt="#">
+													}
+												</a>
+												<div class="button-head">
+													<div class="product-action">
+														<a data-toggle="modal" data-target="#Modal" title="Quick View" href="#" onclick="loadQuickShop('@product.ID')"><i class=" ti-eye"></i><span>Quick Shop</span></a>
+														<a title="Wishlist" href="#" onclick="loadAddToWishlist('@product.ID')"><i class=" ti-heart "></i><span>Add to Wishlist</span></a>
+														<a title="Compare" href="#"><i class="ti-bar-chart-alt"></i><span>Add to Compare</span></a>
+													</div>
+													<div class="product-action-2">
+														@if (User.IsInRole("User") || User.IsInRole("Manager"))
+														{
+															<a href="#" class="btn" onclick="loadAddToCart('@product.ID')">Add to cart</a>
+														}
+														else
+														{
+															<a href="/Identity/Account/Login" class="btn">Add to cart</a>
+
+														}
+													</div>
+												</div>
+											</div>
+											<div class="product-content">
+												<h3><a href="/Shop/Product/@product.ID">@product.ProductName</a></h3>
+												<div class="product-price">
+													<span class="old">R @product.ProductBasePrice</span>
+													<span style="color:red; font-weight:800;">R @product.ProductSalePrice</span>
+												</div>
+											</div>
+										</div>
+									</div>
+								}
+							}
+						</div>		
+						
+						<div class="row" style="padding:50px 0;">
+							<div class="col-12">
+								<!-- Shop Top -->
+								<div class="shop-top" style="background-color:#ffdeadc1;">
+									<div class="content" style="width:100%;">
+										<p><span>Limited Stock</span></p>
+										<h3>Get Ahead of Competition with High Resolution and Refresh Rates<span style="color:orange"> Gaming Monitors</span></h3>
+									</div>									
+								</div>								
+								<!--/ End Shop Top -->
+							</div>
+						</div>						
+						<div id="products" class="row">	
+								@foreach(var product in Model)					
+							{
+								@if (product.ProductCategory.Equals("Monitors"))
+								{
+									<div class="col-lg-4 col-md-6 col-12">
+										<div class="single-product">
+											<div class="product-img">
+												<a href="/Shop/Product/@product.ID">
+													@if (product.ImageURL.Contains("www"))
+													{
+														<img class="default-img" src="@product.ImageURL" alt="#">
+														<img class="hover-img" src="@product.ImageURL" alt="#">
+													}
+													else
+													{
+														<img class="default-img" src="~/Uploads/@product.ImageURL" alt="#">
+														<img class="hover-img" src="~/Uploads/@product.ImageURL" alt="#">
+													}
+												</a>
+												<div class="button-head">
+													<div class="product-action">
+														<a data-toggle="modal" data-target="#Modal" title="Quick View" href="#" onclick="loadQuickShop('@product.ID')"><i class=" ti-eye"></i><span>Quick Shop</span></a>
+														<a title="Wishlist" href="#" onclick="loadAddToWishlist('@product.ID')"><i class=" ti-heart "></i><span>Add to Wishlist</span></a>
+														<a title="Compare" href="#"><i class="ti-bar-chart-alt"></i><span>Add to Compare</span></a>
+													</div>
+													<div class="product-action-2">
+														@if (User.IsInRole("User") || User.IsInRole("Manager"))
+														{
+															<a href="#" class="btn" onclick="loadAddToCart('@product.ID')">Add to cart</a>
+														}
+														else
+														{
+															<a href="/Identity/Account/Login" class="btn">Add to cart</a>
+
+														}
+													</div>
+												</div>
+											</div>
+											<div class="product-content">
+												<h3><a href="/Shop/Product/@product.ID">@product.ProductName</a></h3>
+												<div class="product-price">
+													<span class="old">R @product.ProductBasePrice</span>
+													<span style="color:red; font-weight:800;">R @product.ProductSalePrice</span>
+												</div>
+											</div>
+										</div>
+									</div>
+								}
+							}
+						</div>
+
+						<div class="row" style="padding:50px 0;">
+							<div class="col-12">
+								<!-- Shop Top -->
+								<div class="shop-top" style="background-color:#ffdeadc1;">
+									<div class="content" style="width:100%;">
+										<p><span>Limited Stock</span></p>
+										<h3>Work or Play with our carefully Selected <span style="color:orange">Laptops</span></h3>
+									</div>
+								</div>
+								<!--/ End Shop Top -->
+							</div>
+						</div>
+						<div id="products" class="row">
+							@foreach(var product in Model)
+							{
+								@if (product.ProductCategory.Equals("Notebooks"))
+								{
+									<div class="col-lg-4 col-md-6 col-12">
+										<div class="single-product">
+											<div class="product-img">
+												<a href="/Shop/Product/@product.ID">
+													@if (product.ImageURL.Contains("www"))
+													{
+														<img class="default-img" src="@product.ImageURL" alt="#">
+														<img class="hover-img" src="@product.ImageURL" alt="#">
+													}
+													else
+													{
+														<img class="default-img" src="~/Uploads/@product.ImageURL" alt="#">
+														<img class="hover-img" src="~/Uploads/@product.ImageURL" alt="#">
+													}
+												</a>
+												<div class="button-head">
+													<div class="product-action">
+														<a data-toggle="modal" data-target="#Modal" title="Quick View" href="#" onclick="loadQuickShop('@product.ID')"><i class=" ti-eye"></i><span>Quick Shop</span></a>
+														<a title="Wishlist" href="#" onclick="loadAddToWishlist('@product.ID')"><i class=" ti-heart "></i><span>Add to Wishlist</span></a>
+														<a title="Compare" href="#"><i class="ti-bar-chart-alt"></i><span>Add to Compare</span></a>
+													</div>
+													<div class="product-action-2">
+														@if (User.IsInRole("User") || User.IsInRole("Manager"))
+														{
+															<a href="#" class="btn" onclick="loadAddToCart('@product.ID')">Add to cart</a>
+														}
+														else
+														{
+															<a href="/Identity/Account/Login" class="btn">Add to cart</a>
+
+														}
+													</div>
+												</div>
+											</div>
+											<div class="product-content">
+												<h3><a href="/Shop/Product/@product.ID">@product.ProductName</a></h3>
+												<div class="product-price">
+													<span class="old">R @product.ProductBasePrice</span>
+													<span style="color:red; font-weight:800;">R @product.ProductSalePrice</span>
+												</div>
+											</div>
+										</div>
+									</div>
+								}
+							}
+						</div>
+					</div>
+				}		
+		</div>		
+	</div>
+
 	</section>
 	<!--/ End Product Style 1  -->
 	<!-- Start Shop Newsletter  -->
@@ -564,7 +948,9 @@
 							</div>
 							<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
 								<div class="quickview-content">
+									<a href="/Shop/Product/@product.ID">
 									<h2>@product.ProductName</h2>
+									</a>
 									<div class="quickview-ratting-review">
 										<div class="quickview-ratting-wrap">
 											<div class="quickview-ratting">
@@ -576,39 +962,17 @@
 											</div>
 											<a href="#"> (1 customer review)</a>
 										</div>
+									</div>
 										<div class="quickview-stock">
 											<span><i class="fa fa-check-circle-o"></i> @product.ProductStock</span>
-										</div>
-									</div>
+										</div>							
 									<div class="product-price">
 										<span class="text-decoration-line-through">R @product.ProductBasePrice</span>
-										<h3>R @product.ProductSalePrice</h3>
+										<h3 style="color:red; font-weight:800;">R @product.ProductSalePrice</h3>
 									</div>
 									<div class="quickview-peragraph">
 										<p>@product.ProductDescription</p>
 									</div>
-									@*								<div class="size">
-								<div class="row">
-								<div class="col-lg-6 col-12">
-								<h5 class="title">Size</h5>
-								<select>
-								<option selected="selected">s</option>
-								<option>m</option>
-								<option>l</option>
-								<option>xl</option>
-								</select>
-								</div>
-								<div class="col-lg-6 col-12">
-								<h5 class="title">Color</h5>
-								<select>
-								<option selected="selected">orange</option>
-								<option>purple</option>
-								<option>black</option>
-								<option>pink</option>
-								</select>
-								</div>
-								</div>
-								</div>*@
 									<div class="quantity">
 										<!-- Input Order -->
 										<div class="input-group">
@@ -627,9 +991,16 @@
 										<!--/ End Input Order -->
 									</div>
 									<div class="add-to-cart">
-										<a href="#" class="btn" onclick="loadAddToCart('@product.ID')">Add to cart</a>
-										<a href="#" class="btn min"><i class="ti-heart"></i></a>
-										<a href="#" class="btn min"><i class="fa fa-compress"></i></a>
+										@if (User.IsInRole("User") || User.IsInRole("Manager"))
+										{
+											<a href="#" class="btn" onclick="loadAddToCart('@product.ID')">Add to cart</a>
+											<a href="#" onclick="loadAddToWishlist('@product.ID')" class="btn min"><i class="ti-heart"></i></a>
+										}
+										else
+										{
+											<a href="/Identity/Account/Login" class="btn">Add to cart</a>
+											<a href="/Identity/Account/Login" class="btn min"><i class="ti-heart"></i></a>
+										}
 									</div>
 									<div class="default-social">
 										<h4 class="share-now">Share:</h4>
@@ -671,11 +1042,11 @@
 						<div class="single-footer links">
 							<h4>Information</h4>
 							<ul>
-								<li><a href="#">About Us</a></li>
-								<li><a href="#">Faq</a></li>
-								<li><a href="#">Terms & Conditions</a></li>
-								<li><a href="#">Contact Us</a></li>
-								<li><a href="#">Help</a></li>
+								<li><a href="/Home/UnderConstruction">About Us</a></li>
+								<li><a href="/Home/UnderConstruction">Faq</a></li>
+								<li><a href="/Home/UnderConstruction">Terms & Conditions</a></li>
+								<li><a href="/Home/UnderConstruction">Contact Us</a></li>
+								<li><a href="/Home/UnderConstruction">Help</a></li>
 							</ul>
 						</div>
 						<!-- End Single Widget -->
@@ -685,11 +1056,11 @@
 						<div class="single-footer links">
 							<h4>Customer Service</h4>
 							<ul>
-								<li><a href="#">Payment Methods</a></li>
-								<li><a href="#">Money-back</a></li>
-								<li><a href="#">Returns</a></li>
-								<li><a href="#">Shipping</a></li>
-								<li><a href="#">Privacy Policy</a></li>
+								<li><a href="/Home/UnderConstruction">Payment Methods</a></li>
+								<li><a href="/Home/UnderConstruction">Money-back</a></li>
+								<li><a href="/Home/UnderConstruction">Returns</a></li>
+								<li><a href="/Home/UnderConstruction">Shipping</a></li>
+								<li><a href="/Home/UnderConstruction">Privacy Policy</a></li>
 							</ul>
 						</div>
 						<!-- End Single Widget -->
@@ -779,6 +1150,7 @@
 	<script src="js/onepage-nav.min.js"></script>
 	<!-- Easing JS -->
 	<script src="js/easing.js"></script>
+	<script src="~/alertifyjs/alertify.min.js"></script>
 	<!-- Active JS -->
 	<script src="js/active.js"></script>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -805,11 +1177,15 @@
 				data: { productId: productId },
 				success: function (r) {
 					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
+					showMessage();
 				},
 				error: function () {
 					$("#productInfo h2").text("Product is no Longer in Stock!");
 				}
 			});
+		}
+		function showMessage() {
+			var notification = alertify.notify('Added!', 'success', 5, function () { console.log('dismissed'); });
 		}
 		function loadCart() {
 			let basketId = 1;
@@ -838,13 +1214,41 @@
 				}
 			});
 		}
-		function loadDeleteWishList(productId) {
+		function loadAddToWishlist(productId) {
+			let wishlistStart = 1;
+			$.ajax({
+				type: 'GET',
+				url: '/Home/Index',
+				data: { productIdW: productId },
+				success: function (r) {
+					$("#Wishlistbasket").html($(r).find("#Wishlistbasket").html());
+				},
+				error: function () {
+					$("#productInfo h2").text("Product is no Longer in Stock!");
+				}
+			});
+		}
+		function loadDeleteWishlist(productId) {
 			$.ajax({
 				type: 'POST',
 				url: '/Shop/DeleteConfirmed',
 				data: { WishListRemovePID: productId },
 				success: function (r) {
-					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
+					$("#Wishlistbasket").html($(r).find("#Wishlistbasket").html());
+				},
+				error: function () {
+					$("#productInfo h2").text("Product is no Longer in Stock!");
+				}
+			});
+		}
+		function loadWishlist() {
+			let wishlistStart = 1;
+			$.ajax({
+				type: 'GET',
+				url: '/Shop/Index',
+				data: { wishlistStart: wishlistStart },
+				success: function (r) {
+					$("#Wishlistbasket").html($(r).find("#Wishlistbasket").html());
 				},
 				error: function () {
 					$("#productInfo h2").text("Product is no Longer in Stock!");
@@ -893,14 +1297,6 @@
 			}
 		});
 	</script>
-@*	$.ajax({
-	type: "GET",
-	url: "/Shop/Index",
-	data: { category: selectedCategory },
-	success: function (count) {
-	$("#priceRng").html($(count).find("#priceRng").html());
-	}
-	});*@
 	<script>
 		const progressBarContainer = document.querySelector("#progressBarContainer");
 		const progressBar = document.querySelector("#progressBar");
@@ -931,6 +1327,5 @@
 			});
 		});
 	</script>
-
 </body>
 </html>

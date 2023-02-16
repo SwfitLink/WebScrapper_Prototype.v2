@@ -12,6 +12,7 @@ using System.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.CodeAnalysis;
 using System.Drawing.Printing;
+using System.Linq;
 
 namespace WebScrapper_Prototype.Controllers
 {
@@ -36,18 +37,18 @@ namespace WebScrapper_Prototype.Controllers
 			Queue<decimal?> basePrice = new Queue<decimal?>();
 			Queue<decimal?> salePrice = new Queue<decimal?>();
 			Queue<decimal?> cartTotal = new Queue<decimal?>();
+			decimal? total = 0;
 			var products = from p in _context.Products
 						   select p;
 			var query = from p in _context.Products
-						join b in _context.ShopingBasket
+						join b in _context.ShopingBasket.Where(s => s.BasketId.Equals(getUser().Result))
 						on p.ID equals b.ProductId
 						select new { p, b };
 			products = query.Select(q => q.p);
-			query = query.Where(s => s.b.BasketId.Contains(getUser().Result));
 			foreach (var item in products)
 			{
 				basePrice.Enqueue(item.ProductBasePrice);
-				salePrice.Enqueue(item.ProductBasePrice);				
+				salePrice.Enqueue(item.ProductSalePrice);
 			}
 			if(salePrice.Sum() > 1500)
 			{
@@ -55,12 +56,22 @@ namespace WebScrapper_Prototype.Controllers
 			}
 			else
 			{
+				total = 1;
 				ViewBag.ShippingCost = 300;
 				ViewBag.GetFreeShipping = 1000 - salePrice.Sum();
 			}
+			if(total == 1)
+			{
+				ViewBag.CartTotalSale = salePrice.Sum() + 300;
+
+			}
+			else
+			{
+				ViewBag.CartTotalSale = salePrice.Sum();
+
+			}
 			ViewBag.BasketCount = products.Count();
 			ViewBag.Savings = basePrice.Sum() - salePrice.Sum();
-			ViewBag.CartTotalSale = salePrice.Sum();
 			ViewBag.CartTotalBase = basePrice.Sum();
 			basePrice.Clear();
 			salePrice.Clear();
@@ -79,22 +90,36 @@ namespace WebScrapper_Prototype.Controllers
 			return View(products.ToPagedList());
 		}
 		[HttpGet]
-		public IActionResult Index(int basketId, string priceRange, int productId, string manufacturer, string category, string searchString, string currentFilter, int? page, int pageSize)
-		{			
+		public IActionResult Index(int basketId, int productIdW, int wishlistStart, string priceRange, int productId, string manufacturer, string category, string searchString, string currentFilter, int? page, int pageSize)
+		{
 			Queue<decimal?> basePrice = new Queue<decimal?>();
 			Queue<decimal?> salePrice = new Queue<decimal?>();
 			Queue<decimal?> cartTotal = new Queue<decimal?>();
-			Queue<string?> test = new Queue<string?>();
-			ViewBag.CurrentFilter = currentFilter;		
 			var products = from p in _context.Products
 						   select p;
 			var basket = from b in _context.ShopingBasket
 						 select b;
+			var wishlist = from w in _context.UserWishList
+						   select w;
 			products = products.Where(p => p.Visible.Equals("Visible"));
+			if (!String.IsNullOrEmpty(searchString))
+			{
+				var words = searchString.Split(' ');
+				foreach (var word in words)
+				{
+					products = products.Where(s => s.ProductName.Contains(word));
+
+				}
+				ViewBag.CurrentFilter = searchString;
+			}
 			if (productId > 0)
 			{
 			var a = AddToCart(productId);
-			basket = basket.Where(b => b.BasketId.Equals(a));
+			}
+			if(productIdW > 0)
+			{
+				var v = AddToWishList(productIdW);
+				wishlist = wishlist.Where(w => w.ProductId.Equals(v));
 			}
 			if (!String.IsNullOrEmpty(priceRange))
 			{
@@ -136,28 +161,27 @@ namespace WebScrapper_Prototype.Controllers
 			{
 				searchString = currentFilter;
 			}
-			ViewBag.CurrentFilter = searchString;	
-			if (!String.IsNullOrEmpty(searchString))
+			if (wishlistStart == 1)
 			{
-				var words = searchString.Split(' ');
-				foreach(var word in words)
-				{
-					products = products.Where(s => s.ProductName.Contains(word));
-
-				}
+				var query = from p in _context.Products
+							join w in _context.UserWishList.Where(s => s.UserId.Equals(getUser().Result))
+							on p.ID equals w.ProductId
+							select new { p, w };
+				products = query.Select(q => q.p);
+				ViewBag.Wishlist = 1;
+				return View(products.ToPagedList());
 			}
 			if (basketId == 1)
 			{
 				var query = from p in _context.Products
-							join b in _context.ShopingBasket
-							on p.ID equals b.ProductId
+							join b in _context.ShopingBasket.Where(s => s.BasketId.Equals(getUser().Result))
+								on p.ID equals b.ProductId
 							select new { p, b };
-				products = query.Select(q => q.p);
-				query = query.Where(s => s.b.BasketId.Contains(getUser().Result));
-				foreach (var item in products)
+				products = query.Select(q => q.p);			
+				foreach (var p in products)
 				{
-					basePrice.Enqueue(item.ProductBasePrice);
-					salePrice.Enqueue(item.ProductBasePrice);
+					basePrice.Enqueue(p.ProductBasePrice);
+					salePrice.Enqueue(p.ProductBasePrice);
 				}
 				if (salePrice.Sum() > 1500)
 				{
@@ -175,7 +199,6 @@ namespace WebScrapper_Prototype.Controllers
 				basePrice.Clear();
 				salePrice.Clear();
 				ViewBag.BasketLoad = 1;
-				ViewBag.BasketCount = products.Count();
 				return View(products.ToPagedList(1, 100));
 			}
 			else
@@ -223,10 +246,14 @@ namespace WebScrapper_Prototype.Controllers
 				s.ProductSalePrice).Where(s =>
 				s.ProductSalePrice >= 10000 && s.ProductSalePrice <= 20000 && s.ProductCategory.Equals(category));
 				ViewBag.PriceRange4 = p4.Count();
-			}			
+			}
+			else
+			{
+				products = products.Where(s => s.ProductCategory.Equals("GPUs") || s.ProductCategory.Equals("CPUs") || s.ProductCategory.Equals("Notebooks") || s.ProductCategory.Equals("Monitors") || s.ProductCategory.Equals("Peripherals") || s.ProductCategory.Equals("Chassis"));
+			}
 			if (pageSize == 0)
 			{
-				pageSize = 25;
+				pageSize = 24;
 			}
 			else
 			{
@@ -238,20 +265,8 @@ namespace WebScrapper_Prototype.Controllers
 			ViewBag.ProductCount = onePageOfProducts.Count;
 			return View(onePageOfProducts);
 		}
-        [HttpPost]
-        public IActionResult Product(int id)
-        {
-			var products = from p in _context.Products
-						   select p;
-			if (id > 0)
-			{
-				products = products.Where(a => a.ID == id);
-
-			}
-			return View(products.ToPagedList());
-		}
         [HttpGet]
-        public IActionResult Product(int id, int basketId, int productId, string brand, string categories, string searchString, string currentFilter, int? page, int pageSize)
+        public IActionResult Product(int id)
         {
 			var products = from p in _context.Products
 						   select p;
@@ -270,7 +285,7 @@ namespace WebScrapper_Prototype.Controllers
 		} 
 		[Authorize(Roles = "User, Manager")]
 		[HttpPost]
-		public string AddToCart(int productId)
+		public int AddToCart(int productId)
 		{
 			var prod = from p in _context.Products
 					   select p;
@@ -284,9 +299,28 @@ namespace WebScrapper_Prototype.Controllers
 				_context.Entry(shoppingBasket).State = EntityState.Added;
 				_context.SaveChanges();
 
-				return shoppingBasket.BasketId;
+				return shoppingBasket.Id;
 			}
-			return "Error: Either Login or reload page.";
+			return 0;
+		}
+		[HttpPost]
+		public string AddToWishList(int productId)
+		{
+			var prod = from p in _context.Products
+					   select p;
+			if (productId > 0)
+			{
+				prod = prod.Where(p => p.ID == productId);
+				UserWishList wishList = new UserWishList();
+				wishList.ProductId = productId;
+				wishList.UserId = getUser().Result;
+				_context.Attach(wishList);
+				_context.Entry(wishList).State = EntityState.Added;
+				_context.SaveChanges();
+
+				return wishList.UserId;
+			}
+			return null;
 		}
 		[HttpGet]
 		public IActionResult GetProductsInRange(decimal? minValue, decimal? maxVaue)
@@ -299,18 +333,34 @@ namespace WebScrapper_Prototype.Controllers
 			return View(nameof(Index), onePageOfProducts);
 		}
 		[HttpPost]
-		public async Task<IActionResult> DeleteConfirmed(int BasketRemovePID)
+		public async Task<IActionResult> DeleteConfirmed(int BasketRemovePID, int WishListRemovePID, int IDB)
 		{
-			var basket = from b in _context.ShopingBasket
-						 select b;
-			var basketRowsToDelete = basket.Where(b => b.ProductId == BasketRemovePID);
-
-			if (basketRowsToDelete != null)
+			if (WishListRemovePID > 0)
 			{
-				_context.ShopingBasket.RemoveRange(basketRowsToDelete);
+				var wishlist = from w in _context.UserWishList.Where(s => s.UserId.Equals(getUser().Result))
+							   select w;
+				var wishlistRowsToDelete = wishlist.Where(w => w.ProductId == WishListRemovePID);
+
+				if (wishlistRowsToDelete != null)
+				{
+					_context.UserWishList.RemoveRange(wishlistRowsToDelete.First());
+				}
+				await _context.SaveChangesAsync();
+				return RedirectToAction("Index", new { wishlistStart = 1 });
 			}
-			await _context.SaveChangesAsync();
-			return RedirectToAction("Index", new { BasketID = 1 });
+			if (BasketRemovePID > 0)
+			{
+				var basket = from b in _context.ShopingBasket.Where(s => s.BasketId.Equals(getUser().Result))
+							 select b;				
+				var basketRowsToDelete = basket.Where(b => b.ProductId == BasketRemovePID);
+				if (basketRowsToDelete != null)
+				{
+					_context.ShopingBasket.RemoveRange(basketRowsToDelete.First());
+				}
+				await _context.SaveChangesAsync();
+				return RedirectToAction("Index", new { BasketID = 1 });
+			}
+			return RedirectToAction("Index", new { wishlistStart = 0 });
 		}
 	}
 }

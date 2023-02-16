@@ -32,6 +32,6 @@ namespace WebScrapper_Prototype.Models
         [Required]
         public string? dataBatch { get; set; }
         [NotMapped]
-        public IFormFile? ProductPic { get; set; }
+        public IFormFile ProductPic { get; set; }
     }
 }

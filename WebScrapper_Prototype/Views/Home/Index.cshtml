@@ -29,19 +29,21 @@
 	<link rel="stylesheet" href="css/bootstrap.css">
 	<!-- StyleSheet -->
 	<link href="~/Content/PagedList.css" type="text/css" rel="stylesheet">
-	<link rel="stylesheet" href="css/magnific-popup.min.css">
-	<link rel="stylesheet" href="css/font-awesome.css">
-	<link rel="stylesheet" href="css/jquery.fancybox.min.css">
-	<link rel="stylesheet" href="css/themify-icons.css">
-	<link rel="stylesheet" href="css/niceselect.css">
-	<link rel="stylesheet" href="css/animate.css">
-	<link rel="stylesheet" href="css/flex-slider.min.css">
-	<link rel="stylesheet" href="css/owl-carousel.css">
-	<link rel="stylesheet" href="css/slicknav.min.css">
-	<link rel="stylesheet" href="css/reset.css">
-	<link rel="stylesheet" href="css/style.css">
-	<link rel="stylesheet" href="css/responsive.css">
-	<link rel="stylesheet" href="css/site.css">
+	<link rel="stylesheet" href="~/css/magnific-popup.min.css">
+	<link rel="stylesheet" href="~/css/font-awesome.css">
+	<link rel="stylesheet" href="~/css/jquery.fancybox.min.css">
+	<link rel="stylesheet" href="~/css/themify-icons.css">
+	<link rel="stylesheet" href="~/css/niceselect.css">
+	<link rel="stylesheet" href="~/css/animate.css">
+	<link rel="stylesheet" href="~/css/flex-slider.min.css">
+	<link rel="stylesheet" href="~/css/owl-carousel.css">
+	<link rel="stylesheet" href="~/css/slicknav.min.css">
+	<link rel="stylesheet" href="~/css/reset.css">
+	<link rel="stylesheet" href="~/css/style.css">
+	<link rel="stylesheet" href="~/css/responsive.css">
+	<link rel="stylesheet" href="~/css/site.css">
+	<link rel="stylesheet" href="~/alertifyjs/css/alertify.min.css" />
+	<link rel="stylesheet" href="~/alertifyjs/css/themes/default.min.css" />
 	<link href="~/Content/PagedList.css" type="text/css" rel="stylesheet">
 </head>
 <body class="js">
@@ -79,7 +81,8 @@
 							@if (User.IsInRole("Manager"))
 							{
 								<ul class="list-main">
-									<li><i class="ti-alarm-clock"></i><a href="/Shop">Shop</a></li>
+									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
+									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
 									<li><i class="ti-dashboard"></i><a href="/Dashboard">Dashboard</a></li>
 									<li><i class="ti-power-off"></i><a asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home" , new { area="" })">Logout</a></li>
 								</ul>
@@ -87,14 +90,15 @@
 							else if (User.IsInRole("User"))
 							{
 								<ul class="list-main">
-									<li><i class="ti-alarm-clock"></i> <a href="/Shop">Shop</a></li>
+									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
+									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
 									<li><i class="ti-power-off"></i><a asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action(" Index", "Home" , new { area="" })">Logout</a></li>
 								</ul>
 							}
 							else
 							{
 								<ul class="list-main">
-									<li><i class="ti-alarm-clock"></i> <a href="/Shop">Shop</a></li>
+									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
 									<li><i class="ti-power-off"></i><a href="/Identity/Account/Login">Login</a></li>
 								</ul>
 							}
@@ -153,82 +157,75 @@
 									<a href="#" onclick="loadWishlist()" class="single-icon"><i class="fa fa-heart-o"></i></a>
 									<!-- Wishlist Item -->
 									<div id="Wishlistbasket" class="shopping-item">
-										@*					<script type="text/javascript">
-									$(document).ready(function () {
-									$('.single-icon').mouseenter(function () {
-									let wishlistStart = 1;
-									$.ajax({
-									type: 'GET',
-									url: '/Home/Index',
-									data: { wishlistStart: wishlistStart },
-									success: function (r) {
-									$("#Wishlistbasket").html($(r).find("#Wishlistbasket").html());
-									},
-									error: function () {
-									$("#productInfo h2").text("Product is no Longer in Stock!");
-									}
-									});
-									});
-									});
-									</script>*@
 										@if (ViewBag.Wishlist == 1)
 										{
-											@foreach (var product in Model)
+											@if (Model.Count() > 0)
 											{
 												<div class="dropdown-cart-header">
 													<span>Items: @Model.Count</span>
 													<a href="/Shop/Cart">
-														View Wishlist
+														My Wishlist
 													</a>
 												</div>
-												<ul class="shopping-list">
-													<li>
-														<a href="#" class="remove" title="Remove this item" onclick="loadDeleteWishlist('@product.ID')"><i class="fa fa-remove"></i></a>
-														<a class="cart-img" href="#"><img src="@product.ImageURL" alt="#"></a>
-														<h4><a href="#">@product.ProductName</a></h4>
-														<p class="quantity">1x - <span class="amount">@product.ProductSalePrice</span></p>
-													</li>
-												</ul>
-												<div class="bottom">
-													<div class="total">
-														<span>SubTotal:</span>
-														<span class="total-amount">R @ViewBag.Total</span>
-													</div>
-													<a href="checkout.html" class="btn animate">Checkout</a>
-												</div>
+												@foreach (var product in Model)
+												{
+													<ul class="shopping-list">
+														<li>
+															<a href="#" class="remove" title="Remove this item" onclick="loadDeleteCart('@product.ID')"><i class="fa fa-remove"></i></a>
+															<a class="cart-img" href="/Shop/Product/@product.ID"><img src="@product.ImageURL" alt="#"></a>
+															<h4><a href="/Shop/Product/@product.ID">@product.ProductName.Substring(0,20) ...</a></h4>
+															<p class="quantity">1x - <span class="amount" style="text-decoration-line:line-through;">R @product.ProductBasePrice</span>
+															<span class="amount" style="color:red;font-weight:800;">R @product.ProductSalePrice</span></p>
+														</li>
+													</ul>
+												}
+												<div class="bottom"></div>
+											}
+											else
+											{
+												<p>Your Wish list is Empty</p>
 											}
 										}
+										else
+										{
+											<p onclick="loadCart()">Click to load</p>
+										}
 									</div>
-									<!--/ End Wishlist Item -->
 								</div>
+								<!--/ End Wishlist Item -->
 								<div class="sinlge-bar">
 									<a href="#" class="single-icon"><i class="fa fa-user-circle-o" aria-hidden="true"></i></a>
 								</div>
 								<div class="sinlge-bar shopping">
-									<a href="#" onclick="loadCart()" class="single-icon"><i class="ti-bag"></i><span class="total-count">@ViewBag.BasketCount</span></a>
+									<a href="#" onclick="loadCart()" class="single-icon">
+										<i class="ti-bag"></i>
+										<span class="total-count">
+											@ViewBag.BasketCount
+										</span>
+									</a>
 									<!-- Shopping Item -->
 									<div id="shoppingbasket" class="shopping-item">
-										@*							<script type="text/javascript">
-									$(document).ready(function () {
-									$('.single-icon').mouseenter(function () {
-									let basketId = 1;
-									$.ajax({
-									type: 'GET',
-									url: '/Home/Index',
-									data: { basketId: basketId },
-									success: function (r) {
-									$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
-									},
-									error: function () {
-									$("#productInfo h2").text("Product is no Longer in Stock!");
-									}
-									});
-									});
-									});
-									</script>*@
+										<script type="text/javascript">
+											$(document).ready(function () {
+												$('.single-icon').mouseenter(function () {
+													let basketId = 1;
+													$.ajax({
+														type: 'GET',
+														url: '/Home/Index',
+														data: { basketId: basketId },
+														success: function (r) {
+															$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
+														},
+														error: function () {
+															$("#productInfo h2").text("Product is no Longer in Stock!");
+														}
+													});
+												});
+											});
+										</script>
 										@if (ViewBag.BasketLoad == 1)
 										{
-											@foreach (var product in Model)
+											@if (Model.Count() > 0)
 											{
 												<div class="dropdown-cart-header">
 													<span>Items: @Model.Count</span>
@@ -236,27 +233,46 @@
 														View Cart
 													</a>
 												</div>
-												<ul class="shopping-list">
-													<li>
-														<a href="#" class="remove" title="Remove this item" onclick="loadDeleteCart('@product.ID')"><i class="fa fa-remove"></i></a>
-														<a class="cart-img" href="#"><img src="@product.ImageURL" alt="#"></a>
-														<h4><a href="#">@product.ProductName</a></h4>
-														<p class="quantity">1x - <span class="amount">@product.ProductSalePrice</span></p>
-													</li>
-												</ul>
+												@foreach (var product in Model)
+												{
+													<ul class="shopping-list">
+														<li>
+															<a href="#" class="remove" title="Remove this item" onclick="loadDeleteCart('@product.ID')"><i class="fa fa-remove"></i></a>
+															<a class="cart-img" href="/Shop/Product/@product.ID"><img src="@product.ImageURL" alt="#"></a>
+															<h4><a href="/Shop/Product/@product.ID">@product.ProductName.Substring(0,20) ...</a></h4>
+															<p class="quantity">1x - <span class="amount" style="text-decoration-line:line-through;">R @product.ProductBasePrice</span>
+															<span class="amount" style="color:red;font-weight:800;">R @product.ProductSalePrice</span></p>
+														</li>
+													</ul>
+												}
 												<div class="bottom">
 													<div class="total">
-														<span>Total:</span>
-														<span class="total-amount">R @ViewBag.CartTotalSale</span>
+														<span>Sub Total:</span>
+														<span class="total-amount" style="text-decoration-line:line-through">R @ViewBag.CartTotalBase</span>
 													</div>
-													<a href="#" class="btn animate">Checkout</a>
+													<div class="total">
+														<span>Discount:</span>
+														<span class="total-amount" style="color:red;font-weight:800;">R @ViewBag.Savings</span>
+													</div>
+													<div class="total">
+														<span>Total:</span>
+														<span class="total-amount" style="text-decoration-line:underline">R @ViewBag.CartTotalSale</span>
+													</div>
+													<a href="/Home/UnderConstruction" class="btn animate">Checkout</a>
 												</div>
 											}
+											else
+											{
+												<p>Your Cart is Empty</p>
+											}
+										}
+										else
+										{
+											<p onclick="loadCart()">Click to load</p>
 										}
 									</div>
 									<!--/ End Shopping Item -->
 								</div>
-
 							</div>
 						</div>
 					}
@@ -284,21 +300,21 @@
 										</ul>
 									</li>
 									<li class="main-mega">
-										<a href="#">Mega Discount<i class="fa fa-angle-right" aria-hidden="true"></i></a>
+										<a href="/Home/UnderConstruction">Mega Discount<i class="fa fa-angle-right" aria-hidden="true"></i></a>
 										<ul class="mega-menu">
 											<li class="single-menu">
-												<a href="#" class="title-link">GeForce Experience GPUs</a>
+												<a href="/Home/UnderConstruction" class="title-link">GeForce Experience GPUs</a>
 												<div class="image">
 													<img src="https://via.placeholder.com/600x370" alt="#">
 												</div>
 												<div class="inner-link">
-													<a href="#">GPU NAME HERE</a>
+													<a href="/Home/UnderConstruction">GPU NAME HERE</a>
 													<a href="#">GPU NAME HERE</a>
 													<a href="#">GPU NAME HERE</a>
 												</div>
 											</li>
 											<li class="single-menu">
-												<a href="#" class="title-link">Intel</a>
+												<a href="/Home/UnderConstruction" class="title-link">Intel</a>
 												<div class="image">
 													<img src="https://via.placeholder.com/600x370" alt="#">
 												</div>
@@ -309,7 +325,7 @@
 												</div>
 											</li>
 											<li class="single-menu">
-												<a href="#" class="title-link">AMD</a>
+												<a href="/Home/UnderConstruction" class="title-link">AMD</a>
 												<div class="image">
 													<img src="https://via.placeholder.com/600x370" alt="#">
 												</div>
@@ -364,24 +380,23 @@
 										<div class="nav-inner">
 											<ul class="nav main-menu menu navbar-nav">
 												<li class="active"><a href="/">Home</a></li>
-												<li><a href="#">Mega Sale</a></li>
+												<li><a href="/Home/UnderConstruction">Mega Sale</a></li>
 												<li>
 													<a href="#">Shop<i class="ti-angle-down"></i><span class="new">New</span></a>
 													<ul class="dropdown">
 														<li><a href="/Shop">Shop</a></li>
 														<li><a href="/Shop/Cart">Cart</a></li>
-														<li><a href="/Shop/WishList">Wish-list</a></li>
 													</ul>
 												</li>
-												<li><a href="#">PC Builder</a></li>
-												<li><a href="#">Tutorials</a></li>
+												<li><a href="/Home/UnderConstruction">PC Builder</a></li>
+												<li><a href="/Home/UnderConstruction">Tutorials</a></li>
 												<li>
-													<a href="#">Blog<i class="ti-angle-down"></i></a>
+													<a href="/Home/UnderConstruction">Blog<i class="ti-angle-down"></i></a>
 													<ul class="dropdown">
-														<li><a href="#">Trending</a></li>
+														<li><a href="/Home/UnderConstruction">Trending</a></li>
 													</ul>
 												</li>
-												<li><a href="#">Contact Us</a></li>
+												<li><a href="/Home/UnderConstruction">Contact Us</a></li>
 											</ul>
 										</div>
 									</div>
@@ -430,10 +445,10 @@
 				<div class="col-lg-4 col-md-6 col-12">
 					<div class="single-banner">
 						<img src="~/Media/Home/single-banner1.png" alt="AI determine">
-						<div class="content" style="background-color:#ffdeadc1; padding:15px;">
+						<div class="content" style="background-color:#ffdeadc1; padding:15px;  width:100%;">
 							<p>PC Builder</p>
 							<h3>Let our <span style="color:ghostwhite">AI determine</span> the best possible specs for your needs and budget</h3>
-							<a href="#">Discover Now</a>
+							<a href="/Home/UnderConstruction">Discover Now</a>
 						</div>
 					</div>
 				</div>
@@ -442,10 +457,10 @@
 				<div class="col-lg-4 col-md-6 col-12">
 					<div class="single-banner">
 						<img src="~/Media/Home/single-banner2.png" alt="Top Laptops">
-						<div class="content" style="background-color:#ffdeadc1; padding:15px;">
+						<div class="content" style="background-color:#ffdeadc1; padding:15px; width:100%;">
 							<p>Mega Discounts</p>
-							<h3><span style="color:ghostwhite">Top Laptops</span> for gaming, personal and business in 2023</h3>
-							<a href="#">Shop Now</a>
+							<h3><span style="color:ghostwhite">Top Laptops</span> for gaming,<br /> personal and business in 2023</h3>
+							<a href="/Shop">Shop Now</a>
 						</div>
 					</div>
 				</div>
@@ -457,7 +472,7 @@
 						<div class="content" style="background-color:#ffdeadc1; padding:15px; width:100%;">
 							<p>Pre-Built Towers</p>
 							<h3>Built for <span style="color:ghostwhite">Gamers</span><br>by <span>Gamers</span></h3>
-							<a href="#">Discover Now</a>
+							<a href="/Home/UnderConstruction">Discover Now</a>
 						</div>
 					</div>
 				</div>
@@ -471,6 +486,8 @@
 		<div id="progressBarContainer">
 			<div id="progressBar"></div>
 		</div>
+		<div id="message-overlay"></div>
+		<div id="message"></div>
 		<div class="container">
 			<div class="row">
 				<div class="col-12">
@@ -524,15 +541,24 @@
 																<a title="Wishlist" href="#" onclick="loadAddToWishlist('@product.ID')"><i class=" ti-heart "></i><span>Add to Wishlist</span></a>
 															</div>
 															<div class="product-action-2">
-																<a id="addToCart" title="Add to cart" href="#" onclick="loadAddToCart('@product.ID')">Add To Cart</a>
+																@if (User.IsInRole("User") || User.IsInRole("Manager"))
+																{
+
+																	<a href="#products" class="btn" onclick="loadAddToCart('@product.ID')">Add to cart</a>
+																}
+																else
+																{
+																	<a href="/Identity/Account/Login" class="btn">Add to cart</a>
+
+																}
 															</div>
 														</div>
 													</div>
 													<div class="product-content">
-														<h3><a href="product-details.html">@product.ProductName</a></h3>
+														<h3><a href="product-details.html">R @product.ProductName</a></h3>
 														<div class="product-price">
-															<span class="old">@product.ProductBasePrice</span>
-															<span>@product.ProductSalePrice</span>
+															<span class="old">R @product.ProductBasePrice</span>
+															<span style="color:red; font-weight:800;">R @product.ProductSalePrice</span>
 														</div>
 													</div>
 												</div>
@@ -574,7 +600,7 @@
 											<h3 class="title">@item.ProductName</h3>
 										</a>
 										<p class="text">Limited Time Offer!! </p>
-										<h1 class="price">@item.ProductSalePrice <s>@item.ProductBasePrice</s></h1>
+										<h1 class="price" style="color:red; font-weight:800;">R @item.ProductSalePrice <s>R @item.ProductBasePrice</s></h1>
 										<div class="coming-time">
 											<div class="clearfix" data-countdown="2023/02/25"></div>
 										</div>
@@ -589,6 +615,7 @@
 	</section>
 	<!-- /End CountDown Area -->
 	<!-- Start Shop Services Area -->
+	<br />
 	<section class="shop-services section home">
 		<div class="container">
 			<div class="row">
@@ -700,39 +727,17 @@
 											</div>
 											<a href="#"> (1 customer review)</a>
 										</div>
+									</div>
 										<div class="quickview-stock">
 											<span><i class="fa fa-check-circle-o"></i> @product.ProductStock</span>
-										</div>
-									</div>
+										</div>									
 									<div class="product-price">
 										<span class="text-decoration-line-through">R @product.ProductBasePrice</span>
-										<h3>R @product.ProductSalePrice</h3>
+										<h3 style="color:red; font-weight:800;">R @product.ProductSalePrice</h3>
 									</div>
 									<div class="quickview-peragraph">
 										<p>@product.ProductDescription</p>
 									</div>
-									@*								<div class="size">
-								<div class="row">
-								<div class="col-lg-6 col-12">
-								<h5 class="title">Size</h5>
-								<select>
-								<option selected="selected">s</option>
-								<option>m</option>
-								<option>l</option>
-								<option>xl</option>
-								</select>
-								</div>
-								<div class="col-lg-6 col-12">
-								<h5 class="title">Color</h5>
-								<select>
-								<option selected="selected">orange</option>
-								<option>purple</option>
-								<option>black</option>
-								<option>pink</option>
-								</select>
-								</div>
-								</div>
-								</div>*@
 									<div class="quantity">
 										<!-- Input Order -->
 										<div class="input-group">
@@ -754,14 +759,13 @@
 										@if (User.IsInRole("User") || User.IsInRole("Manager"))
 										{
 											<a href="#" class="btn" onclick="loadAddToCart('@product.ID')">Add to cart</a>
-
+											<a href="#" onclick="loadAddToWishlist('@product.ID')" class="btn min"><i class="ti-heart"></i></a>
 										}
 										else
 										{
 											<a href="/Identity/Account/Login" class="btn">Add to cart</a>
-
-										}										<a href="#" class="btn min"><i class="ti-heart"></i></a>
-										<a href="#" class="btn min"><i class="fa fa-compress"></i></a>
+											<a href="/Identity/Account/Login" class="btn min"><i class="ti-heart"></i></a>
+										}															
 									</div>
 									<div class="default-social">
 										<h4 class="share-now">Share:</h4>
@@ -793,8 +797,8 @@
 							<div class="logo">
 								<a href="index.html"><img src="images/logo2.png" alt="#"></a>
 							</div>
-							@*							<p class="text">Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue,  magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus.</p>
-							*@							<p class="call">Got Question? Call us 24/7<span><a href="tel:123456789">+27 81 565 0206</a></span></p>
+							<p class="text">Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue,  magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus.</p>
+							<p class="call">Got Question? Call us 24/7<span><a href="tel:123456789">+27 81 565 0206</a></span></p>
 						</div>
 						<!-- End Single Widget -->
 					</div>
@@ -803,11 +807,11 @@
 						<div class="single-footer links">
 							<h4>Information</h4>
 							<ul>
-								<li><a href="#">About Us</a></li>
-								<li><a href="#">Faq</a></li>
-								<li><a href="#">Terms & Conditions</a></li>
-								<li><a href="#">Contact Us</a></li>
-								<li><a href="#">Help</a></li>
+								<li><a href="/Home/UnderConstruction">About Us</a></li>
+								<li><a href="/Home/UnderConstruction">Faq</a></li>
+								<li><a href="/Home/UnderConstruction">Terms & Conditions</a></li>
+								<li><a href="/Home/UnderConstruction">Contact Us</a></li>
+								<li><a href="/Home/UnderConstruction">Help</a></li>
 							</ul>
 						</div>
 						<!-- End Single Widget -->
@@ -817,11 +821,11 @@
 						<div class="single-footer links">
 							<h4>Customer Service</h4>
 							<ul>
-								<li><a href="#">Payment Methods</a></li>
-								<li><a href="#">Money-back</a></li>
-								<li><a href="#">Returns</a></li>
-								<li><a href="#">Shipping</a></li>
-								<li><a href="#">Privacy Policy</a></li>
+								<li><a href="/Home/UnderConstruction">Payment Methods</a></li>
+								<li><a href="/Home/UnderConstruction">Money-back</a></li>
+								<li><a href="/Home/UnderConstruction">Returns</a></li>
+								<li><a href="/Home/UnderConstruction">Shipping</a></li>
+								<li><a href="/Home/UnderConstruction">Privacy Policy</a></li>
 							</ul>
 						</div>
 						<!-- End Single Widget -->
@@ -907,6 +911,7 @@
 	<!-- Easing JS -->
 	<script src="js/easing.js"></script>
 	<!-- Active JS -->
+	<script src="~/alertifyjs/alertify.min.js"></script>
 	<script src="js/active.js"></script>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 	<!---Load QuickShop-->
@@ -924,7 +929,6 @@
 				}
 			});
 		}
-
 	</script>
 	<!---Load Filter-->
 	<script type="text/javascript">
@@ -973,6 +977,37 @@
 				data: { productId: productId },
 				success: function (r) {
 					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
+					showMessage();
+				},
+				error: function () {
+					$("#productInfo h2").text("Product is no Longer in Stock!");
+				}
+			});
+		}
+		function showMessage() {
+			var notification = alertify.notify('Added!', 'success', 5, function () { console.log('dismissed'); });
+		}
+	function loadCart() {
+			let basketId = 1;
+			$.ajax({
+				type: 'GET',
+				url: '/Home/Index',
+				data: { basketId: basketId },
+				success: function (r) {
+					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
+				},
+				error: function () {
+					$("#productInfo h2").text("Product is no Longer in Stock!");
+				}
+			});
+		}
+		function loadDeleteCart(productId) {
+			$.ajax({
+				type: 'POST',
+				url: '/Shop/DeleteConfirmed',
+				data: { BasketRemovePID: productId },
+				success: function (r) {
+					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
 				},
 				error: function () {
 					$("#productInfo h2").text("Product is no Longer in Stock!");
@@ -987,19 +1022,6 @@
 				data: { productIdW: productId },
 				success: function (r) {
 					$("#Wishlistbasket").html($(r).find("#Wishlistbasket").html());
-				},
-				error: function () {
-					$("#productInfo h2").text("Product is no Longer in Stock!");
-				}
-			});
-		}
-		function loadDeleteCart(productId) {
-			$.ajax({
-				type: 'POST',
-				url: '/Home/DeleteConfirmed',
-				data: { BasketRemovePID: productId },
-				success: function (r) {
-					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
 				},
 				error: function () {
 					$("#productInfo h2").text("Product is no Longer in Stock!");
@@ -1027,20 +1049,6 @@
 				data: { wishlistStart: wishlistStart },
 				success: function (r) {
 					$("#Wishlistbasket").html($(r).find("#Wishlistbasket").html());
-				},
-				error: function () {
-					$("#productInfo h2").text("Product is no Longer in Stock!");
-				}
-			});
-		}
-		function loadCart() {
-			let basketId = 1;
-			$.ajax({
-				type: 'GET',
-				url: '/Home/Index',
-				data: { basketId: basketId },
-				success: function (r) {
-					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
 				},
 				error: function () {
 					$("#productInfo h2").text("Product is no Longer in Stock!");

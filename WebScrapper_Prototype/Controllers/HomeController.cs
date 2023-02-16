@@ -11,6 +11,7 @@ using X.PagedList;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
 using System.Linq;
+using WebScrapper_Prototype.Services;
 
 namespace WebScrapper_Prototype.Controllers
 {
@@ -56,18 +57,6 @@ namespace WebScrapper_Prototype.Controllers
 			Queue<decimal?> basePrice = new Queue<decimal?>();
 			Queue<decimal?> salePrice = new Queue<decimal?>();
 			Queue<decimal?> cartTotal = new Queue<decimal?>();
-			ViewBag.CurrentSort = sortOrder;
-			ViewBag.CurrentProduct = findProduct;
-			ViewBag.ProductStatusSortParm = String.IsNullOrEmpty(sortOrder) ? "new" : "";
-			ViewBag.LowestPriceParm = sortOrder == "price_desc" ? "price_desc" : "price_desc";
-			ViewBag.SavingParm = sortOrder == "savings" ? "savings" : "savings";
-
-			ViewBag.ProductCatParm = String.IsNullOrEmpty(findProduct) ? "All" : "";
-			ViewBag.CatLaptopParm = findProduct == "laptops" ? "laptops" : "laptops";
-			ViewBag.CatDesktopParm = findProduct == "desktop" ? "desktop" : "desktop";
-			ViewBag.CatHardwareParm = findProduct == "hardware" ? "hardware" : "hardware";
-			ViewBag.CatAccessoriesParm = findProduct == "accessories" ? "accessories" : "accessories";
-			ViewBag.Total = total;
 			int pageSize = 12;
 			int pageNumber = (page ?? 1);
 			var products = from p in _context.Products
@@ -77,10 +66,16 @@ namespace WebScrapper_Prototype.Controllers
 			var wishlist = from w in _context.UserWishList
 						 select w;
 			products = products.Where(p => p.Visible.Equals("Visible"));
-			var a = AddToCart(productId);
-			basket = basket.Where(b => b.BasketId.Equals(a));
-			var v = AddToWishList(productIdW);
-			wishlist = wishlist.Where(w => w.ProductId.Equals(v));
+			if (productId > 0)
+			{
+				var a = AddToCart(productId);
+				basket = basket.Where(b => b.BasketId.Equals(a));
+			}
+			if (productIdW > 0)
+			{
+				var v = AddToWishList(productIdW);
+				wishlist = wishlist.Where(w => w.ProductId.Equals(v));
+			}
 			if (searchString != null)
 			{
 				page = 1;
@@ -89,7 +84,6 @@ namespace WebScrapper_Prototype.Controllers
 			{
 				searchString = currentFilter;
 			}
-			ViewBag.CurrentFilter = searchString;
 			if (!String.IsNullOrEmpty(searchString))
 			{
 				products = products.Where(s => s.ProductName.Contains(searchString));
@@ -118,7 +112,7 @@ namespace WebScrapper_Prototype.Controllers
 			if(wishlistStart == 1)
 			{
 				var query = from p in _context.Products
-							join w in _context.UserWishList
+							join w in _context.UserWishList.Where(s => s.UserId.Equals(getUser().Result))
 							on p.ID equals w.ProductId
 							select new { p, w };
 				products = query.Select(q => q.p);
@@ -132,15 +126,14 @@ namespace WebScrapper_Prototype.Controllers
 			if (basketId == 1)
 			{
 				var query = from p in _context.Products
-							join b in _context.ShopingBasket
+							join b in _context.ShopingBasket.Where(s => s.BasketId.Equals(getUser().Result))
 							on p.ID equals b.ProductId
 							select new { p, b };
-				products = query.Select(q => q.p);
-				query = query.Where(s => s.b.BasketId.Contains(getUser().Result));
+				products = query.Select(s => s.p);
 				foreach (var item in products)
 				{
 					basePrice.Enqueue(item.ProductBasePrice);
-					salePrice.Enqueue(item.ProductBasePrice);
+					salePrice.Enqueue(item.ProductSalePrice);
 				}
 				if (salePrice.Sum() > 1500)
 				{
@@ -174,37 +167,37 @@ namespace WebScrapper_Prototype.Controllers
 			var email = user.Email;
 			return email;
 		}
-		[HttpPost]
+        [Authorize(Roles = "User, Manager")]
+        [HttpPost]
 		public async Task<IActionResult> DeleteConfirmed(int BasketRemovePID, int WishListRemovePID)
 		{
 			if (WishListRemovePID > 0)
 			{
-				var wishlist = from w in _context.UserWishList
-							 select w;
+				var wishlist = from w in _context.UserWishList.Where(s => s.UserId.Equals(getUser().Result))
+							   select w;
 				var wishlistRowsToDelete = wishlist.Where(w => w.ProductId == WishListRemovePID);
 
 				if (wishlistRowsToDelete != null)
 				{
-					_context.UserWishList.RemoveRange(wishlistRowsToDelete);
+					_context.UserWishList.RemoveRange(wishlistRowsToDelete.First());
 				}
 				await _context.SaveChangesAsync();
 				return RedirectToAction("Index", new { wishlistStart = 1 });
 			}
 			if (BasketRemovePID > 0)
 			{
-				var basket = from b in _context.ShopingBasket
-							 select b;
+				var basket = from b in _context.ShopingBasket.Where(s => s.BasketId.Equals(getUser().Result))
+                             select b;
 				var basketRowsToDelete = basket.Where(b => b.ProductId == BasketRemovePID);
 
 				if (basketRowsToDelete != null)
 				{
-					_context.ShopingBasket.RemoveRange(basketRowsToDelete);
+					_context.ShopingBasket.RemoveRange(basketRowsToDelete.First());
 				}
 				await _context.SaveChangesAsync();
 				return RedirectToAction("Index", new { BasketID = 1 });
 			}
 			return RedirectToAction("Index", new { wishlistStart = 0 });
-
 		}
 		[Authorize(Roles = "User, Manager")]
 		[HttpPost]
@@ -246,57 +239,6 @@ namespace WebScrapper_Prototype.Controllers
 			}
 			return null;
 		}
-		[HttpPost]
-		public ActionResult CreateBasket()
-		{
-			Basket basket = new Basket
-			{
-				BasketId = getUser().Result,
-				ProductId = 0
-			};
-			_context.Attach(basket);
-			_context.Entry(basket).State = EntityState.Added;
-			_context.SaveChanges();
-			return View();
-		}
-		public IActionResult Checkout()
-		{
-			if (getUser().Result != null)
-			{
-				var userEmail = getUser().Result;
-				var items = from b in _context.ShopingBasket
-							select b;
-				var prod = from p in _context.Products
-						   select p;
-				if (items.Where(s => s.BasketId.Equals(userEmail)) == null)
-				{
-					CreateBasket();
-				}
-				items = items.Where(s => s.BasketId.Equals(userEmail));
-				foreach (var i in items)
-				{
-					prod = prod.Where(p => p.ID == i.ProductId).Distinct();
-				}
-
-				return View(prod.ToPagedList());
-			}
-			return RedirectToAction(nameof(Index));
-		}
-		public IActionResult GoShop(string categories)
-		{
-			ViewBag.CategoryParm = categories;
-			ViewBag.CategoryGPUParm = categories == "GPUs" ? "GPUs" : "GPUs";
-			if (!String.IsNullOrEmpty(categories))
-			{
-				switch (categories)
-				{
-					case "GPUs":
-						return RedirectToAction("Index", "Shop", new { categories = "GPUs" });
-
-				}
-			}
-			return RedirectToAction("Index", "Shop", new { categories = ViewBag.CategoryParm });
-		}
 		public IActionResult ReleaseNotes()
 		{
 			return View();
@@ -305,6 +247,10 @@ namespace WebScrapper_Prototype.Controllers
 		public IActionResult Error()
 		{
 			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+		}
+		public ActionResult UnderConstruction()
+		{
+			return View();
 		}
 	}
 }

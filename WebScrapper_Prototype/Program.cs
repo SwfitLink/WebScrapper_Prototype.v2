@@ -4,7 +4,7 @@ using System.Security.Claims;
 using System.Web.Helpers;
 using WebScrapper_Prototype.Areas.Identity.Data;
 using WebScrapper_Prototype.Data;
-
+using WebScrapper_Prototype.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<WebScrapper_PrototypeContext>(options =>
