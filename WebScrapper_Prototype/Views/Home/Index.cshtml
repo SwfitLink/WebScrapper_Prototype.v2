@@ -46,7 +46,7 @@
 	<link rel="stylesheet" href="~/alertifyjs/css/themes/default.min.css" />
 	<link href="~/Content/PagedList.css" type="text/css" rel="stylesheet">
 </head>
-<body class="js">
+<body class="js" onload="fireOncePerSession1(); fireOncePerSession2();">
 	<!-- Preloader -->
 	<div class="preloader">
 		<div class="preloader-inner">
@@ -174,8 +174,9 @@
 															<a href="#" class="remove" title="Remove this item" onclick="loadDeleteCart('@product.ID')"><i class="fa fa-remove"></i></a>
 															<a class="cart-img" href="/Shop/Product/@product.ID"><img src="@product.ImageURL" alt="#"></a>
 															<h4><a href="/Shop/Product/@product.ID">@product.ProductName.Substring(0,20) ...</a></h4>
-															<p class="quantity">1x - <span class="amount" style="text-decoration-line:line-through;">R @product.ProductBasePrice</span>
-															<span class="amount" style="color:red;font-weight:800;">R @product.ProductSalePrice</span></p>
+															<p class="quantity">
+																1x - <span class="amount" style="text-decoration-line:line-through;color:red;">R @product.ProductBasePrice</span>
+															<span class="amount" style="font-weight:800">R @product.ProductSalePrice</span></p>
 														</li>
 													</ul>
 												}
@@ -240,23 +241,23 @@
 															<a href="#" class="remove" title="Remove this item" onclick="loadDeleteCart('@product.ID')"><i class="fa fa-remove"></i></a>
 															<a class="cart-img" href="/Shop/Product/@product.ID"><img src="@product.ImageURL" alt="#"></a>
 															<h4><a href="/Shop/Product/@product.ID">@product.ProductName.Substring(0,20) ...</a></h4>
-															<p class="quantity">1x - <span class="amount" style="text-decoration-line:line-through;">R @product.ProductBasePrice</span>
-															<span class="amount" style="color:red;font-weight:800;">R @product.ProductSalePrice</span></p>
+															<p class="quantity">1x - <span class="amount" style="text-decoration-line:line-through; color:red;">R @product.ProductBasePrice</span>
+															<span class="amount" style="font-weight:800;">R @product.ProductSalePrice</span></p>
 														</li>
 													</ul>
 												}
 												<div class="bottom">
 													<div class="total">
 														<span>Sub Total:</span>
-														<span class="total-amount" style="text-decoration-line:line-through">R @ViewBag.CartTotalBase</span>
+														<span class="total-amount" style="text-decoration-line:line-through; color:red;">R @ViewBag.CartTotalBase</span>
 													</div>
 													<div class="total">
 														<span>Discount:</span>
-														<span class="total-amount" style="color:red;font-weight:800;">R @ViewBag.Savings</span>
+														<span class="total-amount" style="font-weight:800;">- R @ViewBag.Savings</span>
 													</div>
 													<div class="total">
 														<span>Total:</span>
-														<span class="total-amount" style="text-decoration-line:underline">R @ViewBag.CartTotalSale</span>
+														<span class="total-amount" style="text-decoration-line:underline;font-weight:800;">R @ViewBag.CartTotalSale</span>
 													</div>
 													<a href="/Home/UnderConstruction" class="btn animate">Checkout</a>
 												</div>
@@ -286,88 +287,90 @@
 					<div class="row">
 						<div class="col-lg-3">
 							<div class="all-category">
-								<h3 class="cat-heading"><i class="fa fa-bars" aria-hidden="true"></i>CATEGORIES</h3>
-								<ul class="main-category">
-									<li>
-										<a href="#">Laptops <i class="fa fa-angle-right" aria-hidden="true"></i></a>
+								<h3 class="cat-heading"><i class="fa fa-bars" aria-hidden="true"></i>BROWSE</h3>
+								<ul class="main-category">																						
+@*									<li>
+										<a href="#">Manufacturers <i class="fa fa-angle-right" aria-hidden="true"></i></a>
 										<ul class="sub-category">
 											<li>
-												@Html.ActionLink("Dell", "Index", "Shop", new { brand = "Dell", categories = "Notebooks" })
+												@Html.ActionLink("Dell", "Index", "Shop", new { manufacturer = "Dell" })
 											</li>
 											<li>
-												@Html.ActionLink("ASUS", "Index", "Shop", new { brand = "ASUS", categories = "Notebooks" })
+												@Html.ActionLink("Phanteks", "Index", "Shop", new { manufacturer = "Phanteks" })
+											</li>																						
+											<li>
+												@Html.ActionLink("ASUS", "Index", "Shop", new { manufacturer = "ASUS" })
+											</li>																						
+											<li>
+												@Html.ActionLink("Gigabyte", "Index", "Shop", new { manufacturer = "Gigabyte" })
 											</li>
 										</ul>
-									</li>
+									</li>*@
 									<li class="main-mega">
-										<a href="/Home/UnderConstruction">Mega Discount<i class="fa fa-angle-right" aria-hidden="true"></i></a>
+										<a href="/Home/UnderConstruction">New Arrivals<i class="fa fa-angle-right" aria-hidden="true"></i></a>
 										<ul class="mega-menu">
-											<li class="single-menu">
-												<a href="/Home/UnderConstruction" class="title-link">GeForce Experience GPUs</a>
+											<li class="single-menu">																								
+												@Html.ActionLink("AMD", "Index", "Shop", 
+												new { manufacturer = "AMD" }, 
+												new { Class="title-link" })
 												<div class="image">
-													<img src="https://via.placeholder.com/600x370" alt="#">
+													<a href="/Shop?manufacturer=AMD"><img src="/Media/Home/6.png" alt="#"></a>													
 												</div>
 												<div class="inner-link">
-													<a href="/Home/UnderConstruction">GPU NAME HERE</a>
-													<a href="#">GPU NAME HERE</a>
-													<a href="#">GPU NAME HERE</a>
+													<a href="#">
+														@Html.ActionLink("Ryzen 9", "Index", "Shop", new { manufacturer = "Ryzen 9" })
+													</a>
+													<a href="#">																												
+														@Html.ActionLink("Ryzen 7", "Index", "Shop", new { manufacturer = "Ryzen 7" })
+													</a>
+													<a href="#">
+														@Html.ActionLink("Ryzen 5", "Index", "Shop", new { manufacturer = "Ryzen 5" })
+													</a>
 												</div>
 											</li>
 											<li class="single-menu">
-												<a href="/Home/UnderConstruction" class="title-link">Intel</a>
+												@Html.ActionLink("Intel", "Index", "Shop",
+												new { manufacturer = "Intel" },
+												new { Class="title-link" })
 												<div class="image">
-													<img src="https://via.placeholder.com/600x370" alt="#">
+													<a href="/Shop?manufacturer=MSI"><img src="/Media/Home/5.png" alt="#"></a>
 												</div>
 												<div class="inner-link">
-													<a href="#">CPU NAME HERE</a>
-													<a href="#">CPU NAME HERE</a>
-													<a href="#">CPU NAME HERE</a>
+													<a href="#">
+														@Html.ActionLink("i3", "Index", "Shop", new { manufacturer =  "i3" })
+													</a>
+													<a href="#">
+														@Html.ActionLink("i5", "Index", "Shop", new { manufacturer = "i5" })
+													</a>
+													<a href="#">
+														@Html.ActionLink("i7", "Index", "Shop", new { manufacturer = "i7K" })
+													</a>
 												</div>
 											</li>
 											<li class="single-menu">
-												<a href="/Home/UnderConstruction" class="title-link">AMD</a>
+												@Html.ActionLink("Nvidia", "Index", "Shop",
+												new { manufacturer = "GeForce" },
+												new { Class="title-link" })												
 												<div class="image">
-													<img src="https://via.placeholder.com/600x370" alt="#">
+													<a href="/Shop?manufacturer=GeForce"><img src="/Media/Home/7.png" alt="#"></a>
 												</div>
 												<div class="inner-link">
-													<a href="#">CPU NAME HERE</a>
-													<a href="#">GPU NAME HERE</a>
-													<a href="#">CPU NAME HERE</a>
+													<a href="#">																												
+														@Html.ActionLink("Zotac GeForce", "Index", "Shop", new { manufacturer =  "Zotac" })
+													</a>													
+													<a href="#">																												
+														@Html.ActionLink("Palit GeForce", "Index", "Shop", new { manufacturer = "Palit" })
+													</a>
+													<a href="#">
+														@Html.ActionLink("ASUS Nvidia Laptops", "Index", "Shop", new { manufacturer = "ASUS" })
+													</a>
 												</div>
 											</li>
 										</ul>
-									</li>
+									</li>						
+									<li><a href="/Home/UnderConstruction">Tutorials</a></li>
 									<li>
-										@Html.ActionLink("GPUs", "Index",
-										"Shop", new {categories = "GPUs"}, null)
-									</li>
-									<li>
-										@Html.ActionLink("CPUs", "Index",
-										"Shop", new {categories = "CPUs"}, null)
-									</li>
-									<li>
-										@Html.ActionLink("Memory", "Index",
-										"Shop", new {categories = "Memory"}, null)
-									</li>
-									<li>
-										@Html.ActionLink("Motherboards", "Index",
-										"Shop", new {categories = "Motherboards"}, null)
-									</li>
-									<li>
-										@Html.ActionLink("SSDs", "Index",
-										"Shop", new {categories = "SSDs"}, null)
-									</li>
-									<li>
-										@Html.ActionLink("Chassis", "Index",
-										"Shop", new {categories = "Chassis"}, null)
-									</li>
-									<li>
-										@Html.ActionLink("PSUs", "Index",
-										"Shop", new {categories = "PSUs"}, null)
-									</li>
-									<li>
-										@Html.ActionLink("Peripherals", "Index",
-										"Shop", new {categories = "Peripherals"}, null)
+										<a href="/Home/UnderConstruction">Tech Blog</a>										
 									</li>
 								</ul>
 							</div>
@@ -380,20 +383,19 @@
 										<div class="nav-inner">
 											<ul class="nav main-menu menu navbar-nav">
 												<li class="active"><a href="/">Home</a></li>
-												<li><a href="/Home/UnderConstruction">Mega Sale</a></li>
 												<li>
 													<a href="#">Shop<i class="ti-angle-down"></i><span class="new">New</span></a>
 													<ul class="dropdown">
 														<li><a href="/Shop">Shop</a></li>
 														<li><a href="/Shop/Cart">Cart</a></li>
 													</ul>
-												</li>
-												<li><a href="/Home/UnderConstruction">PC Builder</a></li>
-												<li><a href="/Home/UnderConstruction">Tutorials</a></li>
+												</li>	
 												<li>
-													<a href="/Home/UnderConstruction">Blog<i class="ti-angle-down"></i></a>
+													<a href="#">PC Builder<i class="ti-angle-down"></i></a>
 													<ul class="dropdown">
-														<li><a href="/Home/UnderConstruction">Trending</a></li>
+														<li><a href="/Home/UnderConstruction">Pre-built</a></li>
+														<li><a href="/Home/UnderConstruction">Customize</a></li>
+														<li><a href="/Home/UnderConstruction">Learn</a></li>
 													</ul>
 												</li>
 												<li><a href="/Home/UnderConstruction">Contact Us</a></li>
@@ -502,13 +504,13 @@
 						<!-- Tab Nav -->
 						<ul class="nav nav-tabs" id="myTab" role="tablist">
 							<li class="nav-item">
-								<a href="#" class="filter-link" data-filter="AMD">AMD</a>
+								<a href="#products" class="filter-link" data-filter="AMD">AMD</a>
 							</li>
 							<li class="nav-item">
-								<a href="#" class="filter-link" data-filter="Intel">Intel</a>
+								<a href="#products" class="filter-link" data-filter="Intel">Intel</a>
 							</li>
 							<li class="nav-item">
-								<a href="#" class="filter-link" data-filter="Nvidia">Nvidia</a>
+								<a href="#products" class="filter-link" data-filter="Nvidia">Nvidia</a>
 						</ul>
 						<div id="products" class="tab-content">
 							<!-- Start Single Tab -->
@@ -555,10 +557,10 @@
 														</div>
 													</div>
 													<div class="product-content">
-														<h3><a href="product-details.html">R @product.ProductName</a></h3>
+														<h3><a href="/Shop/Product/@product.ID">R @product.ProductName</a></h3>
 														<div class="product-price">
-															<span class="old">R @product.ProductBasePrice</span>
-															<span style="color:red; font-weight:800;">R @product.ProductSalePrice</span>
+															<span class="old" style="color:red;">R @product.ProductBasePrice</span>
+															<span style="font-weight:800;">R @product.ProductSalePrice</span>
 														</div>
 													</div>
 												</div>
@@ -600,7 +602,7 @@
 											<h3 class="title">@item.ProductName</h3>
 										</a>
 										<p class="text">Limited Time Offer!! </p>
-										<h1 class="price" style="color:red; font-weight:800;">R @item.ProductSalePrice <s>R @item.ProductBasePrice</s></h1>
+										<h1 class="price" style="font-weight:800;">R @item.ProductSalePrice <s style="color:red;">R @item.ProductBasePrice</s></h1>
 										<div class="coming-time">
 											<div class="clearfix" data-countdown="2023/02/25"></div>
 										</div>
@@ -732,8 +734,8 @@
 											<span><i class="fa fa-check-circle-o"></i> @product.ProductStock</span>
 										</div>									
 									<div class="product-price">
-										<span class="text-decoration-line-through">R @product.ProductBasePrice</span>
-										<h3 style="color:red; font-weight:800;">R @product.ProductSalePrice</h3>
+										<span class="text-decoration-line-through" style="color:red;">R @product.ProductBasePrice</span>
+										<h3 style="font-weight:800;">R @product.ProductSalePrice</h3>
 									</div>
 									<div class="quickview-peragraph">
 										<p>@product.ProductDescription</p>
@@ -795,7 +797,7 @@
 						<!-- Single Widget -->
 						<div class="single-footer about">
 							<div class="logo">
-								<a href="index.html"><img src="images/logo2.png" alt="#"></a>
+								<a href="/"><img src="images/logo2.png" alt="#"></a>
 							</div>
 							<p class="text">Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue,  magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus.</p>
 							<p class="call">Got Question? Call us 24/7<span><a href="tel:123456789">+27 81 565 0206</a></span></p>
@@ -837,7 +839,7 @@
 							<!-- Single Widget -->
 							<div class="contact">
 								<ul>
-									<li>Montague Gardens Cape Town</li>
+									<li>Montague Gardens, Cape Town</li>
 									<li>8001 South Africa.</li>
 									<li>info@swfitlink.com</li>
 									<li>+27 81 565 0206</li>
@@ -970,6 +972,40 @@
 	</script>
 	<!---Load AddToCart-->
 	<script type="text/javascript">
+		function fireOncePerSession1() {
+			if (!sessionStorage.getItem('hasFired1')) {
+				$(document).ready(function () {
+					alertify.confirm('Cookies', 'We use Cookies to Enhance Your Experience!',
+						function () { alertify.success('Accepted') },
+						function () { alertify.error('Declined') }).set('movable', false);			
+				}); 
+				sessionStorage.setItem('hasFired1', true);
+			}
+		}
+		function fireOncePerSession2() {
+			if (!sessionStorage.getItem('hasFired2')) {
+				$(document).ready(function () {
+					setTimeout(function () {
+						alertify.prompt('Subscribe to Our Weekly Newsletter and get 10% Off Your First Order!', ' Enter Your Email', ' '
+							, function (evt, value) {
+								$.ajax({
+									type: 'GET',
+									url: '/Home/Index',
+									data: { email: value },
+									success: function () {
+										sessionStorage.setItem('hasFired2', true);
+									},
+									error: function () {
+										console.error('Error saving email!');
+									}
+								});
+								alertify.success('Subscribed with: ' + value)
+							}
+							, function () { alertify.error('Cancel') });
+					}, 10000);
+				});				
+			}
+		}
 		function loadAddToCart(productId) {
 			$.ajax({
 				type: 'GET',
@@ -977,17 +1013,17 @@
 				data: { productId: productId },
 				success: function (r) {
 					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
-					showMessage();
+					showMessageAddToCartAddToCart();
 				},
 				error: function () {
 					$("#productInfo h2").text("Product is no Longer in Stock!");
 				}
 			});
 		}
-		function showMessage() {
+		function showMessageAddToCartAddToCart() {
 			var notification = alertify.notify('Added!', 'success', 5, function () { console.log('dismissed'); });
 		}
-	function loadCart() {
+		function loadCart() {
 			let basketId = 1;
 			$.ajax({
 				type: 'GET',
@@ -1011,8 +1047,12 @@
 				},
 				error: function () {
 					$("#productInfo h2").text("Product is no Longer in Stock!");
+					showMessageDeleteCart();
 				}
 			});
+		}
+		function showMessageDeleteCart() {
+			alertify.notify('Removed!', 'custom', 2, function () { console.log('dismissed'); });
 		}
 		function loadAddToWishlist(productId) {
 			let wishlistStart = 1;

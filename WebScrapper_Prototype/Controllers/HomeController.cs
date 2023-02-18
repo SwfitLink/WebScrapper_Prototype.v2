@@ -1,17 +1,14 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis;
-using Microsoft.EntityFrameworkCore;
-using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
-using System.Diagnostics;
-using WebScrapper_Prototype.Areas.Identity.Data;
+﻿using Microsoft.AspNetCore.Mvc;
 using WebScrapper_Prototype.Data;
 using WebScrapper_Prototype.Models;
+using System.Diagnostics;
 using X.PagedList;
+using Microsoft.AspNetCore.Identity;
+using WebScrapper_Prototype.Areas.Identity.Data;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
-using System.Linq;
-using WebScrapper_Prototype.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.CodeAnalysis;
 
 namespace WebScrapper_Prototype.Controllers
 {
@@ -26,20 +23,6 @@ namespace WebScrapper_Prototype.Controllers
 			_context = context;
 			_userManager = userManager;
 		}
-		[HttpGet]
-		public IActionResult WishList(int userId)
-		{
-			var products = from p in _context.Products
-						   select p;
-			var wishList = from w in _context.UserWishList
-						 select w;
-			var query = from p in _context.Products
-						join w in _context.UserWishList
-						on p.ID equals w.ProductId
-						select new { p, w };
-			products = query.Select(q => q.p);
-			return View(products.ToPagedList());
-		}
 		[HttpPost]
 		public IActionResult Index(int id)
 		{
@@ -52,8 +35,12 @@ namespace WebScrapper_Prototype.Controllers
 			return View(products.ToPagedList());
 		}
 		[HttpGet]
-		public IActionResult Index(int productId, int productIdW, int wishlistStart, int BasketRemovePID, int basketId, string sortOrder, string findProduct, string filter, string currentFilter, string searchString, decimal? total, string action, int? page)
+		public IActionResult Index(int productId, int productIdW, int wishlistStart, int basketId, string filter, string currentFilter, string searchString, int? page, string email)
 		{
+			if (!String.IsNullOrEmpty(email))
+			{
+				Console.WriteLine(email);
+			}
 			Queue<decimal?> basePrice = new Queue<decimal?>();
 			Queue<decimal?> salePrice = new Queue<decimal?>();
 			Queue<decimal?> cartTotal = new Queue<decimal?>();
@@ -112,7 +99,7 @@ namespace WebScrapper_Prototype.Controllers
 			if(wishlistStart == 1)
 			{
 				var query = from p in _context.Products
-							join w in _context.UserWishList.Where(s => s.UserId.Equals(getUser().Result))
+							join w in _context.UserWishList.Where(s => s.UserId.Equals(getUserEmail().Result))
 							on p.ID equals w.ProductId
 							select new { p, w };
 				products = query.Select(q => q.p);
@@ -126,7 +113,7 @@ namespace WebScrapper_Prototype.Controllers
 			if (basketId == 1)
 			{
 				var query = from p in _context.Products
-							join b in _context.ShopingBasket.Where(s => s.BasketId.Equals(getUser().Result))
+							join b in _context.ShopingBasket.Where(s => s.BasketId.Equals(getUserEmail().Result))
 							on p.ID equals b.ProductId
 							select new { p, b };
 				products = query.Select(s => s.p);
@@ -161,19 +148,33 @@ namespace WebScrapper_Prototype.Controllers
 			var pagedProducts = products.ToPagedList(pageNumber, pageSize);
 			return View(pagedProducts);
 		}
-		public async Task<string> getUser()
+		public async Task<string> getUserEmail()
 		{
 			var user = await _userManager.GetUserAsync(User);
 			var email = user.Email;
 			return email;
 		}
-        [Authorize(Roles = "User, Manager")]
+		public async Task<int> getUserSubcribed()
+		{		
+			var user = await _userManager.GetUserAsync(User);
+			var Subscribed = user.Subscribed;
+			return Subscribed;
+		}
+		public async Task<IActionResult> UpdateSubscribedStatus()
+		{
+			int z = 1;
+			var user = await _userManager.GetUserAsync(User);
+			user.Subscribed = z;			
+			await _context.SaveChangesAsync();
+			return View();
+		}
+		[Authorize(Roles = "User, Manager")]
         [HttpPost]
 		public async Task<IActionResult> DeleteConfirmed(int BasketRemovePID, int WishListRemovePID)
 		{
 			if (WishListRemovePID > 0)
 			{
-				var wishlist = from w in _context.UserWishList.Where(s => s.UserId.Equals(getUser().Result))
+				var wishlist = from w in _context.UserWishList.Where(s => s.UserId.Equals(getUserEmail().Result))
 							   select w;
 				var wishlistRowsToDelete = wishlist.Where(w => w.ProductId == WishListRemovePID);
 
@@ -186,7 +187,7 @@ namespace WebScrapper_Prototype.Controllers
 			}
 			if (BasketRemovePID > 0)
 			{
-				var basket = from b in _context.ShopingBasket.Where(s => s.BasketId.Equals(getUser().Result))
+				var basket = from b in _context.ShopingBasket.Where(s => s.BasketId.Equals(getUserEmail().Result))
                              select b;
 				var basketRowsToDelete = basket.Where(b => b.ProductId == BasketRemovePID);
 
@@ -210,7 +211,7 @@ namespace WebScrapper_Prototype.Controllers
 				prod = prod.Where(p => p.ID == productId);
 				Basket shoppingBasket = new Basket();
 				shoppingBasket.ProductId = productId;
-				shoppingBasket.BasketId = getUser().Result;
+				shoppingBasket.BasketId = getUserEmail().Result;
 				_context.Attach(shoppingBasket);
 				_context.Entry(shoppingBasket).State = EntityState.Added;
 				_context.SaveChanges();
@@ -230,7 +231,7 @@ namespace WebScrapper_Prototype.Controllers
 				prod = prod.Where(p => p.ID == productId);
 				UserWishList wishList = new UserWishList();
 				wishList.ProductId = productId;
-				wishList.UserId = getUser().Result;
+				wishList.UserId = getUserEmail().Result;
 				_context.Attach(wishList);
 				_context.Entry(wishList).State = EntityState.Added;
 				_context.SaveChanges();

@@ -78,7 +78,7 @@ namespace WebScrapper_Prototype.Areas.Identity.Pages.Account
             public string CountryCode { get; set; }
             [Required]
             [StringLength(10, ErrorMessage = "The number is to long please check and try again")]
-            [Display(Name = "Cellphone")]
+            [Display(Name = "Subscribed")]
             public string Cellphone { get; set; }
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used

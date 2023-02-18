@@ -29,7 +29,7 @@ public class ApplicationUserEntityConfigure : IEntityTypeConfiguration<Applicati
         builder.Property(u => u.FirstName).IsRequired();
         builder.Property(u => u.LastName).IsRequired();
         builder.Property(u => u.CountryCode).IsRequired();
-        builder.Property(u => u.Cellphone).IsRequired();
+        builder.Property(u => u.Subscribed).IsRequired();
 
         builder.Property(u => u.CountryCode).HasMaxLength(25);
         builder.Property(u => u.FirstName).HasMaxLength(255);

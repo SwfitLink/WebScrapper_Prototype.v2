@@ -68,6 +68,10 @@
 		</div>
 	</div>
 	<!-- End Preloader -->
+	<script>
+		promptUserForEmail();
+	</script>
+
 	<!-- Header -->
 	<div class="header shop">
 		<!-- Topbar -->
@@ -182,7 +186,7 @@
 														<a href="#" class="remove" title="Remove this item" onclick="loadDeleteWishlist('@product.ID')"><i class="fa fa-remove"></i></a>
 														<a class="cart-img" href="#"><img src="@product.ImageURL" alt="#"></a>
 														<h4><a href="/Shop/Product/@product.ID">@product.ProductName.Substring(0,20) ...</a></h4>
-														<p class="quantity">1x - <span class="amount">@product.ProductSalePrice</span></p>
+														<p class="quantity">1x - <span class="amount" style="font-weight:800;">@product.ProductSalePrice</span></p>
 													</li>
 												</ul>
 												<div class="bottom"></div>
@@ -215,21 +219,21 @@
 															<a href="#" class="remove" title="Remove this item" onclick="loadDeleteCart('@product.ID')"><i class="fa fa-remove"></i></a>
 															<a class="cart-img" href="#"><img src="@product.ImageURL" alt="#"></a>
 															<h4><a href="#">@product.ProductName</a></h4>
-															<p class="quantity">1x - <span class="amount">@product.ProductSalePrice</span></p>
-														</li>
+															<p class="quantity">1x - <span class="amount" style="text-decoration-line:line-through;color:red;">R @product.ProductBasePrice</span>
+															<span class="amount" style="font-weight:800;">R @product.ProductSalePrice</span></p>														</li>
 													</ul>
 													<div class="bottom">
 														<div class="total">
 															<span>Sub Total:</span>
-															<span class="total-amount" style="text-decoration-line:line-through">R @ViewBag.CartTotalBase</span>
+															<span class="total-amount" style="text-decoration-line:line-through;color:red;">R @ViewBag.CartTotalBase</span>
 														</div>
 														<div class="total">
 															<span>Discount:</span>
-															<span class="total-amount">R @ViewBag.Savings</span>
+															<span class="total-amount" style="font-weight:800;">R @ViewBag.Savings</span>
 														</div>
 														<div class="total">
 															<span>Total:</span>
-															<span class="total-amount" style="text-decoration-line:underline">R @ViewBag.CartTotalSale</span>
+															<span class="total-amount" style="text-decoration-line:underline;font-weight:800;">R @ViewBag.CartTotalSale</span>
 														</div>
 														<a href="#" class="btn animate">Checkout</a>
 													</div>
@@ -331,28 +335,13 @@
 											<p class="product-name"><a href="/Shop/Product/@product.ID">@product.ProductName.Substring(0,35) ...</a></p>
 										</td>
 										<td class="price" data-title="Price" style="padding:0">
-											<span class="text-decoration-line-through">R @product.ProductBasePrice</span><br>
-											<span><strong>R @product.ProductSalePrice</strong></span>
+											<span class="text-decoration-line-through" style="color:red;">R @product.ProductBasePrice</span><br>
+											<span style="font-weight:800;">R @product.ProductSalePrice</span>
 										</td>
 										<td class="qty" data-title="Qty">
-											<!-- Input Order -->
-											<div class="input-group">
-												<p class="input-number">1</p>
-												@*											<div class="button minus">
-												<button type="button" class="btn btn-primary btn-number" disabled="disabled" data-type="minus" data-field="quant[1]">
-													<i class="ti-minus"></i>
-												</button>
-											</div>
-											<input type="text" name="quant[1]" class="input-number" data-min="1" data-max="100" value="1">
-											<div class="button plus">
-												<button type="button" class="btn btn-primary btn-number" data-type="plus" data-field="quant[1]">
-													<i class="ti-plus"></i>
-												</button>
-											</div>*@
-											</div>
-											<!--/ End Input Order -->
+											<span style="text-align:center;">1</span>
 										</td>
-										<td class="total-amount" data-title="Total"><span>R @product.ProductSalePrice</span></td>
+										<td class="total-amount" data-title="Total"><span style="font-weight:800;">R @product.ProductSalePrice</span></td>
 										<td class="action" data-title="Remove"><a href="/Shop/Cart" onclick="loadDeleteCart('@product.ID')"><i class="ti-trash remove-icon"></i></a></td>
 									</tr>
 								</tbody>
@@ -369,7 +358,7 @@
 								<div class="col-lg-8 col-md-5 col-12">
 									<div class="left">
 										<div class="coupon">
-											<form action="#">
+											<form action="/Home/UnderConstruction">
 												<input name="Coupon" placeholder="Enter Promo Code">
 												<button class="btn">Apply</button>
 											</form>
@@ -377,7 +366,7 @@
 										<br />
 										@if (ViewBag.GetFreeShipping > 0)
 										{
-											<label>Spend R @ViewBag.GetFreeShipping to get FREE DELIVERY</label>
+											<label>Spend R <span style="text-decoration-line:underline;">@ViewBag.GetFreeShipping</span> to get FREE DELIVERY</label>
 											<br />
 											<button class="btn">Help me choose</button>
 										}
@@ -392,11 +381,11 @@
 										<ul>
 											<li>Cart Subtotal<span>R @ViewBag.CartTotalBase</span></li>
 											<li>Shipping<span>Free</span></li>
-											<li>You Save<span>- R @ViewBag.Savings</span></li>
-											<li class="last">You Pay<span>R @ViewBag.CartTotalSale</span></li>
+											<li style="font-weight:800;">You Save<span>- R @ViewBag.Savings</span></li>
+											<li class="last" style="text-decoration-line:line-through;">You Pay<span>R @ViewBag.CartTotalSale</span></li>
 										</ul>
 										<div class="button5">
-											<a href="#" class="btn">Checkout</a>
+											<a href="/Home/UnderConstruction" class="btn">Checkout</a>
 											<a href="/Shop" class="btn">Continue shopping</a>
 										</div>
 									</div>
@@ -504,118 +493,6 @@
 		</div>
 	</section>
 	<!-- End Shop Newsletter -->
-	<!-- Modal -->
-	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span class="ti-close" aria-hidden="true"></span></button>
-				</div>
-				<div class="modal-body">
-					<div class="row no-gutters">
-						<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
-							<!-- Product Slider -->
-							<div class="product-gallery">
-								<div class="quickview-slider-active">
-									<div class="single-slider">
-										<img src="images/modal1.jpg" alt="#">
-									</div>
-									<div class="single-slider">
-										<img src="images/modal2.jpg" alt="#">
-									</div>
-									<div class="single-slider">
-										<img src="images/modal3.jpg" alt="#">
-									</div>
-									<div class="single-slider">
-										<img src="images/modal4.jpg" alt="#">
-									</div>
-								</div>
-							</div>
-							<!-- End Product slider -->
-						</div>
-						<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
-							<div class="quickview-content">
-								<h2>Flared Shift Dress</h2>
-								<div class="quickview-ratting-review">
-									<div class="quickview-ratting-wrap">
-										<div class="quickview-ratting">
-											<i class="yellow fa fa-star"></i>
-											<i class="yellow fa fa-star"></i>
-											<i class="yellow fa fa-star"></i>
-											<i class="yellow fa fa-star"></i>
-											<i class="fa fa-star"></i>
-										</div>
-										<a href="#"> (1 customer review)</a>
-									</div>
-									<div class="quickview-stock">
-										<span><i class="fa fa-check-circle-o"></i> in stock</span>
-									</div>
-								</div>
-								<h3>$29.00</h3>
-								<div class="quickview-peragraph">
-									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia iste laborum ad impedit pariatur esse optio tempora sint ullam autem deleniti nam in quos qui nemo ipsum numquam.</p>
-								</div>
-								<div class="size">
-									<div class="row">
-										<div class="col-lg-6 col-12">
-											<h5 class="title">Size</h5>
-											<select>
-												<option selected="selected">s</option>
-												<option>m</option>
-												<option>l</option>
-												<option>xl</option>
-											</select>
-										</div>
-										<div class="col-lg-6 col-12">
-											<h5 class="title">Color</h5>
-											<select>
-												<option selected="selected">orange</option>
-												<option>purple</option>
-												<option>black</option>
-												<option>pink</option>
-											</select>
-										</div>
-									</div>
-								</div>
-								<div class="quantity">
-									<!-- Input Order -->
-									<div class="input-group">
-										<div class="button minus">
-											<button type="button" class="btn btn-primary btn-number" disabled="disabled" data-type="minus" data-field="quant[1]">
-												<i class="ti-minus"></i>
-											</button>
-										</div>
-										<input type="text" name="quant[1]" class="input-number" data-min="1" data-max="1000" value="1">
-										<div class="button plus">
-											<button type="button" class="btn btn-primary btn-number" data-type="plus" data-field="quant[1]">
-												<i class="ti-plus"></i>
-											</button>
-										</div>
-									</div>
-									<!--/ End Input Order -->
-								</div>
-								<div class="add-to-cart">
-									<a href="#" class="btn">Add to cart</a>
-									<a href="#" class="btn min"><i class="ti-heart"></i></a>
-									<a href="#" class="btn min"><i class="fa fa-compress"></i></a>
-								</div>
-								<div class="default-social">
-									<h4 class="share-now">Share:</h4>
-									<ul>
-										<li><a class="facebook" href="#"><i class="fa fa-facebook"></i></a></li>
-										<li><a class="twitter" href="#"><i class="fa fa-twitter"></i></a></li>
-										<li><a class="youtube" href="#"><i class="fa fa-pinterest-p"></i></a></li>
-										<li><a class="dribbble" href="#"><i class="fa fa-google-plus"></i></a></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- Modal end -->
 	<!-- Start Footer Area -->
 	<footer class="footer">
 		<!-- Footer Top -->
@@ -746,7 +623,6 @@
 	<!-- Active JS -->
 	<script src="~/js/active.js"></script>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-
 	<!---Load QuickShop-->
 	<script type="text/javascript">
 		function loadQuickShop(id) {
@@ -762,7 +638,6 @@
 				}
 			});
 		}
-
 	</script>
 	<!---Load Filter-->
 	<script type="text/javascript">
@@ -814,8 +689,12 @@
 				},
 				error: function () {
 					$("#productInfo h2").text("Product is no Longer in Stock!");
+					showMessageAddToCartAddToCart();
 				}
 			});
+		}
+		function showMessageAddToCartAddToCart() {
+			var notification = alertify.notify('Added!', 'success', 5, function () { console.log('dismissed'); });
 		}
 		function loadDeleteCart(productId) {
 			$.ajax({
@@ -827,8 +706,12 @@
 				},
 				error: function () {
 					$("#Cart").text("Product is no Longer in Stock!");
+					showMessageDeleteCart();
 				}
 			});
+		}
+		function showMessageDeleteCart() {
+			alertify.notify('Removed!', 'custom', 2, function () { console.log('dismissed'); });
 		}
 		function loadCart() {
 			let basketId = 1;

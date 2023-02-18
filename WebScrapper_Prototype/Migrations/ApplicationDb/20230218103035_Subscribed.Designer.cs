@@ -12,8 +12,8 @@ using WebScrapper_Prototype.Areas.Identity.Data;
 namespace WebScrapper_Prototype.Migrations.ApplicationDb
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230208091558_IdentitySeed")]
-    partial class IdentitySeed
+    [Migration("20230218103035_Subscribed")]
+    partial class Subscribed
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -169,9 +169,6 @@ namespace WebScrapper_Prototype.Migrations.ApplicationDb
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<int>("Cellphone")
-                        .HasColumnType("int");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -223,6 +220,9 @@ namespace WebScrapper_Prototype.Migrations.ApplicationDb
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Subscribed")
+                        .HasColumnType("int");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");

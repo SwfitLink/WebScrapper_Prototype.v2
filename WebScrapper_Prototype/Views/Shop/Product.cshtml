@@ -274,14 +274,14 @@
 									<div class="navbar-collapse">
 										<div class="nav-inner">
 											<ul class="nav main-menu menu navbar-nav">
-												<li class="active"><a href="/">Home</a></li>
-												<li><a href="#">Mega Sale</a></li>
-												<li>
+												<li class="active">
+													<a href="/">Home</a>													
+												</li>
+												<li>													
 													<a href="#">Shop<i class="ti-angle-down"></i><span class="new">New</span></a>
 													<ul class="dropdown">
 														<li><a href="/Shop">Shop</a></li>
-														<li><a href="#">Cart</a></li>
-														<li><a href="#">Wish-list</a></li>
+														<li><a href="/Shop/Cart">Cart</a></li>
 													</ul>
 												</li>
 												<li><a href="#">PC Builder</a></li>
@@ -369,8 +369,8 @@
 										<span><i class="fa fa-check-circle-o"></i> @product.ProductStock</span>
 									</div>								
 								<div class="product-price">
-									<span class="text-decoration-line-through">R @product.ProductBasePrice</span>
-									<h3 style="color:red; font-weight:800;">R @product.ProductSalePrice</h3>
+									<span class="text-decoration-line-through" style="color:red">R @product.ProductBasePrice</span>
+									<h3 style="font-weight:800;">R @product.ProductSalePrice</h3>
 								</div>
 								<div class="quickview-peragraph">
 									<p>@product.ProductDescription</p>
@@ -430,7 +430,7 @@
 						<!-- Single Widget -->
 						<div class="single-footer about">
 							<div class="logo">
-								<a href="index.html"><img src="images/logo2.png" alt="#"></a>
+								<a href="/"><img src="images/logo2.png" alt="#"></a>
 							</div>
 							<p class="call">Got Question? Call us 24/7<span><a href="tel:123456789">+27 81 565 0206</a></span></p>
 						</div>
@@ -441,11 +441,11 @@
 						<div class="single-footer links">
 							<h4>Information</h4>
 							<ul>
-								<li><a href="#">About Us</a></li>
-								<li><a href="#">Faq</a></li>
-								<li><a href="#">Terms & Conditions</a></li>
-								<li><a href="#">Contact Us</a></li>
-								<li><a href="#">Help</a></li>
+								<li><a href="/Home/UnderConstruction">About Us</a></li>
+								<li><a href="/Home/UnderConstruction">Faq</a></li>
+								<li><a href="/Home/UnderConstruction">Terms & Conditions</a></li>
+								<li><a href="/Home/UnderConstruction">Contact Us</a></li>
+								<li><a href="/Home/UnderConstruction">Help</a></li>
 							</ul>
 						</div>
 						<!-- End Single Widget -->
@@ -455,11 +455,11 @@
 						<div class="single-footer links">
 							<h4>Customer Service</h4>
 							<ul>
-								<li><a href="#">Payment Methods</a></li>
-								<li><a href="#">Money-back</a></li>
-								<li><a href="#">Returns</a></li>
-								<li><a href="#">Shipping</a></li>
-								<li><a href="#">Privacy Policy</a></li>
+								<li><a href="/Home/UnderConstruction">Payment Methods</a></li>
+								<li><a href="/Home/UnderConstruction">Money-back</a></li>
+								<li><a href="/Home/UnderConstruction">Returns</a></li>
+								<li><a href="/Home/UnderConstruction">Shipping</a></li>
+								<li><a href="/Home/UnderConstruction">Privacy Policy</a></li>
 							</ul>
 						</div>
 						<!-- End Single Widget -->
@@ -467,11 +467,11 @@
 					<div class="col-lg-3 col-md-6 col-12">
 						<!-- Single Widget -->
 						<div class="single-footer social">
-							<h4>Get In Tuch</h4>
+							<h4>Get In Touch</h4>
 							<!-- Single Widget -->
 							<div class="contact">
 								<ul>
-									<li>Montague Gardens Cape Town</li>
+									<li>Montague Gardens, Cape Town</li>
 									<li>8001 South Africa.</li>
 									<li>info@swfitlink.com</li>
 									<li>+27 81 565 0206</li>
@@ -616,21 +616,29 @@
 				},
 				error: function () {
 					$("#productInfo h2").text("Product is no Longer in Stock!");
+					showMessageAddToCartAddToCart();
 				}
 			});
+		}
+		function showMessageAddToCartAddToCart() {
+			var notification = alertify.notify('Added!', 'success', 5, function () { console.log('dismissed'); });
 		}
 		function loadDeleteCart(productId) {
 			$.ajax({
 				type: 'POST',
-				url: '/Home/DeleteConfirmed',
+				url: '/Shop/DeleteConfirmed',
 				data: { BasketRemovePID: productId },
 				success: function (r) {
 					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
 				},
 				error: function () {
 					$("#productInfo h2").text("Product is no Longer in Stock!");
+					showMessageDeleteCart();
 				}
 			});
+		}
+		function showMessageDeleteCart() {
+			alertify.notify('Removed!', 'custom', 2, function () { console.log('dismissed'); });
 		}
 		function loadCart() {
 			let basketId = 1;

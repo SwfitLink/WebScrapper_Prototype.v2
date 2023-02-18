@@ -32,7 +32,7 @@ namespace WebScrapper_Prototype.Controllers
 		}
 		[Authorize(Roles = "User, Manager")]
 		[HttpGet]
-		public IActionResult Cart(int basketId)
+		public IActionResult Cart()
 		{
 			Queue<decimal?> basePrice = new Queue<decimal?>();
 			Queue<decimal?> salePrice = new Queue<decimal?>();
@@ -208,7 +208,7 @@ namespace WebScrapper_Prototype.Controllers
 			if(!String.IsNullOrEmpty(manufacturer)) 
 			{
 				products = products.Where(s => s.ProductName.Contains(manufacturer));
-				ViewBag.Manufacturer = "Manufacturer: " + manufacturer;
+				ViewBag.manufacturer = manufacturer;
 			}
 			if (!String.IsNullOrEmpty(category))
 			{
@@ -219,7 +219,7 @@ namespace WebScrapper_Prototype.Controllers
 				else
 				{
 					products = products.Where(s => s.ProductCategory.Equals(category));
-					ViewBag.Category = "Category: " + category;
+					ViewBag.Category = category;
 				}
 				var product = from p in _context.Products
 							   select p;

@@ -15,7 +15,7 @@ namespace WebScrapper_Prototype.Migrations
             migrationBuilder.RenameColumn(
                 name: "ID",
                 table: "UserWishList",
-                newName: "Id");
+                newName: "Subscribed");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

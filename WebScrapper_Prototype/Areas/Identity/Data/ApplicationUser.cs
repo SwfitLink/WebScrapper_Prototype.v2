@@ -7,7 +7,7 @@ public class ApplicationUser : IdentityUser
 {
 	public string FirstName { get; set; }
     public string LastName { get; set; }
-    public int Cellphone { get; set; }
+    public int Subscribed { get; set; }
     public string CountryCode { get; set; }
 
 }
