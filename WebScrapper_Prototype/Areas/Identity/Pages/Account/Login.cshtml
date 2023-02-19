@@ -9,66 +9,113 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" type="text/css" href="/css/login.css">
-    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css"  href="/css/site.css" asp-append-version="true" />
+       
+    <link rel="stylesheet" type="text/css" href="~/css/login.css">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css"  href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" type="text/css"  href="/WebScrapper_Prototype.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" type="text/css" href="/css/site.css">
+    <link rel="stylesheet" type="text/css" href="~/css/site.css">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+    <link rel="stylesheet" href="~/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/assets/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="~/assets/css/form-elements.css">
+    <link rel="stylesheet" href="~/assets/css/style.css">            
+    <!-- Favicon and touch icons -->
+    <link rel="shortcut icon" href="assets/ico/favicon.png">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="~/assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="~/assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="~/assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="~/assets/ico/apple-touch-icon-57-precomposed.png">
 </head>
 
 <body>
+    <div class="top-content">
+        <div class="inner-bg">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <div class="form-box">
+                            <div class="form-top">
+                                <div class="form-top-left">
+                                    <h3>Not a member yet?</h3>
+                                    <p>Register and unlock unlimited discounts</p>
+                                </div>
+                                <div class="form-top-right">
+                                    <i class="fa fa-pencil"></i>
+                                </div>
+                            </div>
+                            <div class="form-bottom">
+                                <a class="btn btn-link-1" asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register with Email</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-1 middle-border"></div>
+                    <div class="col-sm-1"></div>
 
-    <section>
-@*            <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
-        <div class="container">
-            <a class="navbar-brand waves-effect" href="/">
-                <strong class="blue-text">SwiftLink</strong>
-            </a>
-        </div>
-    </nav>*@
-        <div class="container">
-           
-            <div class="user signinBx">
-@*                <div class="imgBx"><img src="https://raw.githubusercontent.com/WoojinFive/CSS_Playground/master/Responsive%20Login%20and%20Registration%20Form/img1.jpg" alt="" /></div>
-*@                <div class="formBx">                 
-                    <form id="account" method="post">
-                        <h2>Sign In</h2>
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        <input asp-for="Input.Email" autocomplete="username" aria-required="true" placeholder="Email" id="email">
-                        <span asp-validation-for="Input.Email" class="text-danger"></span>
-                        <input asp-for="Input.Password" autocomplete="current-password" aria-required="true" placeholder="Password" id="password">
-                        <span asp-validation-for="Input.Password" class="text-danger"></span>
-                        <input id="login-submit" type="submit" value="Submit" />
+                    <div class="col-sm-5">
+                        <div class="form-box">
+                            <div class="form-top">
+                                <div class="form-top-left">
+                                    <h3>Login</h3>
+                                    <p>Enter Email and Password below:</p>
+                                </div>
+                                <div class="form-top-right">
+                                    <i class="fa fa-key"></i>
+                                </div>
+                            </div>
+                            <div class="form-bottom">
+                                <form id="account" method="post">
+                                    <div class="mb-3">
+                                        <label class="form-label">Email address</label>
+                                        <input asp-for="Input.Email" type="email" autocomplete="username" placeholder="Email..." class="form-control" id="email" />
+                                        <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Password</label>
+                                        <input asp-for="Input.Password" type="password" autocomplete="current_password" placeholder="Password..." class="form-control" id="password" />
+                                    </div>
+                                    <div class="mb-3 form-check">
+                                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                                        <label class="form-check-label" for="exampleCheck1">Remember Me</label>
+                                    </div>
+                                    <input id="login-submit" class="btn btn-primary" type="submit" value="Login" />
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                                </form>
+                            </div>
+                        </div>
 
-                        <p class="signup">
-                            Don't have an account ?
-                            <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Sign up.</a>
-                        </p>
-                    </form>
+                        <div class="social-login">
+                            <h3>...or login with:</h3>
+                            <div class="social-login-buttons">
+                                <a class="btn btn-link-1 btn-link-1-facebook" href="/Home/UnderConstruction">
+                                    <i class="fa fa-facebook"></i> Facebook
+                                </a>
+                                <a class="btn btn-link-1 btn-link-1-twitter" href="/Home/UnderConstruction">
+                                    <i class="fa fa-twitter"></i> Twitter
+                                </a>
+                                <a class="btn btn-link-1 btn-link-1-google-plus" href="/Home/UnderConstruction">
+                                    <i class="fa fa-google-plus"></i> Google Plus
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
             </div>
         </div>
-    </section>
-    @section Scripts {
+    </div>
+    @section Scripts{
         <partial name="_ValidationScriptsPartial" />
-        <script type="text/javascript">
-            const signUpButton = document.getElementById('signUp');
-            const signInButton = document.getElementById('signIn');
-            const container = document.getElementById('container');
-
-            signUpButton.addEventListener('click', () => {
-                container.classList.add("right-panel-active");
-            });
-
-            signInButton.addEventListener('click', () => {
-                container.classList.remove("right-panel-active");
-            });
-        </script>
-        <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
-        <script type="text/javascript" src="js/popper.min.js"></script>
-        <script type="text/javascript" src="js/bootstrap.min.js"></script>
-        <script type="text/javascript" src="js/mdb.min.js"></script>
-        <script type="text/javascript">new WOW().init();</script>
     }
+    <!-- Javascript -->
+    <script src="~/assets/js/jquery-1.11.1.min.js"></script>
+    <script src="~/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/assets/js/scripts.js"></script>
+    <script type="text/javascript" src="~/js/mdb.min.js"></script>
+
 </body>
 </html>

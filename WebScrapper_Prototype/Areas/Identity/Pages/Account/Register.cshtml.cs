@@ -156,7 +156,7 @@ namespace WebScrapper_Prototype.Areas.Identity.Pages.Account
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: true);
-						return RedirectToPage("Login");
+						return RedirectToPage("Index", "Home");
 					}
 				}
                 foreach (var error in result.Errors)

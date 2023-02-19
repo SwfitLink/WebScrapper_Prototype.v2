@@ -345,7 +345,7 @@
 		</div>
 	</div>
 	<!-- End Breadcrumbs -->
-	<!-- Product Style -->
+	<!-- Product -->
 	<section class="product-area shop-sidebar shop section">
 		<div id="progressBarContainer">
 			<div id="progressBar"></div>
@@ -451,8 +451,8 @@
 												<a href="/Shop/Product/@product.ID">
 													@if (product.ImageURL.Contains("www"))
 													{
-														<img class="default-img" src="@product.ImageURL" alt="#">
-														<img class="hover-img" src="@product.ImageURL" alt="#">
+														<img crossorigin="anonymous" class="default-img" src="@product.ImageURL" alt="#">
+														<img crossorigin="anonymous" class="hover-img" src="@product.ImageURL" alt="#">
 													}
 													else
 													{
@@ -968,7 +968,7 @@
 		</div>		
 	</div>
 	</section>
-	<!--/ End Product Style 1  -->
+	<!--/ End Product -->
 	<!-- Start Shop Newsletter  -->
 	<section class="shop-newsletter section">
 		<div class="container">
@@ -1246,6 +1246,37 @@
 			});
 		}
 	</script>
+	<script>
+		const progressBarContainer = document.querySelector("#progressBarContainer");
+		const progressBar = document.querySelector("#progressBar");
+		let totalPageHeight = document.body.scrollHeight - window.innerHeight;
+		let debounceResize;
+
+		window.addEventListener("scroll", () => {
+			let newProgressHeight = window.pageYOffset / totalPageHeight;
+			progressBar.style.transform = `scale(1,${newProgressHeight})`;
+			progressBar.style.opacity = `${newProgressHeight}`;
+		}, {
+			capture: true,
+			passive: true
+		});
+
+		window.addEventListener("resize", () => {
+			clearTimeout(debounceResize);
+			debounceResize = setTimeout(() => {
+				totalPageHeight = document.body.scrollHeight - window.innerHeight;
+			}, 250);
+		});
+
+		progressBarContainer.addEventListener("click", (e) => {
+			let newPageScroll = e.clientY / progressBarContainer.offsetHeight * totalPageHeight;
+			window.scrollTo({
+				top: newPageScroll,
+				behavior: 'smooth'
+			});
+		});
+	</script>		
+	<!---Functions... Lots of Functions...-->
 	<script type="text/javascript">
 		function fireOncePerSession1() {
 			if (!sessionStorage.getItem('hasFired1')) {
@@ -1258,39 +1289,42 @@
 			}
 		}
 		function fireOncePerSession2() {
-			async function checkUserSubscription() {
-				const response = await fetch('/Home/getUserSubscribed');
-				const subscribed = await response.text();
-				if (subscribed == 1) {
-					console.log('User is subscribed');
-				} else if (subscribed == 0) {
-					if (!sessionStorage.getItem('hasFired2')) {
-						$(document).ready(function () {
-							setTimeout(function () {
-								alertify.prompt('Subscribe to Our Weekly Newsletter and get 10% Off Your First Order!', ' Enter Your Email', ' '
-									, function (evt, value) {
-										$.ajax({
-											type: 'GET',
-											url: '/Home/Index',
-											data: { email: value },
-											success: function () {
-												sessionStorage.setItem('hasFired2', true);
-											},
-											error: function () {
-												console.error('Error saving email!');
-											}
-										});
-										alertify.success('Subscribed with: ' + value)
-									}
-									, function () { alertify.error('Cancel') });
-							}, 10000);
-						});
-					}
-					console.log('User is not subscribed');
-				} else {
-					console.log('Error: Unexpected response from server');
+			$(document).ready(function () {
+				if (!sessionStorage.getItem('hasFired2')) {
+					$.ajax({
+						type: 'GET',
+						url: '/Home/getUserSubcribed',
+						success: function (r) {
+							if (r == 0) {
+								SendSubAlert();
+							}
+						},
+						error: function () {
+							$("#productInfo h2").text("Product is no Longer in Stock!");
+						}
+					});
 				}
-			}
+			});
+		}
+		function SendSubAlert() {
+			setTimeout(function () {
+				alertify.prompt('Subscribe to Our Weekly Newsletter and get 10% Off Your First Order!', ' Enter Your Email', ' ',
+					function (evt, value) {
+						$.ajax({
+							type: 'POST',
+							url: '/Home/UpdateSubscribedStatus',
+							data: { email: value },
+							success: function () {
+								sessionStorage.setItem('hasFired2', true);
+							},
+							error: function () {
+								console.error('Error saving email!');
+							}
+						});
+						alertify.success('Subscribed with: ' + value)
+					},
+					function () { alertify.error('Cancel') });
+			}, 10000);
 		}
 		function loadAddToCart(productId) {
 			$.ajax({
@@ -1329,11 +1363,12 @@
 				url: '/Shop/DeleteConfirmed',
 				data: { BasketRemovePID: productId },
 				success: function (r) {
-					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
+					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());					
+					showMessageDeleteCart();
+
 				},
 				error: function () {
 					$("#productInfo h2").text("Product is no Longer in Stock!");
-					showMessageDeleteCart();
 				}
 			});
 		}
@@ -1385,7 +1420,6 @@
 			var lastChecked;
 			var selectedCategory;
 			var selectedPriceRange;
-
 			$("input[type='checkbox']").change(function () {
 				if (lastChecked && lastChecked != this) {
 					lastChecked.checked = false;
@@ -1394,7 +1428,6 @@
 				selectedPriceRange = $(this).parent().text();
 				filterProducts(selectedCategory, selectedPriceRange);
 			});
-
 			$(".categor-list a").click(function () {
 				selectedCategory = $(this).text();
 				filterProducts(selectedCategory, selectedPriceRange);
@@ -1421,36 +1454,6 @@
 					}
 				});
 			}
-		});
-	</script>
-	<script>
-		const progressBarContainer = document.querySelector("#progressBarContainer");
-		const progressBar = document.querySelector("#progressBar");
-		let totalPageHeight = document.body.scrollHeight - window.innerHeight;
-		let debounceResize;
-
-		window.addEventListener("scroll", () => {
-			let newProgressHeight = window.pageYOffset / totalPageHeight;
-			progressBar.style.transform = `scale(1,${newProgressHeight})`;
-			progressBar.style.opacity = `${newProgressHeight}`;
-		}, {
-			capture: true,
-			passive: true
-		});
-
-		window.addEventListener("resize", () => {
-			clearTimeout(debounceResize);
-			debounceResize = setTimeout(() => {
-				totalPageHeight = document.body.scrollHeight - window.innerHeight;
-			}, 250);
-		});
-
-		progressBarContainer.addEventListener("click", (e) => {
-			let newPageScroll = e.clientY / progressBarContainer.offsetHeight * totalPageHeight;
-			window.scrollTo({
-				top: newPageScroll,
-				behavior: 'smooth'
-			});
 		});
 	</script>
 </body>

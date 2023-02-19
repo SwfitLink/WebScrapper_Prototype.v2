@@ -39,6 +39,7 @@
 	<link href="~/Content/PagedList.css" type="text/css" rel="stylesheet">
 </head>
 <body class="js">
+	<!-- Header -->
 	<div class="header shop">
 		<!-- Topbar -->
 		<div class="topbar">
@@ -63,8 +64,8 @@
 							@if (User.IsInRole("Manager"))
 							{
 								<ul class="list-main">
-									<li><i class="ti-bag"></i><a href="/Shop/Cart">Cart</a></li>
-									<li><i class="ti-alarm-clock"></i><a href="/Shop">Shop</a></li>
+									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
+									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
 									<li><i class="ti-dashboard"></i><a href="/Dashboard">Dashboard</a></li>
 									<li><i class="ti-power-off"></i><a asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home" , new { area="" })">Logout</a></li>
 								</ul>
@@ -72,15 +73,15 @@
 							else if (User.IsInRole("User"))
 							{
 								<ul class="list-main">
-									<li><i class="ti-bag"></i><a href="/Shop/Cart">Cart</a></li>
-									<li><i class="ti-alarm-clock"></i> <a href="/Shop">Shop</a></li>
+									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
+									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
 									<li><i class="ti-power-off"></i><a asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action(" Index", "Home" , new { area="" })">Logout</a></li>
 								</ul>
 							}
 							else
 							{
 								<ul class="list-main">
-									<li><i class="ti-alarm-clock"></i> <a href="/Shop">Shop</a></li>
+									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
 									<li><i class="ti-power-off"></i><a href="/Identity/Account/Login">Login</a></li>
 								</ul>
 							}
@@ -156,7 +157,10 @@
 															<a href="#" class="remove" title="Remove this item" onclick="loadDeleteCart('@product.ID')"><i class="fa fa-remove"></i></a>
 															<a class="cart-img" href="/Shop/Product/@product.ID"><img src="@product.ImageURL" alt="#"></a>
 															<h4><a href="/Shop/Product/@product.ID">@product.ProductName.Substring(0,20) ...</a></h4>
-															<p class="quantity">1x - <span class="amount">R @product.ProductSalePrice</span></p>
+															<p class="quantity">
+																1x - <span class="amount" style="text-decoration-line:line-through;color:red;">R @product.ProductBasePrice</span>
+																<span class="amount" style="font-weight:800">R @product.ProductSalePrice</span>
+															</p>
 														</li>
 													</ul>
 												}
@@ -221,22 +225,25 @@
 															<a href="#" class="remove" title="Remove this item" onclick="loadDeleteCart('@product.ID')"><i class="fa fa-remove"></i></a>
 															<a class="cart-img" href="/Shop/Product/@product.ID"><img src="@product.ImageURL" alt="#"></a>
 															<h4><a href="/Shop/Product/@product.ID">@product.ProductName.Substring(0,20) ...</a></h4>
-															<p class="quantity">1x - <span class="amount">R @product.ProductSalePrice</span></p>
+															<p class="quantity">
+																1x - <span class="amount" style="text-decoration-line:line-through; color:red;">R @product.ProductBasePrice</span>
+																<span class="amount" style="font-weight:800;">R @product.ProductSalePrice</span>
+															</p>
 														</li>
 													</ul>
 												}
 												<div class="bottom">
 													<div class="total">
 														<span>Sub Total:</span>
-														<span class="total-amount" style="text-decoration-line:line-through">R @ViewBag.CartTotalBase</span>
+														<span class="total-amount" style="text-decoration-line:line-through; color:red;">R @ViewBag.CartTotalBase</span>
 													</div>
 													<div class="total">
 														<span>Discount:</span>
-														<span class="total-amount">R @ViewBag.Savings</span>
+														<span class="total-amount" style="font-weight:800;">- R @ViewBag.Savings</span>
 													</div>
 													<div class="total">
 														<span>Total:</span>
-														<span class="total-amount" style="text-decoration-line:underline">R @ViewBag.CartTotalSale</span>
+														<span class="total-amount" style="text-decoration-line:underline;font-weight:800;">R @ViewBag.CartTotalSale</span>
 													</div>
 													<a href="/Home/UnderConstruction" class="btn animate">Checkout</a>
 												</div>
@@ -266,88 +273,90 @@
 					<div class="row">
 						<div class="col-lg-3">
 							<div class="all-category">
-								<h3 class="cat-heading"><i class="fa fa-bars" aria-hidden="true"></i>CATEGORIES</h3>
+								<h3 class="cat-heading"><i class="fa fa-bars" aria-hidden="true"></i>BROWSE</h3>
 								<ul class="main-category">
+									@*									<li>
+									<a href="#">Manufacturers <i class="fa fa-angle-right" aria-hidden="true"></i></a>
+									<ul class="sub-category">
 									<li>
-										<a href="#">Laptops <i class="fa fa-angle-right" aria-hidden="true"></i></a>
-										<ul class="sub-category">
-											<li>
-												@Html.ActionLink("Dell", "Index", "Shop", new { brand = "Dell", categories = "Notebooks" })
-											</li>
-											<li>
-												@Html.ActionLink("ASUS", "Index", "Shop", new { brand = "ASUS", categories = "Notebooks" })
-											</li>
-										</ul>
+									@Html.ActionLink("Dell", "Index", "Shop", new { manufacturer = "Dell" })
 									</li>
+									<li>
+									@Html.ActionLink("Phanteks", "Index", "Shop", new { manufacturer = "Phanteks" })
+									</li>
+									<li>
+									@Html.ActionLink("ASUS", "Index", "Shop", new { manufacturer = "ASUS" })
+									</li>
+									<li>
+									@Html.ActionLink("Gigabyte", "Index", "Shop", new { manufacturer = "Gigabyte" })
+									</li>
+									</ul>
+									</li>*@
 									<li class="main-mega">
-										<a href="/Home/UnderConstruction">Mega Discount<i class="fa fa-angle-right" aria-hidden="true"></i></a>
+										<a href="/Home/UnderConstruction">New Arrivals<i class="fa fa-angle-right" aria-hidden="true"></i></a>
 										<ul class="mega-menu">
 											<li class="single-menu">
-												<a href="/Home/UnderConstruction" class="title-link">GeForce Experience GPUs</a>
+												@Html.ActionLink("AMD", "Index", "Shop",
+												new { manufacturer = "AMD" },
+												new { Class="title-link" })
 												<div class="image">
-													<img src="https://via.placeholder.com/600x370" alt="#">
+													<a href="/Shop?manufacturer=AMD"><img src="/Media/Home/6.png" alt="#"></a>
 												</div>
 												<div class="inner-link">
-													<a href="/Home/UnderConstruction">GPU NAME HERE</a>
-													<a href="#">GPU NAME HERE</a>
-													<a href="#">GPU NAME HERE</a>
+													<a href="#">
+														@Html.ActionLink("Ryzen 9", "Index", "Shop", new { manufacturer = "Ryzen 9" })
+													</a>
+													<a href="#">
+														@Html.ActionLink("Ryzen 7", "Index", "Shop", new { manufacturer = "Ryzen 7" })
+													</a>
+													<a href="#">
+														@Html.ActionLink("Ryzen 5", "Index", "Shop", new { manufacturer = "Ryzen 5" })
+													</a>
 												</div>
 											</li>
 											<li class="single-menu">
-												<a href="/Home/UnderConstruction" class="title-link">Intel</a>
+												@Html.ActionLink("Intel", "Index", "Shop",
+												new { manufacturer = "Intel" },
+												new { Class="title-link" })
 												<div class="image">
-													<img src="https://via.placeholder.com/600x370" alt="#">
+													<a href="/Shop?manufacturer=MSI"><img src="/Media/Home/5.png" alt="#"></a>
 												</div>
 												<div class="inner-link">
-													<a href="#">CPU NAME HERE</a>
-													<a href="#">CPU NAME HERE</a>
-													<a href="#">CPU NAME HERE</a>
+													<a href="#">
+														@Html.ActionLink("Intel i3", "Index", "Shop", new { manufacturer =  "i3" })
+													</a>
+													<a href="#">
+														@Html.ActionLink("Intel i5", "Index", "Shop", new { manufacturer = "i5" })
+													</a>
+													<a href="#">
+														@Html.ActionLink("Intel i7", "Index", "Shop", new { manufacturer = "i7" })
+													</a>
 												</div>
 											</li>
 											<li class="single-menu">
-												<a href="/Home/UnderConstruction" class="title-link">AMD</a>
+												@Html.ActionLink("Nvidia", "Index", "Shop",
+												new { manufacturer = "GeForce" },
+												new { Class="title-link" })
 												<div class="image">
-													<img src="https://via.placeholder.com/600x370" alt="#">
+													<a href="/Shop?manufacturer=GeForce"><img src="/Media/Home/7.png" alt="#"></a>
 												</div>
 												<div class="inner-link">
-													<a href="#">CPU NAME HERE</a>
-													<a href="#">GPU NAME HERE</a>
-													<a href="#">CPU NAME HERE</a>
+													<a href="#">
+														@Html.ActionLink("Zotac GeForce", "Index", "Shop", new { manufacturer =  "Zotac" })
+													</a>
+													<a href="#">
+														@Html.ActionLink("Palit GeForce", "Index", "Shop", new { manufacturer = "Palit" })
+													</a>
+													<a href="#">
+														@Html.ActionLink("ASUS Nvidia Laptops", "Index", "Shop", new { manufacturer = "ASUS" })
+													</a>
 												</div>
 											</li>
 										</ul>
 									</li>
+									<li><a href="/Home/UnderConstruction">Tutorials</a></li>
 									<li>
-										@Html.ActionLink("GPUs", "Index",
-										"Shop", new {categories = "GPUs"}, null)
-									</li>
-									<li>
-										@Html.ActionLink("CPUs", "Index",
-										"Shop", new {categories = "CPUs"}, null)
-									</li>
-									<li>
-										@Html.ActionLink("Memory", "Index",
-										"Shop", new {categories = "Memory"}, null)
-									</li>
-									<li>
-										@Html.ActionLink("Motherboards", "Index",
-										"Shop", new {categories = "Motherboards"}, null)
-									</li>
-									<li>
-										@Html.ActionLink("SSDs", "Index",
-										"Shop", new {categories = "SSDs"}, null)
-									</li>
-									<li>
-										@Html.ActionLink("Chassis", "Index",
-										"Shop", new {categories = "Chassis"}, null)
-									</li>
-									<li>
-										@Html.ActionLink("PSUs", "Index",
-										"Shop", new {categories = "PSUs"}, null)
-									</li>
-									<li>
-										@Html.ActionLink("Peripherals", "Index",
-										"Shop", new {categories = "Peripherals"}, null)
+										<a href="/Home/UnderConstruction">Tech Blog</a>
 									</li>
 								</ul>
 							</div>
@@ -360,7 +369,6 @@
 										<div class="nav-inner">
 											<ul class="nav main-menu menu navbar-nav">
 												<li class="active"><a href="/">Home</a></li>
-												<li><a href="/Home/UnderConstruction">Mega Sale</a></li>
 												<li>
 													<a href="#">Shop<i class="ti-angle-down"></i><span class="new">New</span></a>
 													<ul class="dropdown">
@@ -368,12 +376,12 @@
 														<li><a href="/Shop/Cart">Cart</a></li>
 													</ul>
 												</li>
-												<li><a href="/Home/UnderConstruction">PC Builder</a></li>
-												<li><a href="/Home/UnderConstruction">Tutorials</a></li>
 												<li>
-													<a href="/Home/UnderConstruction">Blog<i class="ti-angle-down"></i></a>
+													<a href="#">PC Builder<i class="ti-angle-down"></i></a>
 													<ul class="dropdown">
-														<li><a href="/Home/UnderConstruction">Trending</a></li>
+														<li><a href="/Home/UnderConstruction">Pre-built</a></li>
+														<li><a href="/Home/UnderConstruction">Customize</a></li>
+														<li><a href="/Home/UnderConstruction">Learn</a></li>
 													</ul>
 												</li>
 												<li><a href="/Home/UnderConstruction">Contact Us</a></li>
@@ -390,6 +398,7 @@
 		</div>
 		<!--/ End Header Inner -->
 	</div>
+	<!-- End Header -->
 	<!-- Slider Area -->
 	<section class="hero-slider">
 		<!-- Single Slider -->

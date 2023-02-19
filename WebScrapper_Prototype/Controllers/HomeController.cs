@@ -16,11 +16,13 @@ namespace WebScrapper_Prototype.Controllers
 	{
 		private readonly ILogger<HomeController> _logger;
 		private readonly WebScrapper_PrototypeContext _context;
+		private readonly ApplicationDbContext _app;
 		private readonly UserManager<ApplicationUser> _userManager;
-		public HomeController(ILogger<HomeController> logger, WebScrapper_PrototypeContext context, UserManager<ApplicationUser> userManager)
+		public HomeController(ILogger<HomeController> logger, WebScrapper_PrototypeContext context, UserManager<ApplicationUser> userManager, ApplicationDbContext app)
 		{
 			_logger = logger;
 			_context = context;
+			_app = app;
 			_userManager = userManager;
 		}
 		[HttpPost]
@@ -154,19 +156,40 @@ namespace WebScrapper_Prototype.Controllers
 			var email = user.Email;
 			return email;
 		}
+		[HttpGet]
 		public async Task<int> getUserSubcribed()
 		{		
 			var user = await _userManager.GetUserAsync(User);
-			var Subscribed = user.Subscribed;
-			return Subscribed;
+			if(user != null)
+			{
+				var Subscribed = user.Subscribed;
+				return Subscribed;
+			}
+			else
+			{
+				return 0;
+			}
 		}
-		public async Task<IActionResult> UpdateSubscribedStatus()
+		[HttpPost]
+		public async Task<int> UpdateSubscribedStatus(string email)
 		{
-			int z = 1;
 			var user = await _userManager.GetUserAsync(User);
-			user.Subscribed = z;			
-			await _context.SaveChangesAsync();
-			return View();
+			if(user != null)
+			{
+				var userDetails = await _app.Users.FindAsync(user.Id);
+
+				if (!String.IsNullOrEmpty(email))
+				{
+					userDetails.Subscribed = 1;
+					await _app.SaveChangesAsync();
+				}
+				return user.Subscribed;
+			}
+			else
+			{
+				Console.WriteLine("USER IS NOT LOGGED IN:" + email);
+				return 0;
+			}			
 		}
 		[Authorize(Roles = "User, Manager")]
         [HttpPost]

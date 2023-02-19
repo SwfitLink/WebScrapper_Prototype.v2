@@ -57,6 +57,7 @@
 		</div>
 	</div>
 	<!--/ End Preloader -->
+	<!-- Header -->
 	<div class="header shop">
 		<!-- Topbar -->
 		<div class="topbar">
@@ -337,13 +338,13 @@
 												</div>
 												<div class="inner-link">
 													<a href="#">
-														@Html.ActionLink("i3", "Index", "Shop", new { manufacturer =  "i3" })
+														@Html.ActionLink("Intel i3", "Index", "Shop", new { manufacturer =  "i3" })
 													</a>
 													<a href="#">
-														@Html.ActionLink("i5", "Index", "Shop", new { manufacturer = "i5" })
+														@Html.ActionLink("Intel i5", "Index", "Shop", new { manufacturer = "i5" })
 													</a>
 													<a href="#">
-														@Html.ActionLink("i7", "Index", "Shop", new { manufacturer = "i7K" })
+														@Html.ActionLink("Intel i7", "Index", "Shop", new { manufacturer = "i7" })
 													</a>
 												</div>
 											</li>
@@ -412,6 +413,7 @@
 		</div>
 		<!--/ End Header Inner -->
 	</div>
+	<!-- End Header -->
 	<!-- Slider Area -->
 	<section class="hero-slider">
 		<!-- Single Slider -->
@@ -448,8 +450,8 @@
 					<div class="single-banner">
 						<img src="~/Media/Home/single-banner1.png" alt="AI determine">
 						<div class="content" style="background-color:#ffdeadc1; padding:15px;  width:100%;">
-							<p>PC Builder</p>
-							<h3>Let our <span style="color:ghostwhite">AI determine</span> the best possible specs for your needs and budget</h3>
+							<p style="font-weight:800;">PC Builder</p>
+							<h3>Let our <span style="color:ghostwhite; font-weight:800;">AI determine</span> the best possible specs for your needs and budget</h3>
 							<a href="/Home/UnderConstruction">Discover Now</a>
 						</div>
 					</div>
@@ -460,8 +462,8 @@
 					<div class="single-banner">
 						<img src="~/Media/Home/single-banner2.png" alt="Top Laptops">
 						<div class="content" style="background-color:#ffdeadc1; padding:15px; width:100%;">
-							<p>Mega Discounts</p>
-							<h3><span style="color:ghostwhite">Top Laptops</span> for gaming,<br /> personal and business in 2023</h3>
+							<p style="font-weight:800;">Discounts 24/7</p>
+							<h3><span style="color:ghostwhite; font-weight:800;">Gaming, Personal and Work,</span><br /> Find what you looking for on discount</h3>
 							<a href="/Shop">Shop Now</a>
 						</div>
 					</div>
@@ -472,8 +474,8 @@
 					<div class="single-banner tab-height">
 						<img src="~/Media/Home/single-banner3.png" alt="Pre-Built Towers">
 						<div class="content" style="background-color:#ffdeadc1; padding:15px; width:100%;">
-							<p>Pre-Built Towers</p>
-							<h3>Built for <span style="color:ghostwhite">Gamers</span><br>by <span>Gamers</span></h3>
+							<p style="font-weight:800;">Pre-Built Towers</p>
+							<h3>Built for <span style="color:ghostwhite; font-weight:800;">Gamers</span><br>by <span style="font-weight:800;">Gamers</span></h3>
 							<a href="/Home/UnderConstruction">Discover Now</a>
 						</div>
 					</div>
@@ -525,8 +527,8 @@
 														<a href="/Shop/Product/@product.ID">
 															@if (product.ImageURL.Contains("www"))
 															{
-																<img class="default-img" src="@product.ImageURL" alt="productimage" />
-																<img class="hover-img" src="@product.ImageURL" alt="productimage" />
+																<img crossorigin="anonymous" class="default-img" src="@product.ImageURL" alt="productimage" />
+																<img crossorigin="anonymous" class="hover-img" src="@product.ImageURL" alt="productimage" />
 															}
 															else
 															{
@@ -951,26 +953,7 @@
 			});
 		});
 	</script>
-	<!---Load Shop Brand-->
-	<script type="text/javascript">
-		$(document).on("click", "#Call", function (e) {
-			e.preventDefault();
-			var brand = $(this).data("brand");
-			$.ajax({
-				type: "GET",
-				url: "/Shop/Index",
-				data: { brand: brand },
-				success: function (result) {
-					window.location = "/Shop"
-				},
-				error: function (xhr, status, error) {
-					console.error(error);
-				}
-
-			});
-		});
-	</script>
-	<!---Load AddToCart-->
+	<!---Functions... Lots of Functions...-->
 	<script type="text/javascript">
 		function fireOncePerSession1() {
 			if (!sessionStorage.getItem('hasFired1')) {
@@ -983,28 +966,42 @@
 			}
 		}
 		function fireOncePerSession2() {
-			if (!sessionStorage.getItem('hasFired2')) {
-				$(document).ready(function () {
-					setTimeout(function () {
-						alertify.prompt('Subscribe to Our Weekly Newsletter and get 10% Off Your First Order!', ' Enter Your Email', ' '
-							, function (evt, value) {
-								$.ajax({
-									type: 'GET',
-									url: '/Home/Index',
-									data: { email: value },
-									success: function () {
-										sessionStorage.setItem('hasFired2', true);
-									},
-									error: function () {
-										console.error('Error saving email!');
-									}
-								});
-								alertify.success('Subscribed with: ' + value)
+			$(document).ready(function () {
+				if (!sessionStorage.getItem('hasFired2')) {				
+					$.ajax({
+						type: 'GET',
+						url: '/Home/getUserSubcribed',
+						success: function (r) {
+							if(r == 0) {
+								SendSubAlert();
 							}
-							, function () { alertify.error('Cancel') });
-					}, 10000);
-				});				
-			}
+						},
+						error: function () {
+							$("#productInfo h2").text("Product is no Longer in Stock!");
+						}
+					});					
+				}				
+			});			
+		}
+		function SendSubAlert() {
+			setTimeout(function () {
+				alertify.prompt('Subscribe to Our Weekly Newsletter and get 10% Off Your First Order!', ' Enter Your Email', ' ',
+					function (evt, value) {
+						$.ajax({
+							type: 'POST',
+							url: '/Home/UpdateSubscribedStatus',
+							data: { email: value },
+							success: function () {
+								sessionStorage.setItem('hasFired2', true);
+							},
+							error: function () {
+								console.error('Error saving email!');
+							}
+						});
+						alertify.success('Subscribed with: ' + value)
+					},
+					function () { alertify.error('Cancel') });
+			}, 10000);
 		}
 		function loadAddToCart(productId) {
 			$.ajax({
@@ -1044,10 +1041,10 @@
 				data: { BasketRemovePID: productId },
 				success: function (r) {
 					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
+					showMessageDeleteCart();
 				},
 				error: function () {
 					$("#productInfo h2").text("Product is no Longer in Stock!");
-					showMessageDeleteCart();
 				}
 			});
 		}
@@ -1102,7 +1099,6 @@
 		const progressBar = document.querySelector("#progressBar");
 		let totalPageHeight = document.body.scrollHeight - window.innerHeight;
 		let debounceResize;
-
 		window.addEventListener("scroll", () => {
 			let newProgressHeight = window.pageYOffset / totalPageHeight;
 			progressBar.style.transform = `scale(1,${newProgressHeight})`;
@@ -1111,14 +1107,12 @@
 			capture: true,
 			passive: true
 		});
-
 		window.addEventListener("resize", () => {
 			clearTimeout(debounceResize);
 			debounceResize = setTimeout(() => {
 				totalPageHeight = document.body.scrollHeight - window.innerHeight;
 			}, 250);
 		});
-
 		progressBarContainer.addEventListener("click", (e) => {
 			let newPageScroll = e.clientY / progressBarContainer.offsetHeight * totalPageHeight;
 			window.scrollTo({

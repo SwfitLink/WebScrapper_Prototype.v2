@@ -567,44 +567,6 @@
 			});
 		}
 	</script>
-	<!---Load Filter-->
-	<script type="text/javascript">
-		$(document).on("click", ".filter-link", function (e) {
-			e.preventDefault();
-			var filter = $(this).data("filter");
-			$.ajax({
-				type: "GET",
-				url: "/Home/Index",
-				data: { filter: filter },
-				success: function (result) {
-					$("#products .tab-content").html($(result).find("#products .tab-content").html());
-				},
-				error: function (xhr, status, error) {
-					console.error(error);
-				}
-
-			});
-		});
-	</script>
-	<!---Load Shop Brand-->
-	<script type="text/javascript">
-		$(document).on("click", "#Call", function (e) {
-			e.preventDefault();
-			var brand = $(this).data("brand");
-			$.ajax({
-				type: "GET",
-				url: "/Shop/Index",
-				data: { brand: brand },
-				success: function (result) {
-					window.location = "/Shop"
-				},
-				error: function (xhr, status, error) {
-					console.error(error);
-				}
-
-			});
-		});
-	</script>
 	<script type="text/javascript">
 		function loadAddToCart(productId) {
 			$.ajax({
@@ -727,6 +689,5 @@
 			});
 		});
 	</script>
-
 </body>
 </html>
