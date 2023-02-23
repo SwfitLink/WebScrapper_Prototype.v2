@@ -8,12 +8,12 @@ using X.PagedList;
 
 namespace WebScrapper_Prototype.Controllers
 {
-    public class ProductController : Controller
+    public class BackendController : Controller
     {
         private readonly WebScrapper_PrototypeContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public ProductController(WebScrapper_PrototypeContext context, IWebHostEnvironment webHost, IHttpContextAccessor httpContextAccessor)
+        public BackendController(WebScrapper_PrototypeContext context, IWebHostEnvironment webHost, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _webHostEnvironment = webHost;
@@ -288,7 +288,12 @@ namespace WebScrapper_Prototype.Controllers
 
             return View(product);
         }
-        private bool ProductExists(int id)
+		[HttpGet]
+		public IActionResult RoadMap()
+		{
+			return View();
+		}
+		private bool ProductExists(int id)
         {
             return _context.Products.Any(e => e.ID == id);
         }

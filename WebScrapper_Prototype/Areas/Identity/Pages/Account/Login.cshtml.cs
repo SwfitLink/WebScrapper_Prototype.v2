@@ -138,14 +138,14 @@ namespace WebScrapper_Prototype.Areas.Identity.Pages.Account
                     await _signInManager.SignInWithClaimsAsync(user, Input.RememberMe, claims);
 
                     _logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
-                }
-                if (result.Succeeded)
+					return RedirectToPage("Index", "Home");
+				}
+				if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
-                }
-                if (result.RequiresTwoFactor)
+					return RedirectToPage("Index", "Home");
+				}
+				if (result.RequiresTwoFactor)
                 {
                     return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
                 }

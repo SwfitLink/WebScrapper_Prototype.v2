@@ -7,6 +7,7 @@ namespace WebScrapper_Prototype.Models
 	{
 		[Key]
 		public int Id { get; set; }
+		public DateTime createdAt { get; set; }
 		public string BasketId { get; set; }
 		public int? ProductId { get; set; }
 	}

@@ -1,297 +1,991 @@
-﻿<!DOCTYPE html>
+﻿@using WebScrapper_Prototype.Controllers;
+@using X.PagedList.Mvc.Core;
+@using X.PagedList;
+@using Microsoft.AspNetCore.Identity;
+@using WebScrapper_Prototype.Areas.Identity.Data;
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@model X.PagedList.IPagedList<WebScrapper_Prototype.Models.Product>
+@{
+	ViewData["Title"] = "Checkout";
+}
+<!DOCTYPE html>
 <html lang="en">
 
+<!DOCTYPE html>
+<html lang="zxx">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>Checkout</title>
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
-  <!-- Bootstrap core CSS -->
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  <!-- Material Design Bootstrap -->
-  <link href="css/mdb.min.css" rel="stylesheet">
-  <!-- Your custom styles (optional) -->
-  <link href="css/style.min.css" rel="stylesheet">
+	<!-- Meta Tag -->
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name='copyright' content=''>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<!-- Title Tag  -->
+	<title>Checkout</title>
+	<!-- Favicon -->
+	<link rel="icon" type="image/png" href="#">
+	<!-- Web Font -->
+	<link href="https://fonts.googleapis.com/css?family=Poppins:200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap" rel="stylesheet">
+	<!-- Bootstrap -->
+	<link rel="stylesheet" href="~/css/bootstrap.css">
+	<!-- Font Awesome -->
+	<link rel="stylesheet" href="~/css/font-awesome.css">
+	<!-- Fancybox -->
+	<link rel="stylesheet" href="~/css/jquery.fancybox.min.css">
+	<!-- Nice Select JS -->		
+	<link rel="stylesheet" href="~/css/niceselect.css">
+	<!-- Themify Icons -->
+	<link rel="stylesheet" href="~/css/themify-icons.css">
+	<!-- Jquery Ui -->
+	<link rel="stylesheet" href="~/css/jquery-ui.css">
+	<!-- Animate CSS -->
+	<link rel="stylesheet" href="~/css/animate.css">
+	<!-- Slicknav -->
+	<link rel="stylesheet" href="~/css/slicknav.min.css">
+	<!-- Alertify -->
+	<link rel="stylesheet" href="~/alertifyjs/css/alertify.min.css" />
+	<link rel="stylesheet" href="~/alertifyjs/css/themes/default.min.css" />
+	<!-- Reset CSS -->
+	<link rel="stylesheet" href="~/css/reset.css">
+	<!-- Temp CSS -->
+	<link rel="stylesheet" href="~/css/style.css">
+	<!-- Responsive CSS -->
+	<link rel="stylesheet" href="~/css/responsive.css">
+	<!-- Site CSS -->
+	<link rel="stylesheet" href="~/css/site.css">
 </head>
 
-<body class="grey lighten-3">
+<body class="js">
+	<div id="progressBarContainer">
+		<div id="progressBar"></div>
+	</div>
+	<!-- Preloader -->
+	<div class="preloader">
+		<div class="preloader-inner">
+			<div class="preloader-icon">
+				<span></span>
+				<span></span>
+			</div>
+		</div>
+	</div>
+	<!-- End Preloader -->
+	<!-- Header -->
+	<div class="header shop">
+		<!-- Topbar -->
+		<div class="topbar">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-5 col-md-12 col-12">
+						<!-- Top Left -->
+						<div class="top-left">
+							<ul class="list-main">
+								<li><i class="ti-headphone-alt"></i> +27 (081) 565-0206</li>
+								<li>
+									<i class="ti-email"></i>
+									support@swiftlink.com
+								</li>
+							</ul>
+						</div>
+						<!--/ End Top Left -->
+					</div>
+					<div class="col-lg-6 col-md-12 col-12">
+						<!-- Top Right -->
+						<div class="right-content">
+							@if (User.IsInRole("Manager"))
+							{
+								<ul class="list-main">
+									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
+									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
+									<li><i class="ti-dashboard"></i><a href="/Dashboard">Dashboard</a></li>
+									<li><i class="ti-power-off"></i><a asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home" , new { area="" })">Logout</a></li>
+								</ul>
+							}
+							else if (User.IsInRole("User"))
+							{
+								<ul class="list-main">
+									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
+									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
+									<li><i class="ti-power-off"></i><a asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action(" Index", "Home" , new { area="" })">Logout</a></li>
+								</ul>
+							}
+							else
+							{
+								<ul class="list-main">
+									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
+									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
+									<li><i class="ti-power-off"></i><a href="/Identity/Account/Login">Login</a></li>
+								</ul>
+							}
+						</div>
+						<!-- End Top Right -->
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- End Topbar -->
+		<div class="middle-inner">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-2 col-md-2 col-12">
+						<!-- Logo -->
+						<div class="logo">
+							<a href="/"><img src="#" alt="logo"></a>
+						</div>
+						<!--/ End Logo -->
+						<!-- Search Form -->
+						<div class="search-top">
+							<div class="top-search"><a href="#0"><i class="ti-search"></i></a></div>
+							<!-- Search Form -->
+							<div class="search-top">
+								<form class="search-form">
+									@Html.TextBox("SearchString", ViewBag.CurrentFilter as string,
+									new {Class="form-control me-2", PlaceHolder="Search Products..."})
+									<button value="search" type="submit"><i class="ti-search"></i></button>
+								</form>
+							</div>
+							<!--/ End Search Form -->
+						</div>
+						<!--/ End Search Form -->
+						<div class="mobile-nav"></div>
+					</div>
+					<div class="col-lg-8 col-md-7 col-12">
+						<div class="search-bar-top">
+							<div class="search-bar">
+								<select>
+									<option selected="selected">All Categories</option>
+								</select>
+								<form>
+									@Html.TextBox("SearchString", ViewBag.CurrentFilter as string,
+									new {Class="form-control me-2", PlaceHolder="Search Products..."})
+									<button class="btnn" type="submit"><i class="ti-search"></i></button>
+								</form>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-2 col-md-3 col-12">
+						<div class="right-bar">
+							<!-- Search Form -->
+							<div class="sinlge-bar shopping">
+								<a href="#" onclick="loadWishlist()" class="single-icon"><i class="fa fa-heart-o"></i></a>
+								<!-- Wishlist Item -->
+								<div id="Wishlistbasket" class="shopping-item">
+									@if (ViewBag.Wishlist == 1)
+									{
+										@if (Model.Count() > 0)
+										{
+											<div class="dropdown-cart-header">
+												<span>Items: @Model.Count</span>
+												<a href="/Shop/Cart">
+													My Wishlist
+												</a>
+											</div>
+											@foreach (var product in Model)
+											{
+												<ul class="shopping-list">
+													<li>
+														<a href="#" class="remove" title="Remove this item" onclick="loadDeleteCart('@product.ID')"><i class="fa fa-remove"></i></a>
+														<a class="cart-img" href="/Shop/Product/@product.ID"><img src="@product.ImageURL" alt="#"></a>
+														<h4><a href="/Shop/Product/@product.ID">@product.ProductName.Substring(0,20) ...</a></h4>
+														<p class="quantity">
+															1x - <span class="amount" style="text-decoration-line:line-through;">R @product.ProductBasePrice</span>
+															<span class="amount" style="color:red;font-weight:800;">R @product.ProductSalePrice</span>
+														</p>
+													</li>
+												</ul>
+											}
+											<div class="bottom"></div>
+										}
+										else
+										{
+											<p>Your Wish list is Empty</p>
+										}
+									}
+									else
+									{
+										<p onclick="loadCart()">Click to load</p>
+									}
+								</div>
+							</div>
+							<!--/ End Wishlist Item -->
+							<div class="sinlge-bar">
+								<a href="#" id="basketHover" class="single-icon"><i class="fa fa-user-circle-o" aria-hidden="true"></i></a>
+							</div>
+							<div class="sinlge-bar shopping">
+								<a href="#" onclick="loadCart()" class="single-icon">
+									<i class="ti-bag"></i>
+									<span class="total-count">
+										@ViewBag.BasketCount
+									</span>
+								</a>
+								<!-- Shopping Item -->
+								<div id="shoppingbasket" class="shopping-item">
+									@*						<script type="text/javascript">
+									$(document).ready(function () {
+									$('#basketHover').mouseenter(function () {
+									let basketId = 1;
+									$.ajax({
+									type: 'GET',
+									url: '/Home/Index',
+									data: { basketId: basketId },
+									success: function (r) {
+									$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
+									},
+									error: function () {
+									$("#productInfo h2").text("Product is no Longer in Stock!");
+									}
+									});
+									});
+									});
+									</script>*@
+									@if (ViewBag.BasketLoad == 1)
+									{
+										@if (Model.Count() > 0)
+										{
+											<div class="dropdown-cart-header">
+												<span>Items: @Model.Count</span>
+												<a href="/Shop/Cart">
+													View Cart
+												</a>
+											</div>
+											@foreach (var product in Model)
+											{
+												<ul class="shopping-list">
+													<li>
+														<a href="#" class="remove" title="Remove this item" onclick="loadDeleteCart('@product.ID')"><i class="fa fa-remove"></i></a>
+														<a class="cart-img" href="/Shop/Product/@product.ID"><img src="@product.ImageURL" alt="#"></a>
+														<h4><a href="/Shop/Product/@product.ID">@product.ProductName.Substring(0,20) ...</a></h4>
+														<p class="quantity">
+															1x - <span class="amount" style="text-decoration-line:line-through;">R @product.ProductBasePrice</span>
+															<span class="amount" style="color:red;font-weight:800;">R @product.ProductSalePrice</span>
+														</p>
+													</li>
+												</ul>
+											}
+											<div class="bottom">
+												<div class="total">
+													<span>Sub Total:</span>
+													<span class="total-amount" style="text-decoration-line:line-through; color:red;">R @ViewBag.CartTotalBase</span>
+												</div>
+												<div class="total">
+													<span>Discount:</span>
+													<span class="total-amount" style="color:red;font-weight:800;">R @ViewBag.Savings</span>
+												</div>
+												<div class="total">
+													<span>Total:</span>
+													<span class="total-amount" style="text-decoration-line:underline">R @ViewBag.CartTotalSale</span>
+												</div>
+												<a href="/Home/UnderConstruction" class="btn animate">Checkout</a>
+											</div>
+										}
+										else
+										{
+											<p>Your Cart is Empty</p>
+										}
+									}
+									else
+									{
+										<p onclick="loadCart()">Click to load</p>
+									}
+								</div>
+								<!--/ End Shopping Item -->
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Header Inner -->
+		<div class="header-inner">
+			<div class="container">
+				<div class="cat-nav-head">
+					<div class="row">
+						<div class="col-12">
+							<div id="shopmenu" class="menu-area">
+								<!-- Main Menu -->
+								<nav class="navbar navbar-expand-lg">
+									<div class="navbar-collapse">
+										<div class="nav-inner">
+											<ul class="nav main-menu menu navbar-nav">
+												@*
+												<li><a href="/">Home</a></li>
+												*@
+												<li class="active">
+													<a href="/Shop">Shop<i class="ti-angle-down"></i></a>
+													<ul class="dropdown">
+														<li><a href="/Cart">View Cart</a></li>
+														<li><a href="/Home/UnderConstruction">Checkout</a></li>
+													</ul>
+												<li>
+													<a href="#">PC Builder<i class="ti-angle-down"></i><span class="new">New</span></a>
+													<ul class="dropdown">
+														<li><a href="/Home/UnderConstruction">Pre-built</a></li>
+														<li><a href="/Home/UnderConstruction">Customize</a></li>
+														<li><a href="/Home/UnderConstruction">Learn</a></li>
+													</ul>
+												</li>
+												<li><a href="/Home/UnderConstruction">Contact Us</a></li>
+											</ul>
+										</div>
+									</div>
+								</nav>
+								<!--/ End Main Menu -->
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--/ End Header Inner -->
+	</div>
+	<!--/ End Header -->
+	<!-- Breadcrumbs -->
+	<div class="breadcrumbs">
+		<div class="container">
+			<div class="row">
+				<div class="col-12">
+					<div class="bread-inner">
+						<ul class="bread-list">
+							<li><a href="/Shop/Cart">Cart<i class="ti-arrow-right"></i></a></li>
+							<li class="active"><a href="/Checkout">Checkout</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- End Breadcrumbs -->
+	<!-- Start Checkout -->
+	<section class="shop checkout section">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 col-12">
+					<div class="checkout-form">
+						<h2>Make Your Checkout Here</h2>
+						<p>Please register in order to checkout more quickly</p>
+						<!-- Form -->
+						<form class="form" method="post" action="#">
+							<div class="row">
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="form-group">
+										<label>First Name<span>*</span></label>
+										<input type="text" name="name" placeholder="" required="required">
+									</div>
+								</div>
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="form-group">
+										<label>Last Name<span>*</span></label>
+										<input type="text" name="name" placeholder="" required="required">
+									</div>
+								</div>
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="form-group">
+										<label>Email Address<span>*</span></label>
+										<input type="email" name="email" placeholder="" required="required">
+									</div>
+								</div>
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="form-group">
+										<label>Phone Number<span>*</span></label>
+										<input type="number" name="number" placeholder="" required="required">
+									</div>
+								</div>
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="form-group">
+										<label>Country<span>*</span></label>
+										<select name="country_name" id="country">
+											<option value="ZA">South Africa</option>
+											<option value="CH">Switzerland</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="form-group">
+										<label>Province<span>*</span></label>
+										<select name="state-province" id="state-province">
+											<option value="province" selected="selected">Western Cape</option>
+											<option>Eastern Cape</option>
+											<option>Gauteng</option>
+											<option>Free State</option>
+											<option>Note: Ill add them all soon...</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="form-group">
+										<label>Address Line 1<span>*</span></label>
+										<input type="text" name="address" placeholder="" required="required">
+									</div>
+								</div>
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="form-group">
+										<label>Address Line 2<span>*</span></label>
+										<input type="text" name="address" placeholder="" required="required">
+									</div>
+								</div>
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="form-group">
+										<label>Postal Code<span>*</span></label>
+										<input type="text" name="post" placeholder="" required="required">
+									</div>
+								</div>
+								<div class="col-12">
+									<div class="form-group create-account">
+										<input id="cbox" type="checkbox">
+										<label>Create an account?</label>
+									</div>
+								</div>
+							</div>
+						</form>
+						<!--/ End Form -->
+					</div>
+				</div>
+				<div class="col-lg-4 col-12">
+					<div class="order-details" onload="loadCart();">
+						<!-- Order Widget -->
+						<div class="single-widget">
+							<h2>CART TOTALS</h2>
+							<div class="content">
+								<ul>
+									<li>
+										Before Discount: 
+										<span class="total-amount" style="text-decoration-line:line-through; color:red;">R @ViewBag.CartTotalBase</span>
+									</li>
+									<li>
+										You Save: 
+										<span class="total-amount" style="color:red;font-weight:800;">R @ViewBag.Savings</span>
+									</li>
+									<li>
+										Sub Total:
+										<span class="total-amount" style="text-decoration-line:underline">R @ViewBag.CartTotalSale</span>
+									</li>
+									<li>Shipping:
+										@if (ViewBag.GetFreeShipping > 0)
+										{
+											<label>Spend R <span style="text-decoration-line:underline;">@ViewBag.GetFreeShipping</span> to get <b>FREE</b> Shipping</label
+										}
+										else
+										{
+											<span><b>FREE</b></span>
+										}
+										</li>
+										<li>Handling Fee<i class="fa-info"></i>:
+											<span>@ViewBag.HandlingFee</span>
+										</li>
+									<li class="last">Total<span>$340.00</span></li>
+								</ul>
+							</div>
+						</div>
+						<!--/ End Order Widget -->
+						<!-- Order Widget -->
+						<div class="single-widget">
+							<h2>Payments</h2>
+							<div class="content">
+								<div class="checkbox">
+									<label class="checkbox-inline" for="1"><input name="updates" id="1" type="checkbox"> Check Payments</label>
+									<label class="checkbox-inline" for="2"><input name="news" id="2" type="checkbox"> Cash On Delivery</label>
+									<label class="checkbox-inline" for="3"><input name="news" id="3" type="checkbox"> PayPal</label>
+								</div>
+							</div>
+						</div>
+						<!--/ End Order Widget -->
+						<!-- Payment Method Widget -->
+						<div class="single-widget payement">
+							<div class="content">
+								<img src="images/payment-method.png" alt="#">
+							</div>
+						</div>
+						<!--/ End Payment Method Widget -->
+						<!-- Button Widget -->
+						<div class="single-widget get-button">
+							<div class="content">
+								<div class="button">
+									<a href="#" class="btn">proceed to checkout</a>
+								</div>
+							</div>
+						</div>
+						<!--/ End Button Widget -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!--/ End Checkout -->
+	<section class="shop-services section home">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-3 col-md-6 col-12">
+					<!-- Start Single Service -->
+					<div class="single-service">
+						<i class="ti-rocket"></i>
+						<h4>Free shipping</h4>
+						<p>Orders over R1000</p>
+					</div>
+					<!-- End Single Service -->
+				</div>
+				<div class="col-lg-3 col-md-6 col-12">
+					<!-- Start Single Service -->
+					<div class="single-service">
+						<i class="ti-reload"></i>
+						<h4>Warranty Included</h4>
+						<p>Up to 2 years</p>
+					</div>
+					<!-- End Single Service -->
+				</div>
+				<div class="col-lg-3 col-md-6 col-12">
+					<!-- Start Single Service -->
+					<div class="single-service">
+						<i class="ti-lock"></i>
+						<h4>Secure Payment</h4>
+						<p>100% secure payment</p>
+					</div>
+					<!-- End Single Service -->
+				</div>
+				<div class="col-lg-3 col-md-6 col-12">
+					<!-- Start Single Service -->
+					<div class="single-service">
+						<i class="ti-tag"></i>
+						<h4>Best Price</h4>
+						<p>Everything is alway on discount</p>
+					</div>
+					<!-- End Single Service -->
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- Start Shop Newsletter  -->
+	<section class="shop-newsletter section">
+		<div class="container">
+			<div class="inner-top">
+				<div class="row">
+					<div class="col-lg-8 offset-lg-2 col-12">
+						<!-- Start Newsletter Inner -->
+						<div class="inner">
+							<h4>Newsletter</h4>
+							<p> Subscribe to our newsletter and get <span>10%</span> off your first purchase</p>
+							<form action="mail/mail.php" method="get" target="_blank" class="newsletter-inner">
+								<input name="EMAIL" placeholder="Your email address" required="" type="email">
+								<button class="btn">Subscribe</button>
+							</form>
+						</div>
+						<!-- End Newsletter Inner -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- End Shop Newsletter -->
+	<!-- Start Footer Area -->
+	<footer class="footer">
+		<!-- Footer Top -->
+		<div class="footer-top section">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-5 col-md-6 col-12">
+						<!-- Single Widget -->
+						<div class="single-footer about">
+							<div class="logo">
+								<a href="/"><img src="images/logo2.png" alt="#"></a>
+							</div>
+							<p class="text">Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue,  magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus.</p>
+							<p class="call">Got Question? Call us 24/7<span><a href="tel:123456789">+27 81 565 0206</a></span></p>
+						</div>
+						<!-- End Single Widget -->
+					</div>
+					<div class="col-lg-2 col-md-6 col-12">
+						<!-- Single Widget -->
+						<div class="single-footer links">
+							<h4>Information</h4>
+							<ul>
+								<li><a href="/Home/UnderConstruction">About Us</a></li>
+								<li><a href="/Home/UnderConstruction">Faq</a></li>
+								<li><a href="/Home/UnderConstruction">Terms & Conditions</a></li>
+								<li><a href="/Home/UnderConstruction">Contact Us</a></li>
+								<li><a href="/Home/UnderConstruction">Help</a></li>
+							</ul>
+						</div>
+						<!-- End Single Widget -->
+					</div>
+					<div class="col-lg-2 col-md-6 col-12">
+						<!-- Single Widget -->
+						<div class="single-footer links">
+							<h4>Customer Service</h4>
+							<ul>
+								<li><a href="/Home/UnderConstruction">Payment Methods</a></li>
+								<li><a href="/Home/UnderConstruction">Money-back</a></li>
+								<li><a href="/Home/UnderConstruction">Returns</a></li>
+								<li><a href="/Home/UnderConstruction">Shipping</a></li>
+								<li><a href="/Home/UnderConstruction">Privacy Policy</a></li>
+							</ul>
+						</div>
+						<!-- End Single Widget -->
+					</div>
+					<div class="col-lg-3 col-md-6 col-12">
+						<!-- Single Widget -->
+						<div class="single-footer social">
+							<h4>Get In Touch</h4>
+							<!-- Single Widget -->
+							<div class="contact">
+								<ul>
+									<li>Montague Gardens Cape Town</li>
+									<li>8001 South Africa.</li>
+									<li>info@swfitlink.com</li>
+									<li>+27 81 565 0206</li>
+								</ul>
+							</div>
+							<!-- End Single Widget -->
+							<ul>
+								<li><a href="#"><i class="ti-facebook"></i></a></li>
+								<li><a href="#"><i class="ti-twitter"></i></a></li>
+								<li><a href="#"><i class="ti-flickr"></i></a></li>
+								<li><a href="#"><i class="ti-instagram"></i></a></li>
+							</ul>
+						</div>
+						<!-- End Single Widget -->
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- End Footer Top -->
+		<div class="copyright">
+			<div class="container">
+				<div class="inner">
+					<div class="row">
+						<div class="col-lg-6 col-12">
+							<div class="left">
+								<p>Copyright © 2023 <a href="/" target="_blank">SwiftLink</a>  -  All Rights Reserved.</p>
+							</div>
+						</div>
+						<div class="col-lg-6 col-12">
+							<div class="right">
+								<img src="images/payments.png" alt="#">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
+	<!-- /End Footer Area -->
+	@section Scripts {
+		<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+	}
+	<!-- Site -->
+	<script src="~/js-site/site.js"></script>
+	<!-- Jquery -->
+	<script src="~/js/jquery.min.js"></script>
+	<script src="~/js/jquery-3.4.1.min.js"></script>
+	<script src="~/js/jquery-ui.min.js"></script>
+	<!-- Popper JS -->
+	<script src="~/js/popper.min.js"></script>
+	<!-- Bootstrap JS -->
+	<script src="~/js/bootstrap.min.js"></script>
+	<!-- Slicknav JS -->
+	<script src="~/js/slicknav.min.js"></script>
+	<!-- Magnific Popup JS -->
+	<script src="~/js/magnific-popup.js"></script>
+	<!-- Fancybox JS -->
+	<script src="~/js/facnybox.min.js"></script>
+	<!-- Countdown JS -->
+	<script src="~/js/finalcountdown.min.js"></script>
+	<!-- Nice Select JS -->
+	<script src="~/js/nicesellect.js"></script>
+	<!-- Onepage Nav JS -->
+	<script src="~/js/onepage-nav.min.js"></script>
+	<!-- Easing JS -->
+	<script src="~/js/easing.js"></script>
+	<!-- Alertify -->
+	<script src="~/alertifyjs/alertify.min.js"></script>
+	<!-- Active JS -->
+	<script src="~/js/active.js"></script>
+		<!-- NiceSelect JS -->
+	<script src="~/js/nicesellect.js"></script>
+	<!-- WOW thats cool -->
+	<script type="text/javascript">new WOW().init();</script>
 
-    <partial name="_LoginPartial" />
+	<!-- Custom Scripts -->
+	<!--Load Scrolling Bar-->
+	<script type="text/javascript">
+		const progressBarContainer = document.querySelector("#progressBarContainer");
+		const progressBar = document.querySelector("#progressBar");
+		let totalPageHeight = document.body.scrollHeight - window.innerHeight;
+		let debounceResize;
 
+		window.addEventListener("scroll", () => {
+			let newProgressHeight = window.pageYOffset / totalPageHeight;
+			progressBar.style.transform = `scale(1,${newProgressHeight})`;
+			progressBar.style.opacity = `${newProgressHeight}`;
+		}, {
+			capture: true,
+			passive: true
+		});
 
-  <!--Main layout-->
-  <main class="mt-5 pt-4">
-    <div class="container wow fadeIn">
+		window.addEventListener("resize", () => {
+			clearTimeout(debounceResize);
+			debounceResize = setTimeout(() => {
+				totalPageHeight = document.body.scrollHeight - window.innerHeight;
+			}, 250);
+		});
 
-      <!-- Heading -->
-      <h2 class="my-5 h2 text-center">Checkout</h2>
+		progressBarContainer.addEventListener("click", (e) => {
+			let newPageScroll = e.clientY / progressBarContainer.offsetHeight * totalPageHeight;
+			window.scrollTo({
+				top: newPageScroll,
+				behavior: 'smooth'
+			});
+		});
+	</script>
+	<!--Functions-->
+	<script type="text/javascript">
+		// [Alertify]
+		// Message (Developer Update - Experiencing alot of bugs!)
+		function showDevAnnouncement1() {
+			var msg = alertify.warning('msg');
+			msg.delay(13).setContent('Experiencing alot of bugs! Please let me know if you see them.');
+		}
 
-      <!--Grid row-->
-      <div class="row">
+		// [Alertify]
+		// Message (Developer Update - CORS Policy)
+		function showDevAnnouncement2() {
+			setTimeout(function () {
 
-        <!--Grid column-->
-        <div class="col-md-8 mb-4">
+				var msg1 = alertify.alert('CORS Policy issues are Fixed... Maybe, please tell me if you dont see product images..').set({ 'pinnable': true, 'modal': false }).set('basic', true);;
 
-          <!--Card-->
-          <div class="card">
+				msg1.delay(13).setContent('CORS Policy issues are Fixed... Maybe, please tell me if you dont see product images..');
 
-            <!--Card content-->
-            <form class="card-body">
+			}, 10000);
+		}
 
+		// [Alertify]
+		// Prompt user to accept or decline cookies
+		function fireOncePerSession1() {
+			if (!sessionStorage.getItem('hasFired1')) {
+				$(document).ready(function () {
+					alertify.confirm('Cookies', 'We use Cookies to Enhance Your Experience!',
+						function () { alertify.success('Accepted') },
+						function () { alertify.error('Declined') }).set('movable', false);
+				});
+				sessionStorage.setItem('hasFired1', true);
+			}
+		}
 
-              <!--address-->
-              <div class="md-form mb-5">
-                <input type="text" id="address" class="form-control" placeholder="1234 Main St">
-                <label for="address" class="">Address</label>
-              </div>
+		// [GET]
+		// Check if user is subscribed to newsletter
+		function fireOncePerSession2() {
+			$(document).ready(function () {
+				if (!sessionStorage.getItem('hasFired2')) {
+					$.ajax({
+						type: 'GET',
+						url: '/Home/getUserSubcribed',
+						success: function (r) {
+							if (r == 0) {
+								SendSubAlert();
+							}
+						},
+						error: function () {
+							$("#productInfo h2").text("Product is no Longer in Stock!");
+						}
+					});
+				}
+			});
+		}
 
-              <!--address-2-->
-              <div class="md-form mb-5">
-                <input type="text" id="address-2" class="form-control" placeholder="Apartment or suite">
-                <label for="address-2" class="">Address 2 (optional)</label>
-              </div>
+		// [Alertify] & [POST]
+		// If user is not subscribed then prompt user with pop-up (Delay: 25 secs)
+		// If user subscribes then update user status
+		function SendSubAlert() {
+			setTimeout(function () {
+				alertify.prompt('Subscribe to Our Weekly Newsletter and get 10% Off Your First Order!', ' Enter Your Email', ' ',
+					function (evt, value) {
+						$.ajax({
+							type: 'POST',
+							url: '/Home/UpdateSubscribedStatus',
+							data: { email: value },
+							success: function () {
+								sessionStorage.setItem('hasFired2', true);
+							},
+							error: function () {
+								console.error('Error saving email!');
+							}
+						});
+						alertify.success('Subscribed with: ' + value)
+					},
+					function () { alertify.error('Cancel') });
+			}, 25000);
+		}
 
-              <!--Grid row-->
-              <div class="row">
+		// [GET]
+		// Add to Cart
+		function loadAddToCart(productId) {
+			$.ajax({
+				type: 'GET',
+				url: '/Shop/Index',
+				data: { productId: productId },
+				success: function (r) {
+					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
+					showMessage();
+				},
+				error: function () {
+					$("#productInfo h2").text("Product is no Longer in Stock!");
+				}
+			});
+		}
 
-                <!--Grid column-->
-                <div class="col-lg-4 col-md-12 mb-4">
+		// [Alertify]
+		// Show Message for Add to Cart
+		function showMessage() {
+			var notification = alertify.notify('Added!', 'success', 5, function () { console.log('dismissed'); });
+		}
 
-                  <label for="country">Country</label>
-                  <select class="custom-select d-block w-100" id="country" required>
-                    <option value="">Choose...</option>
-                    <option>South Africa</option>
-                    <option>Switzerland</option>
+		// [GET]
+		// Load Shopping Cart
+		function loadCart() {
+			let basketStart = 1;
+			$.ajax({
+				type: 'GET',
+				url: '/Shop/Index',
+				data: { basketStart: basketStart },
+				success: function (r) {
+					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
+				},
+				error: function () {
+					$("#productInfo h2").text("Product is no Longer in Stock!");
+				}
+			});
+		}
 
-                  </select>
-                  <div class="invalid-feedback">
-                    Please select a valid country.
-                  </div>
+		// [POST]
+		// Delete from Cart
+		function loadDeleteCart(productId) {
+			$.ajax({
+				type: 'POST',
+				url: '/Shop/DeleteConfirmed',
+				data: { BasketRemovePID: productId },
+				success: function (r) {
+					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
+					showMessageDeleteCart();
 
-                </div>
-                <!--Grid column-->
+				},
+				error: function () {
+					$("#productInfo h2").text("Product is no Longer in Stock!");
+				}
+			});
+		}
 
-                <!--Grid column-->
-                <div class="col-lg-4 col-md-6 mb-4">
+		// [Alertify]
+		// Show Message for Delete from Cart
+		function showMessageDeleteCart() {
+			alertify.notify('Removed!', 'custom', 2, function () { console.log('dismissed'); });
+		}
 
-                                    <label for="state">Province</label>
-                  <select class="custom-select d-block w-100" id="state" required>
-                    <option value="">Choose...</option>
-                    <option>SOME PROVINCE</option>
-                  </select>
-                  <div class="invalid-feedback">
-                    Please provide a valid state.
-                  </div>
+		// [GET]
+		// Add to Wish list
+		function loadAddToWishlist(productId) {
+			let wishlistStart = 1;
+			$.ajax({
+				type: 'GET',
+				url: '/Shop/Index',
+				data: { productIdW: productId },
+				success: function (r) {
+					$("#Wishlistbasket").html($(r).find("#Wishlistbasket").html());
+				},
+				error: function () {
+					$("#productInfo h2").text("Product is no Longer in Stock!");
+				}
+			});
+		}
 
-                </div>
-                <!--Grid column-->
+		// [POST]
+		// Delete from Wish list
+		function loadDeleteWishlist(productId) {
+			$.ajax({
+				type: 'POST',
+				url: '/Shop/DeleteConfirmed',
+				data: { WishListRemovePID: productId },
+				success: function (r) {
+					$("#Wishlistbasket").html($(r).find("#Wishlistbasket").html());
+				},
+				error: function () {
+					$("#productInfo h2").text("Product is no Longer in Stock!");
+				}
+			});
+		}
 
-                <!--Grid column-->
-                <div class="col-lg-4 col-md-6 mb-4">
+		// [GET]
+		// Load Wish list
+		function loadWishlist() {
+			let wishlistStart = 1;
+			$.ajax({
+				type: 'GET',
+				url: '/Shop/Index',
+				data: { wishlistStart: wishlistStart },
+				success: function (r) {
+					$("#Wishlistbasket").html($(r).find("#Wishlistbasket").html());
+				},
+				error: function () {
+					$("#productInfo h2").text("Product is no Longer in Stock!");
+				}
+			});
+		}
 
-                  <label for="zip">Zip</label>
-                  <input type="text" class="form-control" id="zip" placeholder="" required>
-                  <div class="invalid-feedback">
-                    Zip code required.
-                  </div>
+		// [POST]
+		// Load QuickShop
+		function loadQuickShop(id) {
+			$.ajax({
+				type: 'POST',
+				url: '/Shop/Index',
+				data: { id: id },
+				success: function (r) {
+					$("#QuickShopModal").html($(r).find("#QuickShopModal").html());
+				},
+				error: function () {
+					$("#productInfo h2").text("Product is no Longer in Stock!");
+				}
+			});
+		}
 
-                </div>
-                <!--Grid column-->
+		// [GET]
+		// Apply Category and Price filter for product grid
+		$(document).ready(function () {
+			var lastChecked;
+			var selectedCategory;
+			var selectedPriceRange;
+			$("input[type='checkbox']").change(function () {
+				if (lastChecked && lastChecked != this) {
+					lastChecked.checked = false;
+				}
+				lastChecked = this;
+				selectedPriceRange = $(this).parent().text();
+				filterProducts(selectedCategory, selectedPriceRange);
+			});
+			$(".categor-list a").click(function () {
+				selectedCategory = $(this).text();
+				filterProducts(selectedCategory, selectedPriceRange);
 
-              </div>
-              <!--Grid row-->
-
-              <hr>
-
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="same-address">
-                <label class="custom-control-label" for="same-address">Shipping address is the same as my billing address</label>
-              </div>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="save-info">
-                <label class="custom-control-label" for="save-info">Save this information for next time</label>
-              </div>
-
-              <hr>
-
-              <div class="d-block my-3">
-                <div class="custom-control custom-radio">
-                  <input id="credit" name="paymentMethod" type="radio" class="custom-control-input" checked required>
-                  <label class="custom-control-label" for="credit">Credit card</label>
-                </div>
-                <div class="custom-control custom-radio">
-                  <input id="debit" name="paymentMethod" type="radio" class="custom-control-input" required>
-                  <label class="custom-control-label" for="debit">Debit card</label>
-                </div>
-                <div class="custom-control custom-radio">
-                  <input id="paypal" name="paymentMethod" type="radio" class="custom-control-input" required>
-                  <label class="custom-control-label" for="paypal">Paypal</label>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6 mb-3">
-                  <label for="cc-name">Name on card</label>
-                  <input type="text" class="form-control" id="cc-name" placeholder="" required>
-                  <small class="text-muted">Full name as displayed on card</small>
-                  <div class="invalid-feedback">
-                    Name on card is required
-                  </div>
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label for="cc-number">Credit card number</label>
-                  <input type="text" class="form-control" id="cc-number" placeholder="" required>
-                  <div class="invalid-feedback">
-                    Credit card number is required
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-3 mb-3">
-                  <label for="cc-expiration">Expiration</label>
-                  <input type="text" class="form-control" id="cc-expiration" placeholder="" required>
-                  <div class="invalid-feedback">
-                    Expiration date required
-                  </div>
-                </div>
-                <div class="col-md-3 mb-3">
-                  <label for="cc-expiration">CVV</label>
-                  <input type="text" class="form-control" id="cc-cvv" placeholder="" required>
-                  <div class="invalid-feedback">
-                    Security code required
-                  </div>
-                </div>
-              </div>
-              <hr class="mb-4">
-              <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
-
-            </form>
-
-          </div>
-          <!--/.Card-->
-
-        </div>
-        <!--Grid column-->
-
-        <!--Grid column-->
-        <div class="col-md-4 mb-4">
-
-          <!-- Heading -->
-          <h4 class="d-flex justify-content-between align-items-center mb-3">
-            <span class="text-muted">Your cart</span>
-            <span class="badge badge-secondary badge-pill">3</span>
-          </h4>
-
-          <!-- Cart -->
-          <ul class="list-group mb-3 z-depth-1">
-            <li class="list-group-item d-flex justify-content-between lh-condensed">
-              <div>
-                <h6 class="my-0">Product name</h6>
-                <small class="text-muted">Brief description</small>
-              </div>
-              <span class="text-muted">R100 000</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between lh-condensed">
-              <div>
-                <h6 class="my-0">Second product</h6>
-                <small class="text-muted">Brief description</small>
-              </div>
-              <span class="text-muted">R100 000</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between lh-condensed">
-              <div>
-                <h6 class="my-0">Third item</h6>
-                <small class="text-muted">Brief description</small>
-              </div>
-              <span class="text-muted">R100 000</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between bg-light">
-              <div class="text-success">
-                <h6 class="my-0">Look how much saved!</h6>
-              </div>
-              <span class="text-success">-R100 000</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between">
-              <span>Total (USD)</span>
-              <strong>R200 000</strong>
-            </li>
-          </ul>
-          <!-- Cart -->
-
-          <!-- Promo code -->
-          <form class="card p-2">
-            <div class="input-group">
-              <input type="text" class="form-control" placeholder="Promo code" aria-label="Recipient's username" aria-describedby="basic-addon2">
-              <div class="input-group-append">
-                <button class="btn btn-secondary btn-md waves-effect m-0" type="button">Redeem</button>
-              </div>
-            </div>
-          </form>
-          <!-- Promo code -->
-
-        </div>
-        <!--Grid column-->
-
-      </div>
-      <!--Grid row-->
-
-    </div>
-  </main>
-  <!--Main layout-->
-    <!--Footer-->
-    <footer class="page-footer text-center font-small mt-4 wow fadeIn">
-
-
-        <hr class="my-4">
-
-        <!-- Social icons -->
-        <div class="pb-4">
-            <a href="#" target="_blank">
-                <i class="fab fa-facebook-f mr-3"></i>
-            </a>
-
-            <a href="#" target="_blank">
-                <i class="fab fa-twitter mr-3"></i>
-            </a>
-
-            <a href="#" target="_blank">
-                <i class="fab fa-youtube mr-3"></i>
-            </a>
-
-            <a href="#" target="_blank">
-                <i class="fab fa-google-plus-g mr-3"></i>
-            </a>
-
-            <a href="#" target="_blank">
-                <i class="fab fa-pinterest mr-3"></i>
-            </a>
-        </div>
-        <!-- Social icons -->
-        <!--Copyright-->
-        <div class="footer-copyright py-3">
-            © 2023 Copyright:
-            <a href="" target="_blank"> SwiftLink.com </a>
-        </div>
-        <!--/.Copyright-->
-
-    </footer>
-    <!--/.Footer-->
-
-  <!-- SCRIPTS -->
-  <!-- JQuery -->
-  <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
-  <!-- Bootstrap tooltips -->
-  <script type="text/javascript" src="js/popper.min.js"></script>
-  <!-- Bootstrap core JavaScript -->
-  <script type="text/javascript" src="js/bootstrap.min.js"></script>
-  <!-- MDB core JavaScript -->
-  <script type="text/javascript" src="js/mdb.min.js"></script>
-  <!-- Initializations -->
-  <script type="text/javascript">
-    // Animations initialization
-    new WOW().init();
-  </script>
+			});
+			function filterProducts(category, priceRange) {
+				var data = {};
+				if (category) {
+					data.category = category;
+				}
+				if (priceRange) {
+					data.priceRange = priceRange;
+				}
+				$.ajax({
+					type: "GET",
+					url: "/Shop/Index",
+					data: data,
+					success: function (r) {
+						$("#products").html($(r).find("#products").html());
+						$("#priceRng1").html($(r).find("#priceRng1").html());
+						$("#priceRng2").html($(r).find("#priceRng2").html());
+						$("#priceRng3").html($(r).find("#priceRng3").html());
+						$("#priceRng4").html($(r).find("#priceRng4").html());
+					}
+				});
+			}
+		});
+	</script>
 </body>
 
 </html>

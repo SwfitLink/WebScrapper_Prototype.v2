@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.CodeAnalysis;
+using Microsoft.AspNetCore.Cors;
 
 namespace WebScrapper_Prototype.Controllers
 {
@@ -34,7 +35,8 @@ namespace WebScrapper_Prototype.Controllers
 			{			
 				products = products.Where(a => a.ID == id);
 			}
-			return View(products.ToPagedList());
+			//return View(products.ToPagedList());
+			return Redirect("/Shop");
 		}
 		[HttpGet]
 		public IActionResult Index(int productId, int productIdW, int wishlistStart, int basketId, string filter, string currentFilter, string searchString, int? page, string email)
@@ -148,7 +150,8 @@ namespace WebScrapper_Prototype.Controllers
 				ViewBag.BasketLoad = 0;
 			}
 			var pagedProducts = products.ToPagedList(pageNumber, pageSize);
-			return View(pagedProducts);
+			return Redirect("/Shop");
+			//return View(pagedProducts);
 		}
 		public async Task<string> getUserEmail()
 		{

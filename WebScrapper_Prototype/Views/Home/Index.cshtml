@@ -22,29 +22,34 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<!-- Favicon -->
-	<link rel="icon" type="image/png" href="images/favicon.png">
+	<link rel="icon" type="image/png" href="#">
 	<!-- Web Font -->
-	<link href="https://fonts.googleapis.com/css?family=Lato:200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Poppins:200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap" rel="stylesheet">
 	<!-- Bootstrap -->
 	<link rel="stylesheet" href="css/bootstrap.css">
-	<!-- StyleSheet -->
-	<link href="~/Content/PagedList.css" type="text/css" rel="stylesheet">
-	<link rel="stylesheet" href="~/css/magnific-popup.min.css">
-	<link rel="stylesheet" href="~/css/font-awesome.css">
-	<link rel="stylesheet" href="~/css/jquery.fancybox.min.css">
-	<link rel="stylesheet" href="~/css/themify-icons.css">
-	<link rel="stylesheet" href="~/css/niceselect.css">
-	<link rel="stylesheet" href="~/css/animate.css">
-	<link rel="stylesheet" href="~/css/flex-slider.min.css">
-	<link rel="stylesheet" href="~/css/owl-carousel.css">
-	<link rel="stylesheet" href="~/css/slicknav.min.css">
-	<link rel="stylesheet" href="~/css/reset.css">
-	<link rel="stylesheet" href="~/css/style.css">
-	<link rel="stylesheet" href="~/css/responsive.css">
-	<link rel="stylesheet" href="~/css/site.css">
+	<!-- Font Awesome -->
+	<link rel="stylesheet" href="css/font-awesome.css">
+	<!-- Fancybox -->
+	<link rel="stylesheet" href="css/jquery.fancybox.min.css">
+	<!-- Themify Icons -->
+	<link rel="stylesheet" href="css/themify-icons.css">
+	<!-- Jquery Ui -->
+	<link rel="stylesheet" href="css/jquery-ui.css">
+	<!-- Animate CSS -->
+	<link rel="stylesheet" href="css/animate.css">
+	<!-- Slicknav -->
+	<link rel="stylesheet" href="css/slicknav.min.css">
+	<!-- Alertify -->
 	<link rel="stylesheet" href="~/alertifyjs/css/alertify.min.css" />
 	<link rel="stylesheet" href="~/alertifyjs/css/themes/default.min.css" />
-	<link href="~/Content/PagedList.css" type="text/css" rel="stylesheet">
+	<!-- Reset CSS -->
+	<link rel="stylesheet" href="css/reset.css">
+	<!-- Temp CSS -->
+	<link rel="stylesheet" href="css/style.css">
+	<!-- Responsive CSS -->
+	<link rel="stylesheet" href="css/responsive.css">
+	<!-- Site CSS -->
+	<link rel="stylesheet" href="css/site.css">
 </head>
 <body class="js" onload="fireOncePerSession1(); fireOncePerSession2();">
 	<!-- Preloader -->
@@ -63,7 +68,7 @@
 		<div class="topbar">
 			<div class="container">
 				<div class="row">
-					<div class="col-lg-4 col-md-12 col-12">
+					<div class="col-lg-5 col-md-12 col-12">
 						<!-- Top Left -->
 						<div class="top-left">
 							<ul class="list-main">
@@ -76,7 +81,7 @@
 						</div>
 						<!--/ End Top Left -->
 					</div>
-					<div class="col-lg-8 col-md-12 col-12">
+					<div class="col-lg-6 col-md-12 col-12">
 						<!-- Top Right -->
 						<div class="right-content">
 							@if (User.IsInRole("Manager"))
@@ -98,7 +103,8 @@
 							}
 							else
 							{
-								<ul class="list-main">
+								<ul class="list-main">																		
+									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
 									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
 									<li><i class="ti-power-off"></i><a href="/Identity/Account/Login">Login</a></li>
 								</ul>
@@ -207,7 +213,7 @@
 									</a>
 									<!-- Shopping Item -->
 									<div id="shoppingbasket" class="shopping-item">
-										<script type="text/javascript">
+@*										<script type="text/javascript">
 											$(document).ready(function () {
 												$('.single-icon').mouseenter(function () {
 													let basketId = 1;
@@ -224,7 +230,7 @@
 													});
 												});
 											});
-										</script>
+										</script>*@
 										@if (ViewBag.BasketLoad == 1)
 										{
 											@if (Model.Count() > 0)
@@ -532,8 +538,8 @@
 															}
 															else
 															{
-																<img class="default-img" src="~/Uploads/@product.ImageURL" alt="productimage" />
-																<img class="hover-img" src="~/Uploads/@product.ImageURL" alt="productimage" />
+																<img crossorigin="anonymous" class="default-img" src="~/Uploads/@product.ImageURL" alt="productimage" />
+																<img crossorigin="anonymous" class="hover-img" src="~/Uploads/@product.ImageURL" alt="productimage" />
 															}
 														</a>
 														<div class="button-head">
@@ -881,43 +887,38 @@
 		</div>
 	</footer>
 	@section Scripts {
-		<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+		<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 	}
-	<!-- /End Footer Area -->
+	<!-- Site -->
+	<script src="~/js-site/site.js"></script>
 	<!-- Jquery -->
-	<script src="js/jquery.min.js"></script>
-	<script src="js/jquery-migrate-3.0.0.js"></script>
-	<script src="js/jquery-ui.min.js"></script>
+	<script src="~/js/jquery.min.js"></script>
+	<script src="~/js/jquery-3.4.1.min.js"></script>
+	<script src="~/js/jquery-ui.min.js"></script>
 	<!-- Popper JS -->
-	<script src="js/popper.min.js"></script>
+	<script src="~/js/popper.min.js"></script>
 	<!-- Bootstrap JS -->
-	<script src="js/bootstrap.min.js"></script>
-	<!-- Color JS -->
-	<script src="js/colors.js"></script>
+	<script src="~/js/bootstrap.min.js"></script>
 	<!-- Slicknav JS -->
-	<script src="js/slicknav.min.js"></script>
-	<!-- Owl Carousel JS -->
-	<script src="js/owl-carousel.js"></script>
+	<script src="~/js/slicknav.min.js"></script>
 	<!-- Magnific Popup JS -->
-	<script src="js/magnific-popup.js"></script>
-	<!-- Waypoints JS -->
-	<script src="js/waypoints.min.js"></script>
+	<script src="~/js/magnific-popup.js"></script>
+	<!-- Fancybox JS -->
+	<script src="~/js/facnybox.min.js"></script>
 	<!-- Countdown JS -->
-	<script src="js/finalcountdown.min.js"></script>
+	<script src="~/js/finalcountdown.min.js"></script>
 	<!-- Nice Select JS -->
-	<script src="js/nicesellect.js"></script>
-	<!-- Flex Slider JS -->
-	<script src="js/flex-slider.js"></script>
-	<!-- ScrollUp JS -->
-	<script src="js/scrollup.js"></script>
+	<script src="~/js/nicesellect.js"></script>
 	<!-- Onepage Nav JS -->
-	<script src="js/onepage-nav.min.js"></script>
+	<script src="~/js/onepage-nav.min.js"></script>
 	<!-- Easing JS -->
-	<script src="js/easing.js"></script>
-	<!-- Active JS -->
+	<script src="~/js/easing.js"></script>
+	<!-- Alertify -->
 	<script src="~/alertifyjs/alertify.min.js"></script>
-	<script src="js/active.js"></script>
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<!-- Active JS -->
+	<script src="~/js/active.js"></script>
+	<!-- WOW thats cool -->
+	<script type="text/javascript">new WOW().init();</script>
 	<!---Load QuickShop-->
 	<script type="text/javascript">
 		function loadQuickShop(id) {
@@ -953,36 +954,93 @@
 			});
 		});
 	</script>
-	<!---Functions... Lots of Functions...-->
+
+	<!-- Custom Scripts -->
+	<!--Load Scrolling Bar-->
 	<script type="text/javascript">
+		const progressBarContainer = document.querySelector("#progressBarContainer");
+		const progressBar = document.querySelector("#progressBar");
+		let totalPageHeight = document.body.scrollHeight - window.innerHeight;
+		let debounceResize;
+
+		window.addEventListener("scroll", () => {
+			let newProgressHeight = window.pageYOffset / totalPageHeight;
+			progressBar.style.transform = `scale(1,${newProgressHeight})`;
+			progressBar.style.opacity = `${newProgressHeight}`;
+		}, {
+			capture: true,
+			passive: true
+		});
+
+		window.addEventListener("resize", () => {
+			clearTimeout(debounceResize);
+			debounceResize = setTimeout(() => {
+				totalPageHeight = document.body.scrollHeight - window.innerHeight;
+			}, 250);
+		});
+
+		progressBarContainer.addEventListener("click", (e) => {
+			let newPageScroll = e.clientY / progressBarContainer.offsetHeight * totalPageHeight;
+			window.scrollTo({
+				top: newPageScroll,
+				behavior: 'smooth'
+			});
+		});
+	</script>
+
+	<!--Functions-->
+	<script type="text/javascript">
+		// [Alertify]
+		// Message (Developer Update - CORS Policy)
+		function showDevAnnouncement() {
+			var msg = alertify.warning('msg');
+			msg.delay(13).setContent('Experiencing alot of bugs! Please let me know if you see them.');
+			setTimeout(function () {
+
+				var msg1 = alertify.alert('CORS Policy issues are Fixed... Maybe, please tell me if you dont see product images..').set({ 'pinnable': true, 'modal': false }).set('basic', true);;
+
+				msg1.delay(13).setContent('CORS Policy issues are Fixed... Maybe, please tell me if you dont see product images..');
+
+			}, 10000);
+		}
+
+		// [Alertify]
+		// Prompt user to accept or decline cookies
 		function fireOncePerSession1() {
 			if (!sessionStorage.getItem('hasFired1')) {
 				$(document).ready(function () {
 					alertify.confirm('Cookies', 'We use Cookies to Enhance Your Experience!',
 						function () { alertify.success('Accepted') },
-						function () { alertify.error('Declined') }).set('movable', false);			
-				}); 
+						function () { alertify.error('Declined') }).set('movable', false);
+				});
 				sessionStorage.setItem('hasFired1', true);
 			}
 		}
+
+		// [GET]
+		// Check if user is subscribed to newsletter
 		function fireOncePerSession2() {
 			$(document).ready(function () {
-				if (!sessionStorage.getItem('hasFired2')) {				
+				if (!sessionStorage.getItem('hasFired2')) {
 					$.ajax({
 						type: 'GET',
 						url: '/Home/getUserSubcribed',
 						success: function (r) {
-							if(r == 0) {
+							if (r == 0) {
 								SendSubAlert();
 							}
 						},
 						error: function () {
 							$("#productInfo h2").text("Product is no Longer in Stock!");
 						}
-					});					
-				}				
-			});			
+					});
+				}
+			});
 		}
+
+		// [Alertify] & [POST]
+		// If user is not subscribed then prompt user with pop-up (Delay: 25 secs)
+		// If user subscribes then update user status
 		function SendSubAlert() {
 			setTimeout(function () {
 				alertify.prompt('Subscribe to Our Weekly Newsletter and get 10% Off Your First Order!', ' Enter Your Email', ' ',
@@ -1001,8 +1059,11 @@
 						alertify.success('Subscribed with: ' + value)
 					},
 					function () { alertify.error('Cancel') });
-			}, 10000);
+			}, 25000);
 		}
+
+		// [GET]
+		// Add to Cart
 		function loadAddToCart(productId) {
 			$.ajax({
 				type: 'GET',
@@ -1010,22 +1071,28 @@
 				data: { productId: productId },
 				success: function (r) {
 					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
-					showMessageAddToCartAddToCart();
+					showMessage();
 				},
 				error: function () {
 					$("#productInfo h2").text("Product is no Longer in Stock!");
 				}
 			});
 		}
-		function showMessageAddToCartAddToCart() {
+
+		// [Alertify]
+		// Show Message for Add to Cart
+		function showMessage() {
 			var notification = alertify.notify('Added!', 'success', 5, function () { console.log('dismissed'); });
 		}
+
+		// [GET]
+		// Load Shopping Cart
 		function loadCart() {
-			let basketId = 1;
+			let basketStart = 1;
 			$.ajax({
 				type: 'GET',
 				url: '/Home/Index',
-				data: { basketId: basketId },
+				data: { basketStart: basketStart },
 				success: function (r) {
 					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
 				},
@@ -1034,6 +1101,9 @@
 				}
 			});
 		}
+
+		// [POST]
+		// Delete from Cart
 		function loadDeleteCart(productId) {
 			$.ajax({
 				type: 'POST',
@@ -1042,15 +1112,22 @@
 				success: function (r) {
 					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
 					showMessageDeleteCart();
+
 				},
 				error: function () {
 					$("#productInfo h2").text("Product is no Longer in Stock!");
 				}
 			});
 		}
+
+		// [Alertify]
+		// Show Message for Delete from Cart
 		function showMessageDeleteCart() {
 			alertify.notify('Removed!', 'custom', 2, function () { console.log('dismissed'); });
 		}
+
+		// [GET]
+		// Add to Wish list
 		function loadAddToWishlist(productId) {
 			let wishlistStart = 1;
 			$.ajax({
@@ -1065,10 +1142,13 @@
 				}
 			});
 		}
+
+		// [POST]
+		// Delete from Wish list
 		function loadDeleteWishlist(productId) {
 			$.ajax({
 				type: 'POST',
-				url: '/Home/DeleteConfirmed',
+				url: '/Shop/DeleteConfirmed',
 				data: { WishListRemovePID: productId },
 				success: function (r) {
 					$("#Wishlistbasket").html($(r).find("#Wishlistbasket").html());
@@ -1078,6 +1158,9 @@
 				}
 			});
 		}
+
+		// [GET]
+		// Load Wish list
 		function loadWishlist() {
 			let wishlistStart = 1;
 			$.ajax({
@@ -1092,33 +1175,63 @@
 				}
 			});
 		}
-	</script>
-	<!---Load Progressbar-->
-	<script type="text/javascript">
-		const progressBarContainer = document.querySelector("#progressBarContainer");
-		const progressBar = document.querySelector("#progressBar");
-		let totalPageHeight = document.body.scrollHeight - window.innerHeight;
-		let debounceResize;
-		window.addEventListener("scroll", () => {
-			let newProgressHeight = window.pageYOffset / totalPageHeight;
-			progressBar.style.transform = `scale(1,${newProgressHeight})`;
-			progressBar.style.opacity = `${newProgressHeight}`;
-		}, {
-			capture: true,
-			passive: true
-		});
-		window.addEventListener("resize", () => {
-			clearTimeout(debounceResize);
-			debounceResize = setTimeout(() => {
-				totalPageHeight = document.body.scrollHeight - window.innerHeight;
-			}, 250);
-		});
-		progressBarContainer.addEventListener("click", (e) => {
-			let newPageScroll = e.clientY / progressBarContainer.offsetHeight * totalPageHeight;
-			window.scrollTo({
-				top: newPageScroll,
-				behavior: 'smooth'
+
+		// [POST]
+		// Load QuickShop
+		function loadQuickShop(id) {
+			$.ajax({
+				type: 'POST',
+				url: '/Home/Index',
+				data: { id: id },
+				success: function (r) {
+					$("#QuickShopModal").html($(r).find("#QuickShopModal").html());
+				},
+				error: function () {
+					$("#productInfo h2").text("Product is no Longer in Stock!");
+				}
 			});
+		}
+
+		// [GET]
+		// Apply Category and Price filter for product grid
+		$(document).ready(function () {
+			var lastChecked;
+			var selectedCategory;
+			var selectedPriceRange;
+			$("input[type='checkbox']").change(function () {
+				if (lastChecked && lastChecked != this) {
+					lastChecked.checked = false;
+				}
+				lastChecked = this;
+				selectedPriceRange = $(this).parent().text();
+				filterProducts(selectedCategory, selectedPriceRange);
+			});
+			$(".categor-list a").click(function () {
+				selectedCategory = $(this).text();
+				filterProducts(selectedCategory, selectedPriceRange);
+
+			});
+			function filterProducts(category, priceRange) {
+				var data = {};
+				if (category) {
+					data.category = category;
+				}
+				if (priceRange) {
+					data.priceRange = priceRange;
+				}
+				$.ajax({
+					type: "GET",
+					url: "/Home/Index",
+					data: data,
+					success: function (r) {
+						$("#products").html($(r).find("#products").html());
+						$("#priceRng1").html($(r).find("#priceRng1").html());
+						$("#priceRng2").html($(r).find("#priceRng2").html());
+						$("#priceRng3").html($(r).find("#priceRng3").html());
+						$("#priceRng4").html($(r).find("#priceRng4").html());
+					}
+				});
+			}
 		});
 	</script>
 </body>
