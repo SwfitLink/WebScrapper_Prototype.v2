@@ -160,21 +160,21 @@ namespace WebScrapper_Prototype.Controllers
 			return email;
 		}
 		[HttpGet]
-		public async Task<int> getUserSubcribed()
+		public async Task<Boolean> getUserSubcribed()
 		{		
 			var user = await _userManager.GetUserAsync(User);
 			if(user != null)
 			{
-				var Subscribed = user.Subscribed;
+				var Subscribed = user.IsSubscribed;
 				return Subscribed;
 			}
 			else
 			{
-				return 0;
+				return false;
 			}
 		}
 		[HttpPost]
-		public async Task<int> UpdateSubscribedStatus(string email)
+		public async Task<Boolean> UpdateSubscribedStatus(string email)
 		{
 			var user = await _userManager.GetUserAsync(User);
 			if(user != null)
@@ -183,15 +183,15 @@ namespace WebScrapper_Prototype.Controllers
 
 				if (!String.IsNullOrEmpty(email))
 				{
-					userDetails.Subscribed = 1;
+					userDetails.IsSubscribed = true;
 					await _app.SaveChangesAsync();
 				}
-				return user.Subscribed;
+				return user.IsSubscribed;
 			}
 			else
 			{
 				Console.WriteLine("USER IS NOT LOGGED IN:" + email);
-				return 0;
+				return false;
 			}			
 		}
 		[Authorize(Roles = "User, Manager")]

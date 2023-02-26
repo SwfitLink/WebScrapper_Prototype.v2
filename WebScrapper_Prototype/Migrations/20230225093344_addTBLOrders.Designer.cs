@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebScrapper_Prototype.Data;
 
@@ -11,9 +12,10 @@ using WebScrapper_Prototype.Data;
 namespace WebScrapper_Prototype.Migrations
 {
     [DbContext(typeof(WebScrapper_PrototypeContext))]
-    partial class WebScrapper_PrototypeContextModelSnapshot : ModelSnapshot
+    [Migration("20230225093344_addTBLOrders")]
+    partial class addTBLOrders
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,11 +26,11 @@ namespace WebScrapper_Prototype.Migrations
 
             modelBuilder.Entity("WebScrapper_Prototype.Models.Basket", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("OrderId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"), 1L, 1);
 
                     b.Property<string>("BasketId")
                         .IsRequired()
@@ -37,38 +39,61 @@ namespace WebScrapper_Prototype.Migrations
                     b.Property<int?>("ProductId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("OrderId");
 
                     b.ToTable("ShopingBasket");
                 });
 
-            modelBuilder.Entity("WebScrapper_Prototype.Models.OrderProducts", b =>
+            modelBuilder.Entity("WebScrapper_Prototype.Models.NavProducts", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("OrderId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("OrderId");
+
+                    b.ToTable("NavProducts");
+                });
+
+            modelBuilder.Entity("WebScrapper_Prototype.Models.OrderProduct", b =>
+                {
+                    b.Property<int>("OrderId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"), 1L, 1);
+
+                    b.Property<int>("OrderId1")
+                        .HasColumnType("int");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.HasKey("OrderId");
 
-                    b.HasKey("Id");
+                    b.HasIndex("OrderId1");
 
-                    b.ToTable("OrderProducts");
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderProduct");
                 });
 
             modelBuilder.Entity("WebScrapper_Prototype.Models.Orders", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("OrderId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"), 1L, 1);
 
                     b.Property<decimal>("Fee")
                         .HasColumnType("decimal(18,2)");
@@ -86,7 +111,7 @@ namespace WebScrapper_Prototype.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("OrderId");
 
                     b.ToTable("Orders");
                 });
@@ -154,11 +179,11 @@ namespace WebScrapper_Prototype.Migrations
 
             modelBuilder.Entity("WebScrapper_Prototype.Models.UserWishList", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("OrderId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"), 1L, 1);
 
                     b.Property<int?>("ProductId")
                         .HasColumnType("int");
@@ -167,9 +192,38 @@ namespace WebScrapper_Prototype.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("OrderId");
 
                     b.ToTable("UserWishList");
+                });
+
+            modelBuilder.Entity("WebScrapper_Prototype.Models.OrderProduct", b =>
+                {
+                    b.HasOne("WebScrapper_Prototype.Models.Orders", "Order")
+                        .WithMany("OrderProducts")
+                        .HasForeignKey("OrderId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WebScrapper_Prototype.Models.NavProducts", "Product")
+                        .WithMany("OrderProducts")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("WebScrapper_Prototype.Models.NavProducts", b =>
+                {
+                    b.Navigation("OrderProducts");
+                });
+
+            modelBuilder.Entity("WebScrapper_Prototype.Models.Orders", b =>
+                {
+                    b.Navigation("OrderProducts");
                 });
 #pragma warning restore 612, 618
         }

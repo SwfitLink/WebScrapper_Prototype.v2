@@ -9,18 +9,12 @@ namespace WebScrapper_Prototype.Migrations.ApplicationDb
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-			migrationBuilder.RenameColumn(
-                name: "Cellphone",
-                table: "AspNetUsers",
-                newName: "Subscribed");
+
 		}
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-			migrationBuilder.RenameColumn(
-                name: "Subscribed",
-                table: "AspNetUsers",
-                newName: "Cellphone");
+
 		}
     }
 }

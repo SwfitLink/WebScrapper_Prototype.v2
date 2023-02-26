@@ -1,17 +1,11 @@
-﻿@using WebScrapper_Prototype.Controllers;
-@using X.PagedList.Mvc.Core;
-@using X.PagedList;
-@using Microsoft.AspNetCore.Identity;
+﻿@using Microsoft.AspNetCore.Identity;
 @using WebScrapper_Prototype.Areas.Identity.Data;
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
-@model X.PagedList.IPagedList<WebScrapper_Prototype.Models.Product>
+@model WebScrapper_Prototype.Models.CheckoutAccount
 @{
 	ViewData["Title"] = "Checkout";
 }
-<!DOCTYPE html>
-<html lang="en">
-
 <!DOCTYPE html>
 <html lang="zxx">
 <head>
@@ -55,7 +49,6 @@
 	<!-- Site CSS -->
 	<link rel="stylesheet" href="~/css/site.css">
 </head>
-
 <body class="js">
 	<div id="progressBarContainer">
 		<div id="progressBar"></div>
@@ -69,8 +62,12 @@
 			</div>
 		</div>
 	</div>
-	<!-- End Preloader -->
-	<!-- Header -->
+	<!-- End Preloader -->		
+	<!-- End Scroll -->
+	<div id="progressBarContainer">
+		<div id="progressBar"></div>
+	</div>
+	<!-- End Scroll -->
 	<div class="header shop">
 		<!-- Topbar -->
 		<div class="topbar">
@@ -124,177 +121,6 @@
 			</div>
 		</div>
 		<!-- End Topbar -->
-		<div class="middle-inner">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-2 col-md-2 col-12">
-						<!-- Logo -->
-						<div class="logo">
-							<a href="/"><img src="#" alt="logo"></a>
-						</div>
-						<!--/ End Logo -->
-						<!-- Search Form -->
-						<div class="search-top">
-							<div class="top-search"><a href="#0"><i class="ti-search"></i></a></div>
-							<!-- Search Form -->
-							<div class="search-top">
-								<form class="search-form">
-									@Html.TextBox("SearchString", ViewBag.CurrentFilter as string,
-									new {Class="form-control me-2", PlaceHolder="Search Products..."})
-									<button value="search" type="submit"><i class="ti-search"></i></button>
-								</form>
-							</div>
-							<!--/ End Search Form -->
-						</div>
-						<!--/ End Search Form -->
-						<div class="mobile-nav"></div>
-					</div>
-					<div class="col-lg-8 col-md-7 col-12">
-						<div class="search-bar-top">
-							<div class="search-bar">
-								<select>
-									<option selected="selected">All Categories</option>
-								</select>
-								<form>
-									@Html.TextBox("SearchString", ViewBag.CurrentFilter as string,
-									new {Class="form-control me-2", PlaceHolder="Search Products..."})
-									<button class="btnn" type="submit"><i class="ti-search"></i></button>
-								</form>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-2 col-md-3 col-12">
-						<div class="right-bar">
-							<!-- Search Form -->
-							<div class="sinlge-bar shopping">
-								<a href="#" onclick="loadWishlist()" class="single-icon"><i class="fa fa-heart-o"></i></a>
-								<!-- Wishlist Item -->
-								<div id="Wishlistbasket" class="shopping-item">
-									@if (ViewBag.Wishlist == 1)
-									{
-										@if (Model.Count() > 0)
-										{
-											<div class="dropdown-cart-header">
-												<span>Items: @Model.Count</span>
-												<a href="/Shop/Cart">
-													My Wishlist
-												</a>
-											</div>
-											@foreach (var product in Model)
-											{
-												<ul class="shopping-list">
-													<li>
-														<a href="#" class="remove" title="Remove this item" onclick="loadDeleteCart('@product.ID')"><i class="fa fa-remove"></i></a>
-														<a class="cart-img" href="/Shop/Product/@product.ID"><img src="@product.ImageURL" alt="#"></a>
-														<h4><a href="/Shop/Product/@product.ID">@product.ProductName.Substring(0,20) ...</a></h4>
-														<p class="quantity">
-															1x - <span class="amount" style="text-decoration-line:line-through;">R @product.ProductBasePrice</span>
-															<span class="amount" style="color:red;font-weight:800;">R @product.ProductSalePrice</span>
-														</p>
-													</li>
-												</ul>
-											}
-											<div class="bottom"></div>
-										}
-										else
-										{
-											<p>Your Wish list is Empty</p>
-										}
-									}
-									else
-									{
-										<p onclick="loadCart()">Click to load</p>
-									}
-								</div>
-							</div>
-							<!--/ End Wishlist Item -->
-							<div class="sinlge-bar">
-								<a href="#" id="basketHover" class="single-icon"><i class="fa fa-user-circle-o" aria-hidden="true"></i></a>
-							</div>
-							<div class="sinlge-bar shopping">
-								<a href="#" onclick="loadCart()" class="single-icon">
-									<i class="ti-bag"></i>
-									<span class="total-count">
-										@ViewBag.BasketCount
-									</span>
-								</a>
-								<!-- Shopping Item -->
-								<div id="shoppingbasket" class="shopping-item">
-									@*						<script type="text/javascript">
-									$(document).ready(function () {
-									$('#basketHover').mouseenter(function () {
-									let basketId = 1;
-									$.ajax({
-									type: 'GET',
-									url: '/Home/Index',
-									data: { basketId: basketId },
-									success: function (r) {
-									$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
-									},
-									error: function () {
-									$("#productInfo h2").text("Product is no Longer in Stock!");
-									}
-									});
-									});
-									});
-									</script>*@
-									@if (ViewBag.BasketLoad == 1)
-									{
-										@if (Model.Count() > 0)
-										{
-											<div class="dropdown-cart-header">
-												<span>Items: @Model.Count</span>
-												<a href="/Shop/Cart">
-													View Cart
-												</a>
-											</div>
-											@foreach (var product in Model)
-											{
-												<ul class="shopping-list">
-													<li>
-														<a href="#" class="remove" title="Remove this item" onclick="loadDeleteCart('@product.ID')"><i class="fa fa-remove"></i></a>
-														<a class="cart-img" href="/Shop/Product/@product.ID"><img src="@product.ImageURL" alt="#"></a>
-														<h4><a href="/Shop/Product/@product.ID">@product.ProductName.Substring(0,20) ...</a></h4>
-														<p class="quantity">
-															1x - <span class="amount" style="text-decoration-line:line-through;">R @product.ProductBasePrice</span>
-															<span class="amount" style="color:red;font-weight:800;">R @product.ProductSalePrice</span>
-														</p>
-													</li>
-												</ul>
-											}
-											<div class="bottom">
-												<div class="total">
-													<span>Sub Total:</span>
-													<span class="total-amount" style="text-decoration-line:line-through; color:red;">R @ViewBag.CartTotalBase</span>
-												</div>
-												<div class="total">
-													<span>Discount:</span>
-													<span class="total-amount" style="color:red;font-weight:800;">R @ViewBag.Savings</span>
-												</div>
-												<div class="total">
-													<span>Total:</span>
-													<span class="total-amount" style="text-decoration-line:underline">R @ViewBag.CartTotalSale</span>
-												</div>
-												<a href="/Home/UnderConstruction" class="btn animate">Checkout</a>
-											</div>
-										}
-										else
-										{
-											<p>Your Cart is Empty</p>
-										}
-									}
-									else
-									{
-										<p onclick="loadCart()">Click to load</p>
-									}
-								</div>
-								<!--/ End Shopping Item -->
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
 		<!-- Header Inner -->
 		<div class="header-inner">
 			<div class="container">
@@ -312,18 +138,10 @@
 												*@
 												<li class="active">
 													<a href="/Shop">Shop<i class="ti-angle-down"></i></a>
-													<ul class="dropdown">
+													<ul class="dropdown">																												
+														<li><a href="/Cart">Shop</a></li>
 														<li><a href="/Cart">View Cart</a></li>
-														<li><a href="/Home/UnderConstruction">Checkout</a></li>
 													</ul>
-												<li>
-													<a href="#">PC Builder<i class="ti-angle-down"></i><span class="new">New</span></a>
-													<ul class="dropdown">
-														<li><a href="/Home/UnderConstruction">Pre-built</a></li>
-														<li><a href="/Home/UnderConstruction">Customize</a></li>
-														<li><a href="/Home/UnderConstruction">Learn</a></li>
-													</ul>
-												</li>
 												<li><a href="/Home/UnderConstruction">Contact Us</a></li>
 											</ul>
 										</div>
@@ -360,88 +178,109 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-8 col-12">
-					<div class="checkout-form">
-						<h2>Make Your Checkout Here</h2>
-						<p>Please register in order to checkout more quickly</p>
-						<!-- Form -->
-						<form class="form" method="post" action="#">
-							<div class="row">
-								<div class="col-lg-6 col-md-6 col-12">
-									<div class="form-group">
-										<label>First Name<span>*</span></label>
-										<input type="text" name="name" placeholder="" required="required">
+					@if (ViewBag.userIsCookie)
+					{
+						<div class="checkout-form">
+							<h2>Make Your Checkout Here</h2>
+							<p>Please register in order to checkout more quickly</p>
+							<!-- Form -->				                         
+							<form id="registerForm" asp-action="CheckoutAccount" class="form" method="post">
+								<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+								<div class="row">
+									<div class="col-lg-6 col-md-6 col-12">
+										<div class="form-group">
+											<label>First Name<span>*</span></label>
+											<input asp-for="FirstName" type="text" name="firstName" autocomplete="firstname" placeholder="" required="required">
+										</div>
+									</div>
+									<div class="col-lg-6 col-md-6 col-12">
+										<div class="form-group">
+											<label>Last Name<span>*</span></label>
+											<input asp-for="LastName" type="text" name="lastName" autocomplete="lastname" placeholder="" required="required">
+										</div>
+									</div>
+									<div class="col-lg-6 col-md-6 col-12">
+										<div class="form-group">
+											<label>Email Address<span>*</span></label>
+											<input asp-for="ContactEmail" type="email" name="contactEmail" autocomplete="email" placeholder="" required="required">
+										</div>
+									</div>
+									<div class="col-lg-6 col-md-6 col-12">
+										<div class="form-group">
+											<label>Phone Number<span>*</span></label>
+											<input asp-for="PhoneNumber" type="number" name="phoneNumber" autocomplete="cellphone" placeholder="" required="required">
+										</div>
+									</div>
+									<div class="col-lg-6 col-md-6 col-12">
+										<div class="form-group">
+											<label>Country<span>*</span></label>
+											<select name="countryCode" asp-for="CountryCode" id="locationCountry">
+												<option value="ZA">South Africa</option>
+												<option value="CH">Switzerland</option>
+											</select>
+										</div>
+									</div>
+									<div class="col-lg-6 col-md-6 col-12">
+										<div class="form-group">
+											<label>Province<span>*</span></label>
+											<select name="locationProvince" asp-for="LocationProvince" id="locationProvince">
+												<option value="Western Cape" selected="selected">Western Cape</option>
+												<option value="Eastern Cape">Eastern Cape</option>
+												<option value="Gauteng">Gauteng</option>
+											</select>
+										</div>
+									</div>
+									<div class="col-lg-6 col-md-6 col-12">
+										<div class="form-group">
+											<label>Country<span>*</span></label>
+											<select name="locationCity" asp-for="LocationCity" id="locationCountry">
+												<option value="ZA">Cape Town (CPT)</option>
+												<option value="CH">Port Elizabeth (PE)</option>
+											</select>
+										</div>
+									</div>
+									<div class="col-lg-6 col-md-6 col-12">
+										<div class="form-group">
+											<label>Address Line 1<span>*</span></label>
+											<input asp-for="AddressLine1" type="text" name="addressLine1" autocomplete="addressline1" placeholder="" required="required">
+										</div>
+									</div>
+									<div class="col-lg-6 col-md-6 col-12">
+										<div class="form-group">
+											<label>Address Line 2<span>*</span></label>
+											<input asp-for="AddressLine2" type="text" name="addressLine2" autocomplete="addressline2" placeholder="" required="required">
+										</div>
+									</div>
+									<div class="col-lg-6 col-md-6 col-12">
+										<div class="form-group">
+											<label>Postal Code<span>*</span></label>
+											<input asp-for="PostalCode" type="text" name="postalCode" autocomplete="postalcode" placeholder="" required="required">
+										</div>
+									</div>
+									<div class="col-lg-6 col-md-6 col-12">
+										<div class="form-group create-account">										
+											<input asp-for="IsSubscribed" name="isSubscribed" id="cbox" type="checkbox">
+											<label>Subscribe to Newsletter?</label>
+										</div>
+									</div>
+									<div class="col-12">
+										<input type="submit" value="Submit Details" class="btn btn-primary" />
 									</div>
 								</div>
-								<div class="col-lg-6 col-md-6 col-12">
-									<div class="form-group">
-										<label>Last Name<span>*</span></label>
-										<input type="text" name="name" placeholder="" required="required">
-									</div>
-								</div>
-								<div class="col-lg-6 col-md-6 col-12">
-									<div class="form-group">
-										<label>Email Address<span>*</span></label>
-										<input type="email" name="email" placeholder="" required="required">
-									</div>
-								</div>
-								<div class="col-lg-6 col-md-6 col-12">
-									<div class="form-group">
-										<label>Phone Number<span>*</span></label>
-										<input type="number" name="number" placeholder="" required="required">
-									</div>
-								</div>
-								<div class="col-lg-6 col-md-6 col-12">
-									<div class="form-group">
-										<label>Country<span>*</span></label>
-										<select name="country_name" id="country">
-											<option value="ZA">South Africa</option>
-											<option value="CH">Switzerland</option>
-										</select>
-									</div>
-								</div>
-								<div class="col-lg-6 col-md-6 col-12">
-									<div class="form-group">
-										<label>Province<span>*</span></label>
-										<select name="state-province" id="state-province">
-											<option value="province" selected="selected">Western Cape</option>
-											<option>Eastern Cape</option>
-											<option>Gauteng</option>
-											<option>Free State</option>
-											<option>Note: Ill add them all soon...</option>
-										</select>
-									</div>
-								</div>
-								<div class="col-lg-6 col-md-6 col-12">
-									<div class="form-group">
-										<label>Address Line 1<span>*</span></label>
-										<input type="text" name="address" placeholder="" required="required">
-									</div>
-								</div>
-								<div class="col-lg-6 col-md-6 col-12">
-									<div class="form-group">
-										<label>Address Line 2<span>*</span></label>
-										<input type="text" name="address" placeholder="" required="required">
-									</div>
-								</div>
-								<div class="col-lg-6 col-md-6 col-12">
-									<div class="form-group">
-										<label>Postal Code<span>*</span></label>
-										<input type="text" name="post" placeholder="" required="required">
-									</div>
-								</div>
-								<div class="col-12">
-									<div class="form-group create-account">
-										<input id="cbox" type="checkbox">
-										<label>Create an account?</label>
-									</div>
-								</div>
-							</div>
-						</form>
-						<!--/ End Form -->
-					</div>
+							</form>
+							<!--/ End Form -->
+						</div>						
+					}
+					else
+					{
+						<div class="checkout-form">
+							<h2>Make Your Checkout Here</h2>
+							<p>You are already Register: Proceed with checkout...</p>
+						</div>
+					}
 				</div>
-				<div class="col-lg-4 col-12">
-					<div class="order-details" onload="loadCart();">
+					<div class="col-lg-4 col-12">
+					<div class="order-details">
 						<!-- Order Widget -->
 						<div class="single-widget">
 							<h2>CART TOTALS</h2>
@@ -449,32 +288,39 @@
 								<ul>
 									<li>
 										Before Discount: 
-										<span class="total-amount" style="text-decoration-line:line-through; color:red;">R @ViewBag.CartTotalBase</span>
+										<span class="total-amount" style="text-decoration-line:line-through; color:red;">R @ViewBag.CartTotalBase.ToString("#,##0.00")</span>
 									</li>
 									<li>
 										You Save: 
-										<span class="total-amount" style="color:red;font-weight:800;">R @ViewBag.Savings</span>
+										<span class="total-amount" style="color:forestgreen;font-weight:800;">R @ViewBag.Savings.ToString("#,##0.00")</span>
 									</li>
 									<li>
 										Sub Total:
-										<span class="total-amount" style="text-decoration-line:underline">R @ViewBag.CartTotalSale</span>
+										<span class="total-amount" style="font-weight:600;">R @ViewBag.CartTotalSale.ToString("#,##0.00")</span>
 									</li>
 									<li>Shipping:
 										@if (ViewBag.GetFreeShipping > 0)
 										{
-											<label>Spend R <span style="text-decoration-line:underline;">@ViewBag.GetFreeShipping</span> to get <b>FREE</b> Shipping</label
+											<label>Spend R <span style="text-decoration-line:underline;">@ViewBag.GetFreeShipping</span> to get <b>FREE</b> Shipping</label>
 										}
 										else
 										{
 											<span><b>FREE</b></span>
+				
 										}
 										</li>
-										<li>Handling Fee<i class="fa-info"></i>:
-											<span>@ViewBag.HandlingFee</span>
+									<li style="color:gray;">
+										Handling Fee <i class="fa fa-info-circle" style="white-space: nowrap;" data-toggle="tooltip" data-placement="right" title="Think of our handling fee like a secret seasoning - it's the special ingredient that adds value to your shopping experience and helps us continue providing top-notch service without sacrificing our bottom line."></i> :
+											<span style="color:gray;">R @ViewBag.HandlingFee</span>
 										</li>
-									<li class="last">Total<span>$340.00</span></li>
+									<li class="last">Total: <span style="text-decoration-line:underline;font-weight:700;">R @ViewBag.GrandTotal.ToString("#,##0.00")</span></li>
 								</ul>
 							</div>
+							<script>
+								$(function () {
+									$('[data-toggle="tooltip"]').tooltip()
+								})
+							</script>
 						</div>
 						<!--/ End Order Widget -->
 						<!-- Order Widget -->
@@ -500,7 +346,7 @@
 						<div class="single-widget get-button">
 							<div class="content">
 								<div class="button">
-									<a href="#" class="btn">proceed to checkout</a>
+									<a href="#" onclick="proceedToCheckout()" class="btn">Proceed to checkout</a>
 								</div>
 							</div>
 						</div>
@@ -519,7 +365,7 @@
 					<div class="single-service">
 						<i class="ti-rocket"></i>
 						<h4>Free shipping</h4>
-						<p>Orders over R1000</p>
+						<p>Orders over R1500</p>
 					</div>
 					<!-- End Single Service -->
 				</div>
@@ -546,7 +392,7 @@
 					<div class="single-service">
 						<i class="ti-tag"></i>
 						<h4>Best Price</h4>
-						<p>Everything is alway on discount</p>
+						<p>Everything is <span>On Sale</span> 24/7 </p>
 					</div>
 					<!-- End Single Service -->
 				</div>
@@ -704,7 +550,7 @@
 	<script type="text/javascript">new WOW().init();</script>
 
 	<!-- Custom Scripts -->
-	<!--Load Scrolling Bar-->
+	<!--Load Scroll-->
 	<script type="text/javascript">
 		const progressBarContainer = document.querySelector("#progressBarContainer");
 		const progressBar = document.querySelector("#progressBar");
@@ -738,14 +584,14 @@
 	<!--Functions-->
 	<script type="text/javascript">
 		// [Alertify]
-		// Message (Developer Update - Experiencing alot of bugs!)
+		// Message (Not Active)
 		function showDevAnnouncement1() {
 			var msg = alertify.warning('msg');
 			msg.delay(13).setContent('Experiencing alot of bugs! Please let me know if you see them.');
 		}
 
 		// [Alertify]
-		// Message (Developer Update - CORS Policy)
+		// Message (Not Active)
 		function showDevAnnouncement2() {
 			setTimeout(function () {
 
@@ -756,152 +602,14 @@
 			}, 10000);
 		}
 
-		// [Alertify]
-		// Prompt user to accept or decline cookies
-		function fireOncePerSession1() {
-			if (!sessionStorage.getItem('hasFired1')) {
-				$(document).ready(function () {
-					alertify.confirm('Cookies', 'We use Cookies to Enhance Your Experience!',
-						function () { alertify.success('Accepted') },
-						function () { alertify.error('Declined') }).set('movable', false);
-				});
-				sessionStorage.setItem('hasFired1', true);
-			}
-		}
-
 		// [GET]
-		// Check if user is subscribed to newsletter
-		function fireOncePerSession2() {
-			$(document).ready(function () {
-				if (!sessionStorage.getItem('hasFired2')) {
-					$.ajax({
-						type: 'GET',
-						url: '/Home/getUserSubcribed',
-						success: function (r) {
-							if (r == 0) {
-								SendSubAlert();
-							}
-						},
-						error: function () {
-							$("#productInfo h2").text("Product is no Longer in Stock!");
-						}
-					});
-				}
-			});
-		}
-
-		// [Alertify] & [POST]
-		// If user is not subscribed then prompt user with pop-up (Delay: 25 secs)
-		// If user subscribes then update user status
-		function SendSubAlert() {
-			setTimeout(function () {
-				alertify.prompt('Subscribe to Our Weekly Newsletter and get 10% Off Your First Order!', ' Enter Your Email', ' ',
-					function (evt, value) {
-						$.ajax({
-							type: 'POST',
-							url: '/Home/UpdateSubscribedStatus',
-							data: { email: value },
-							success: function () {
-								sessionStorage.setItem('hasFired2', true);
-							},
-							error: function () {
-								console.error('Error saving email!');
-							}
-						});
-						alertify.success('Subscribed with: ' + value)
-					},
-					function () { alertify.error('Cancel') });
-			}, 25000);
-		}
-
-		// [GET]
-		// Add to Cart
-		function loadAddToCart(productId) {
+		// Not Implemented! => This will streamline checkout at a later stage...
+		function loadValidation() {
+			let startCheck = 1;
 			$.ajax({
 				type: 'GET',
-				url: '/Shop/Index',
-				data: { productId: productId },
-				success: function (r) {
-					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
-					showMessage();
-				},
-				error: function () {
-					$("#productInfo h2").text("Product is no Longer in Stock!");
-				}
-			});
-		}
-
-		// [Alertify]
-		// Show Message for Add to Cart
-		function showMessage() {
-			var notification = alertify.notify('Added!', 'success', 5, function () { console.log('dismissed'); });
-		}
-
-		// [GET]
-		// Load Shopping Cart
-		function loadCart() {
-			let basketStart = 1;
-			$.ajax({
-				type: 'GET',
-				url: '/Shop/Index',
-				data: { basketStart: basketStart },
-				success: function (r) {
-					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
-				},
-				error: function () {
-					$("#productInfo h2").text("Product is no Longer in Stock!");
-				}
-			});
-		}
-
-		// [POST]
-		// Delete from Cart
-		function loadDeleteCart(productId) {
-			$.ajax({
-				type: 'POST',
-				url: '/Shop/DeleteConfirmed',
-				data: { BasketRemovePID: productId },
-				success: function (r) {
-					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
-					showMessageDeleteCart();
-
-				},
-				error: function () {
-					$("#productInfo h2").text("Product is no Longer in Stock!");
-				}
-			});
-		}
-
-		// [Alertify]
-		// Show Message for Delete from Cart
-		function showMessageDeleteCart() {
-			alertify.notify('Removed!', 'custom', 2, function () { console.log('dismissed'); });
-		}
-
-		// [GET]
-		// Add to Wish list
-		function loadAddToWishlist(productId) {
-			let wishlistStart = 1;
-			$.ajax({
-				type: 'GET',
-				url: '/Shop/Index',
-				data: { productIdW: productId },
-				success: function (r) {
-					$("#Wishlistbasket").html($(r).find("#Wishlistbasket").html());
-				},
-				error: function () {
-					$("#productInfo h2").text("Product is no Longer in Stock!");
-				}
-			});
-		}
-
-		// [POST]
-		// Delete from Wish list
-		function loadDeleteWishlist(productId) {
-			$.ajax({
-				type: 'POST',
-				url: '/Shop/DeleteConfirmed',
-				data: { WishListRemovePID: productId },
+				url: '/Checkout/Index',
+				data: { startCheck: startCheck },
 				success: function (r) {
 					$("#Wishlistbasket").html($(r).find("#Wishlistbasket").html());
 				},
@@ -912,79 +620,33 @@
 		}
 
 		// [GET]
-		// Load Wish list
-		function loadWishlist() {
-			let wishlistStart = 1;
+		// Proceed to checkout
+		function proceedToCheckout() {
+			let startPlaceOrder = 1;
 			$.ajax({
 				type: 'GET',
-				url: '/Shop/Index',
-				data: { wishlistStart: wishlistStart },
+				url: '/Checkout/Index',
+				data: { startPlaceOrder: startPlaceOrder },
 				success: function (r) {
-					$("#Wishlistbasket").html($(r).find("#Wishlistbasket").html());
+					window.location.href = '/Orders/Index';
+					showMessageOrder();					
 				},
 				error: function () {
-					$("#productInfo h2").text("Product is no Longer in Stock!");
+					showMessageOrderFail();
 				}
 			});
 		}
-
-		// [POST]
-		// Load QuickShop
-		function loadQuickShop(id) {
-			$.ajax({
-				type: 'POST',
-				url: '/Shop/Index',
-				data: { id: id },
-				success: function (r) {
-					$("#QuickShopModal").html($(r).find("#QuickShopModal").html());
-				},
-				error: function () {
-					$("#productInfo h2").text("Product is no Longer in Stock!");
-				}
-			});
+		// [Alertify]
+		// Show Message for Order Create Success
+		function showMessageOrder() {
+			alertify.notify('Order Created!', 'success', 2, function () { console.log('dismissed'); });
+		}
+		// [Alertify]
+		// Show Message for Order Create Error
+		function showMessageOrderFail() {
+			alertify.notify('Failed to Create Order!', 'warn', 2, function () { console.log('dismissed'); });
 		}
 
-		// [GET]
-		// Apply Category and Price filter for product grid
-		$(document).ready(function () {
-			var lastChecked;
-			var selectedCategory;
-			var selectedPriceRange;
-			$("input[type='checkbox']").change(function () {
-				if (lastChecked && lastChecked != this) {
-					lastChecked.checked = false;
-				}
-				lastChecked = this;
-				selectedPriceRange = $(this).parent().text();
-				filterProducts(selectedCategory, selectedPriceRange);
-			});
-			$(".categor-list a").click(function () {
-				selectedCategory = $(this).text();
-				filterProducts(selectedCategory, selectedPriceRange);
-
-			});
-			function filterProducts(category, priceRange) {
-				var data = {};
-				if (category) {
-					data.category = category;
-				}
-				if (priceRange) {
-					data.priceRange = priceRange;
-				}
-				$.ajax({
-					type: "GET",
-					url: "/Shop/Index",
-					data: data,
-					success: function (r) {
-						$("#products").html($(r).find("#products").html());
-						$("#priceRng1").html($(r).find("#priceRng1").html());
-						$("#priceRng2").html($(r).find("#priceRng2").html());
-						$("#priceRng3").html($(r).find("#priceRng3").html());
-						$("#priceRng4").html($(r).find("#priceRng4").html());
-					}
-				});
-			}
-		});
 	</script>
 </body>
 

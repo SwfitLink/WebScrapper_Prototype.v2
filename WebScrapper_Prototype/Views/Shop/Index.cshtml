@@ -9,7 +9,6 @@
 @model X.PagedList.IPagedList<WebScrapper_Prototype.Models.Product>
 @{
 	ViewData["Title"] = "Shop";
-	ViewBag.Title = "Shop";
 }
 <!DOCTYPE html>
 <html lang="zxx">
@@ -162,9 +161,27 @@
 						<div class="right-bar">
 							<!-- Search Form -->
 							<div class="sinlge-bar shopping">
-								<a href="#" onclick="loadWishlist()" class="single-icon"><i class="fa fa-heart-o"></i></a>
+								<a id="wishlistHover" href="#" onclick="loadWishlist()" class="single-icon"><i class="fa fa-heart-o"></i></a>
 								<!-- Wishlist Item -->
 								<div id="Wishlistbasket" class="shopping-item">
+									<script type="text/javascript">
+									//	$(document).ready(function () {
+									//		$('#wishlistHover').mouseenter(function () {
+									//			let wishlistStart = 1;
+									//			$.ajax({
+									//				type: 'GET',
+									//				url: '/Shop/Index',
+									//				data: { wishlistStart: wishlistStart },
+									//				success: function (r) {
+									//					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
+									//				},
+									//				error: function () {
+									//					$("#productInfo h2").text("Product is no Longer in Stock!");
+									//				}
+									//			});
+									//		});
+									//	});
+									//</script>
 									@if (ViewBag.Wishlist == 1)
 									{
 										@if (Model.Count() > 0)
@@ -204,35 +221,30 @@
 							</div>
 							<!--/ End Wishlist Item -->
 							<div class="sinlge-bar">
-								<a href="#" id="basketHover" class="single-icon"><i class="fa fa-user-circle-o" aria-hidden="true"></i></a>
+								<a href="#" class="single-icon"><i class="fa fa-user-circle-o" aria-hidden="true"></i></a>
 							</div>
 							<div class="sinlge-bar shopping">
-								<a href="#" onclick="loadCart()" class="single-icon">
-									<i class="ti-bag"></i>
-									<span class="total-count">
-										@ViewBag.BasketCount
-									</span>
-								</a>
+								<a id="basketHover" href="#" onclick="loadCart()" class="single-icon"><i class="ti-bag"></i><span class="total-count">@ViewBag.BasketCount</span></a>
 								<!-- Shopping Item -->
 								<div id="shoppingbasket" class="shopping-item">	
-			@*						<script type="text/javascript">
-										$(document).ready(function () {
-											$('#basketHover').mouseenter(function () {
-												let basketId = 1;
-												$.ajax({
-													type: 'GET',
-													url: '/Home/Index',
-													data: { basketId: basketId },
-													success: function (r) {
-														$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
-													},
-													error: function () {
-														$("#productInfo h2").text("Product is no Longer in Stock!");
-													}
-												});
-											});
-										});
-									</script>*@
+									<script type="text/javascript">
+									//	$(document).ready(function () {
+									//		$('#basketHover').mouseenter(function () {
+									//			let basketStart = 1;
+									//			$.ajax({
+									//				type: 'GET',
+									//				url: '/Shop/Index',
+									//				data: { basketStart: basketStart },
+									//				success: function (r) {
+									//					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
+									//				},
+									//				error: function () {
+									//					$("#productInfo h2").text("Product is no Longer in Stock!");
+									//				}
+									//			});
+									//		});
+									//	});
+									//</script>
 									@if (ViewBag.BasketLoad == 1)
 									{
 										@if (Model.Count() > 0)
@@ -448,7 +460,7 @@
 						<!--/ End Shop By Price -->
 					</div>
 				</div>
-				@if (Model.Count() > 0)
+				@if (ViewBag.ProductCount > 0)
 				{
 					@if (ViewBag.CurrentFilter != null || ViewBag.Category != null || ViewBag.PriceRange != null || ViewBag.Manufacturer != null)
 					{

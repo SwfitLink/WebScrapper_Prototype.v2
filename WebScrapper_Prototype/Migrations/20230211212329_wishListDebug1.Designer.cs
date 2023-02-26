@@ -26,11 +26,11 @@ namespace WebScrapper_Prototype.Migrations
 
             modelBuilder.Entity("WebScrapper_Prototype.Models.Basket", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("OrderId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"), 1L, 1);
 
                     b.Property<string>("BasketId")
                         .IsRequired()
@@ -39,7 +39,7 @@ namespace WebScrapper_Prototype.Migrations
                     b.Property<int?>("ProductId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("OrderId");
 
                     b.ToTable("ShopingBasket");
                 });
@@ -107,11 +107,11 @@ namespace WebScrapper_Prototype.Migrations
 
             modelBuilder.Entity("WebScrapper_Prototype.Models.UserWishList", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("OrderId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"), 1L, 1);
 
                     b.Property<int?>("ProductId")
                         .HasColumnType("int");
@@ -120,7 +120,7 @@ namespace WebScrapper_Prototype.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("OrderId");
 
                     b.ToTable("UserWishList");
                 });

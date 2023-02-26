@@ -366,13 +366,13 @@
 							<!-- Shopping Summery -->
 							<table class="table shopping-summery">
 								<thead>
-									<tr class="main-hading">
-										<th>PRODUCT</th>
-										<th>NAME</th>
-										<th class="text-center">PRICE</th>
-										<th class="text-center">QUANTITY</th>
-										<th class="text-center">TOTAL</th>
-										<th class="text-center"><i class="ti-trash remove-icon"></i></th>
+									<tr class="main-hading" style="background:antiquewhite">
+										<th style="color: #f7941d; font-weight: 700;">PRODUCT</th>
+										<th style="color: #f7941d; font-weight: 700;">NAME</th>
+										<th class="text-center" style="color: #f7941d; font-weight: 700;">PRICE</th>
+										<th class="text-center" style="color: #f7941d; font-weight: 700;">QUANTITY</th>
+										<th class="text-center" style="color: #f7941d; font-weight: 700;">TOTAL</th>
+										<th class="text-center" style="color: #f7941d; font-weight: 700;"><i class="ti-trash remove-icon"></i></th>
 									</tr>
 								</thead>
 								<tbody>
@@ -426,13 +426,13 @@
 								<div class="col-lg-4 col-md-7 col-12">
 									<div class="right">
 										<ul>
-											<li>Cart Subtotal<span>R @ViewBag.CartTotalBase</span></li>
+											<li>Cart Subtotal<span class="text-decoration-line-through" style="color:red;">R @ViewBag.CartTotalBase</span></li>
 											<li>Shipping<span>Free</span></li>
-											<li style="font-weight:800;">You Save<span>- R @ViewBag.Savings</span></li>
-											<li class="last" style="text-decoration-line:line-through;">You Pay<span>R @ViewBag.CartTotalSale</span></li>
+											<li style="font-weight:800;">You Save<span style="color:forestgreen;">R @ViewBag.Savings</span></li>
+											<li class="last" style="font-weight:500;">You Pay <span style="text-decoration-line:underline">R @ViewBag.CartTotalSale</span></li>
 										</ul>
 										<div class="button5">
-											<a href="/Home/UnderConstruction" class="btn">Checkout</a>
+											<a href="/Checkout" class="btn">Checkout</a>
 											<a href="/Shop" class="btn">Continue shopping</a>
 										</div>
 									</div>

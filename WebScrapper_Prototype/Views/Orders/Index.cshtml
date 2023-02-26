@@ -1,0 +1,376 @@
+﻿@model IEnumerable<WebScrapper_Prototype.Models.Product>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html lang="zxx">
+<head>
+	<!-- Meta Tag -->
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name='copyright' content=''>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<!-- Title Tag  -->
+	<title>Checkout</title>
+	<!-- Favicon -->
+	<link rel="icon" type="image/png" href="#">
+	<!-- Web Font -->
+	<link href="https://fonts.googleapis.com/css?family=Poppins:200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap" rel="stylesheet">
+	<!-- Bootstrap -->
+	<link rel="stylesheet" href="~/css/bootstrap.css">
+	<!-- Font Awesome -->
+	<link rel="stylesheet" href="~/css/font-awesome.css">
+	<!-- Fancybox -->
+	<link rel="stylesheet" href="~/css/jquery.fancybox.min.css">
+	<!-- Nice Select JS -->		
+	<link rel="stylesheet" href="~/css/niceselect.css">
+	<!-- Themify Icons -->
+	<link rel="stylesheet" href="~/css/themify-icons.css">
+	<!-- Jquery Ui -->
+	<link rel="stylesheet" href="~/css/jquery-ui.css">
+	<!-- Animate CSS -->
+	<link rel="stylesheet" href="~/css/animate.css">
+	<!-- Slicknav -->
+	<link rel="stylesheet" href="~/css/slicknav.min.css">
+	<!-- Alertify -->
+	<link rel="stylesheet" href="~/alertifyjs/css/alertify.min.css" />
+	<link rel="stylesheet" href="~/alertifyjs/css/themes/default.min.css" />
+	<!-- Reset CSS -->
+	<link rel="stylesheet" href="~/css/reset.css">
+	<!-- Temp CSS -->
+	<link rel="stylesheet" href="~/css/style.css">
+	<!-- Responsive CSS -->
+	<link rel="stylesheet" href="~/css/responsive.css">
+	<!-- Site CSS -->
+	<link rel="stylesheet" href="~/css/site.css">
+</head>
+<body class="js">
+	<div id="progressBarContainer">
+		<div id="progressBar"></div>
+	</div>
+	<!-- Preloader -->
+	<div class="preloader">
+		<div class="preloader-inner">
+			<div class="preloader-icon">
+				<span></span>
+				<span></span>
+			</div>
+		</div>
+	</div>
+	<!-- End Preloader -->
+	<!-- End Scroll -->
+	<div id="progressBarContainer">
+		<div id="progressBar"></div>
+	</div>
+	<!-- End Scroll -->
+	<div class="header shop">
+		<!-- Topbar -->
+		<div class="topbar">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-5 col-md-12 col-12">
+						<!-- Top Left -->
+						<div class="top-left">
+							<ul class="list-main">
+								<li><i class="ti-headphone-alt"></i> +27 (081) 565-0206</li>
+								<li>
+									<i class="ti-email"></i>
+									support@swiftlink.com
+								</li>
+							</ul>
+						</div>
+						<!--/ End Top Left -->
+					</div>
+					<div class="col-lg-6 col-md-12 col-12">
+						<!-- Top Right -->
+						<div class="right-content">
+							@if (User.IsInRole("Manager"))
+							{
+								<ul class="list-main">
+									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
+									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
+									<li><i class="ti-dashboard"></i><a href="/Dashboard">Dashboard</a></li>
+									<li><i class="ti-power-off"></i><a asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home" , new { area="" })">Logout</a></li>
+								</ul>
+							}
+							else if (User.IsInRole("User"))
+							{
+								<ul class="list-main">
+									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
+									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
+									<li><i class="ti-power-off"></i><a asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action(" Index", "Home" , new { area="" })">Logout</a></li>
+								</ul>
+							}
+							else
+							{
+								<ul class="list-main">
+									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
+									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
+									<li><i class="ti-power-off"></i><a href="/Identity/Account/Login">Login</a></li>
+								</ul>
+							}
+						</div>
+						<!-- End Top Right -->
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- End Topbar -->
+		<!-- Header Inner -->
+		<div class="header-inner">
+			<div class="container">
+				<div class="cat-nav-head">
+					<div class="row">
+						<div class="col-12">
+							<div id="shopmenu" class="menu-area">
+								<!-- Main Menu -->
+								<nav class="navbar navbar-expand-lg">
+									<div class="navbar-collapse">
+										<div class="nav-inner">
+											<ul class="nav main-menu menu navbar-nav">
+												@*
+												<li><a href="/">Home</a></li>
+												*@
+												<li class="active">
+													<a href="/Shop">Shop<i class="ti-angle-down"></i></a>
+													<ul class="dropdown">
+														<li><a href="/Cart">Shop</a></li>
+														<li><a href="/Cart">View Cart</a></li>
+													</ul>
+												<li><a href="/Home/UnderConstruction">Contact Us</a></li>
+											</ul>
+										</div>
+									</div>
+								</nav>
+								<!--/ End Main Menu -->
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--/ End Header Inner -->
+	</div>
+	<!--/ End Header -->
+	<!-- Breadcrumbs -->
+	<div class="breadcrumbs">
+		<div class="container">
+			<div class="row">
+				<div class="col-12">
+					<div class="bread-inner">
+						<ul class="bread-list">
+							<li><a href="/Shop/Checkout">Checkout<i class="ti-arrow-right"></i></a></li>
+							<li class="active"><a href="/Orders">View Order</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- End Breadcrumbs -->
+<h2 style="margin:10px;">ORDER SUMAMRY:</h2>
+<p style ="margin:15px;">This is just for testing purposes</p>
+<br />
+	<h2 style="margin:10px;">Statement</h2>
+	<table class="product-table" title="Order Statement" style="margin:20px; padding:5px;">
+		<thead>
+			<tr>
+				<th scope="col">SubTotal</th>
+				<th scope="col">Shipping Costs</th>
+				<th scope="col">HandlingFee</th>
+				<th scope="col">TOTAL ORDER COST</th>
+
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					@ViewBag.SubTotal.ToString("#,##0.00")
+				</td>
+				<td>
+					@ViewBag.ShippingTotal.ToString("#,##0.00")
+				</td>
+				<td>
+					@ViewBag.Fee.ToString("#,##0.00")
+				</td>
+				<td>
+					@ViewBag.OrderGrandTotal.ToString("#,##0.00")
+				</td>
+			</tr>
+		</tbody>
+
+	</table>
+<h4 style="margin:10px;">Ordered Products</h4>
+<table class="product-table" title="Ordered Products" style="margin:20px; padding:5px;">
+    <thead>
+        <tr>
+            <th scope="col">Image</th>
+            <th scope="col">Name</th>
+            <th scope="col">Batch No.</th>
+            <th scope="col">Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td data-label="Image">
+                    @if (item.ImageURL.Contains("www"))
+                    {
+                        <img src="@item.ImageURL" height="50" width="50" />
+                    }
+                    else
+                    {
+                        <img src="~/Uploads/@item.ImageURL" height="50" width="50" />
+                    }
+                </td>
+                <td data-label="Product Name">
+                    <strong>
+                        @Html.DisplayFor(modelItem => item.ProductName)
+                    </strong>
+                </td>
+                <td data-label="Product Name">
+                    <strong>
+                        @Html.DisplayFor(modelItem => item.dataBatch)
+                    </strong>
+                </td>
+                <td data-label="Price">
+                    <strong>
+                        SwiftLink Price: R @Html.DisplayFor(modelItem => item.ProductSalePrice)
+                    </strong>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+	<footer class="footer">
+		<!-- Footer Top -->
+		<div class="footer-top section">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-5 col-md-6 col-12">
+						<!-- Single Widget -->
+						<div class="single-footer about">
+							<div class="logo">
+								<a href="/"><img src="images/logo2.png" alt="#"></a>
+							</div>
+							<p class="text">Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue,  magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus.</p>
+							<p class="call">Got Question? Call us 24/7<span><a href="tel:123456789">+27 81 565 0206</a></span></p>
+						</div>
+						<!-- End Single Widget -->
+					</div>
+					<div class="col-lg-2 col-md-6 col-12">
+						<!-- Single Widget -->
+						<div class="single-footer links">
+							<h4>Information</h4>
+							<ul>
+								<li><a href="/Home/UnderConstruction">About Us</a></li>
+								<li><a href="/Home/UnderConstruction">Faq</a></li>
+								<li><a href="/Home/UnderConstruction">Terms & Conditions</a></li>
+								<li><a href="/Home/UnderConstruction">Contact Us</a></li>
+								<li><a href="/Home/UnderConstruction">Help</a></li>
+							</ul>
+						</div>
+						<!-- End Single Widget -->
+					</div>
+					<div class="col-lg-2 col-md-6 col-12">
+						<!-- Single Widget -->
+						<div class="single-footer links">
+							<h4>Customer Service</h4>
+							<ul>
+								<li><a href="/Home/UnderConstruction">Payment Methods</a></li>
+								<li><a href="/Home/UnderConstruction">Money-back</a></li>
+								<li><a href="/Home/UnderConstruction">Returns</a></li>
+								<li><a href="/Home/UnderConstruction">Shipping</a></li>
+								<li><a href="/Home/UnderConstruction">Privacy Policy</a></li>
+							</ul>
+						</div>
+						<!-- End Single Widget -->
+					</div>
+					<div class="col-lg-3 col-md-6 col-12">
+						<!-- Single Widget -->
+						<div class="single-footer social">
+							<h4>Get In Touch</h4>
+							<!-- Single Widget -->
+							<div class="contact">
+								<ul>
+									<li>Montague Gardens Cape Town</li>
+									<li>8001 South Africa.</li>
+									<li>info@swfitlink.com</li>
+									<li>+27 81 565 0206</li>
+								</ul>
+							</div>
+							<!-- End Single Widget -->
+							<ul>
+								<li><a href="#"><i class="ti-facebook"></i></a></li>
+								<li><a href="#"><i class="ti-twitter"></i></a></li>
+								<li><a href="#"><i class="ti-flickr"></i></a></li>
+								<li><a href="#"><i class="ti-instagram"></i></a></li>
+							</ul>
+						</div>
+						<!-- End Single Widget -->
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- End Footer Top -->
+		<div class="copyright">
+			<div class="container">
+				<div class="inner">
+					<div class="row">
+						<div class="col-lg-6 col-12">
+							<div class="left">
+								<p>Copyright © 2023 <a href="/" target="_blank">SwiftLink</a>  -  All Rights Reserved.</p>
+							</div>
+						</div>
+						<div class="col-lg-6 col-12">
+							<div class="right">
+								<img src="images/payments.png" alt="#">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
+	<!-- /End Footer Area -->
+	@section Scripts {
+		<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+	}
+	<!-- Site -->
+	<script src="~/js-site/site.js"></script>
+	<!-- Jquery -->
+	<script src="~/js/jquery.min.js"></script>
+	<script src="~/js/jquery-3.4.1.min.js"></script>
+	<script src="~/js/jquery-ui.min.js"></script>
+	<!-- Popper JS -->
+	<script src="~/js/popper.min.js"></script>
+	<!-- Bootstrap JS -->
+	<script src="~/js/bootstrap.min.js"></script>
+	<!-- Slicknav JS -->
+	<script src="~/js/slicknav.min.js"></script>
+	<!-- Magnific Popup JS -->
+	<script src="~/js/magnific-popup.js"></script>
+	<!-- Fancybox JS -->
+	<script src="~/js/facnybox.min.js"></script>
+	<!-- Countdown JS -->
+	<script src="~/js/finalcountdown.min.js"></script>
+	<!-- Nice Select JS -->
+	<script src="~/js/nicesellect.js"></script>
+	<!-- Onepage Nav JS -->
+	<script src="~/js/onepage-nav.min.js"></script>
+	<!-- Easing JS -->
+	<script src="~/js/easing.js"></script>
+	<!-- Alertify -->
+	<script src="~/alertifyjs/alertify.min.js"></script>
+	<!-- Active JS -->
+	<script src="~/js/active.js"></script>
+	<!-- NiceSelect JS -->
+	<script src="~/js/nicesellect.js"></script>
+	<!-- WOW thats cool -->
+	<script type="text/javascript">new WOW().init();</script>
+</body>
+</html>

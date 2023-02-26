@@ -15,5 +15,8 @@ namespace WebScrapper_Prototype.Data
 		public DbSet<Product> Products { get; set; }
 		public DbSet<UserWishList> UserWishList { get; set; }
 		public DbSet<Basket> ShopingBasket { get; set; }
-	}
+		public DbSet<Orders> Orders { get; set; }
+        public DbSet<OrderProducts> OrderProducts { get; set; }
+
+    }
 }

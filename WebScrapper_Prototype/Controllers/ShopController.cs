@@ -9,11 +9,10 @@ using System.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.CodeAnalysis;
 using System.Security.Claims;
-using System.Text;
+using WebScrapper_Prototype.Services;
 
 namespace WebScrapper_Prototype.Controllers
 {
-
 	public class ShopController : Controller
 	{
 		private readonly ILogger<ShopController> _logger;
@@ -22,7 +21,6 @@ namespace WebScrapper_Prototype.Controllers
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly SignInManager<ApplicationUser> _signInManager;
 		private readonly IHttpContextAccessor _httpContextAccessor;
-		private string emailPersis = string.Empty;
 
 		public ShopController(ILogger<ShopController> logger, WebScrapper_PrototypeContext context, ApplicationDbContext app, UserManager<ApplicationUser> usermanager, SignInManager<ApplicationUser> signInManager, IHttpContextAccessor httpContextAccessor)
 		{
@@ -44,7 +42,7 @@ namespace WebScrapper_Prototype.Controllers
 			var products = from p in _context.Products
 						   select p;
 			var query = from p in _context.Products
-						join b in _context.ShopingBasket.Where(s => s.BasketId.Equals(getUserEmail().Result))
+						join b in _context.ShopingBasket.Where(s => s.BasketId.Equals(getUserEmail()))
 						on p.ID equals b.ProductId
 						select new { p, b };
 			products = query.Select(q => q.p);
@@ -94,23 +92,11 @@ namespace WebScrapper_Prototype.Controllers
 		[HttpGet]
 		public async Task<IActionResult> Index(int basketStart, int productIdW, int wishlistStart, string priceRange, int productId, string manufacturer, string category, string searchString, string currentFilter, int? page, int pageSize)
 		{
-			CookieOptions cookieOptions = new CookieOptions();
-			cookieOptions.Expires = new DateTimeOffset(DateTime.Now.AddDays(7));
-			cookieOptions.IsEssential = true;
-			if (!HttpContext.Request.Cookies.ContainsKey("user_cookie3"))
-			{
-				await cookieUser("404");
-				HttpContext.Response.Cookies.Append("user_cookie3", emailPersis.ToString(), cookieOptions);
-			}
-			else
-			{
-				var firstRequest = HttpContext.Request.Cookies["user_cookie3"];
-				emailPersis = firstRequest.ToString();
-				await cookieUser(firstRequest.ToString());
-			}
+			AutoUserService userService = new AutoUserService(_app, _signInManager, _userManager, _context);
 			Queue<decimal?> basePrice = new Queue<decimal?>();
 			Queue<decimal?> salePrice = new Queue<decimal?>();
 			Queue<decimal?> cartTotal = new Queue<decimal?>();
+			var email = " ";
 			var products = from p in _context.Products
 						   select p;
 			var basket = from b in _context.ShopingBasket
@@ -118,6 +104,51 @@ namespace WebScrapper_Prototype.Controllers
 			var wishlist = from w in _context.UserWishList
 						   select w;
 			products = products.Where(p => p.Visible.Equals("Visible"));
+			/// Summary
+			/// Checks for Cookie and Signs User								
+			if (!User?.Identity.IsAuthenticated == false)
+			{
+				if(!getUserEmail().Equals("404"))
+				{
+					Console.WriteLine("COOKIE: WORKING...");
+				}
+				else
+				{
+					Console.WriteLine("ERROR: UserEmail is NULL!!!" + getUserEmail());
+				}
+			}
+			else
+			{
+				if (!HttpContext.Request.Cookies.ContainsKey("cookie2"))
+				{
+					CookieOptions cookieOptions = new CookieOptions();
+					cookieOptions.Expires = new DateTimeOffset(DateTime.Now.AddDays(7));
+					cookieOptions.IsEssential = true;
+					HttpContext.Response.Cookies.Append("cookie2", userService.ManageUser().Result, cookieOptions);
+				}
+				else
+				{
+				var firstRequest = HttpContext.Request.Cookies["cookie2"];
+				await userService.signInUser(firstRequest.ToString());
+				email = firstRequest.ToString();
+				}
+				if (getUserEmail() == null)
+				{
+					Console.WriteLine("COOKIE: WORKING...");
+				}
+				else
+				{
+                    Console.WriteLine("ERROR: UserEmail is NULL!!!" + getUserEmail());
+                }
+            }
+			/// Summary
+			/// Add product to Shopping Cart
+			if (productId > 0)
+			{
+				AddToCart(productId);				   
+			}			
+			/// Summary
+			/// Search for products
 			if (!String.IsNullOrEmpty(searchString))
 			{
 				var words = searchString.Split(' ');
@@ -128,15 +159,15 @@ namespace WebScrapper_Prototype.Controllers
 				}
 				ViewBag.CurrentFilter = searchString;
 			}
-			if (productId > 0)
-			{
-				AddToCart(productId);
-			}
-			if(productIdW > 0)
+			/// Summary
+			/// Add product to Wish list
+			if (productIdW > 0)
 			{
 				var v = AddToWishList(productIdW);
 				wishlist = wishlist.Where(w => w.ProductId.Equals(v));
 			}
+			/// Summary
+			/// Apply Price Filter
 			if (!String.IsNullOrEmpty(priceRange))
 			{
 				ViewBag.PriceRange = "Price Range: " + priceRange;
@@ -177,20 +208,25 @@ namespace WebScrapper_Prototype.Controllers
 			{
 				searchString = currentFilter;
 			}
+			/// Summary
+			/// Load Wish list
 			if (wishlistStart == 1)
 			{
 				var query = from p in _context.Products
-							join w in _context.UserWishList.Where(s => s.UserId.Equals(getUserEmail().Result))
+							join w in _context.UserWishList.Where(s => s.UserId.Equals(getUserEmail()))
 							on p.ID equals w.ProductId
 							select new { p, w };
 				products = query.Select(q => q.p);
 				ViewBag.Wishlist = 1;
 				return View(products.ToPagedList());
 			}
+			/// Summary
+			/// Load Shopping Cart
 			if (basketStart == 1)
 			{
+				ViewBag.BasketLoad = 1;
 				var query = from p in _context.Products
-							join b in _context.ShopingBasket.Where(s => s.BasketId.Equals(getUserEmail().Result))
+							join b in _context.ShopingBasket.Where(s => s.BasketId.Equals(getUserEmail()))
 								on p.ID equals b.ProductId
 							select new { p, b };
 				products = query.Select(q => q.p);			
@@ -221,19 +257,22 @@ namespace WebScrapper_Prototype.Controllers
 					ViewBag.HandlingFee = "R50";
 				}
 				basePrice.Clear();
-				salePrice.Clear();
-				ViewBag.BasketLoad = 1;
+				salePrice.Clear();				
 				return View(products.ToPagedList(1, 100));
 			}
 			else
 			{
 				ViewBag.BasketLoad = 0;
 			}
-			if(!String.IsNullOrEmpty(manufacturer)) 
+			/// Summary
+			/// Apply manufacturer filter
+			if (!String.IsNullOrEmpty(manufacturer)) 
 			{
 				products = products.Where(s => s.ProductName.Contains(manufacturer));
 				ViewBag.manufacturer = manufacturer;
 			}
+			/// Summary
+			/// Apply category filter
 			if (!String.IsNullOrEmpty(category))
 			{
 				if (category.Equals("All"))
@@ -275,6 +314,8 @@ namespace WebScrapper_Prototype.Controllers
 			{
 				products = products.Where(s => s.ProductCategory.Equals("GPUs") || s.ProductCategory.Equals("CPUs") || s.ProductCategory.Equals("Notebooks") || s.ProductCategory.Equals("Monitors") || s.ProductCategory.Equals("Peripherals") || s.ProductCategory.Equals("Chassis"));
 			}
+			/// Summary
+			/// Prepare View....
 			if (pageSize == 0)
 			{
 				pageSize = 24;
@@ -289,53 +330,19 @@ namespace WebScrapper_Prototype.Controllers
 			ViewBag.ProductCount = onePageOfProducts.Count;
 			return View(onePageOfProducts);
 		}
-		[HttpGet]
-        public IActionResult Product(int id)
-        {
-			var products = from p in _context.Products
-						   select p;
-			if (id > 0)
-			{
-				products = products.Where(a => a.ID == id);
-
-			}
-			return View(products.ToPagedList());
-		}
-		public async Task<IActionResult> cookieUser(string token)
+		public async Task signInCookieUser(string token)
 		{
-			if (token.Equals("404"))
+			if (token != null)//Debug Purpose (So that when switching Conn strings no error)
 			{
-				var user = CreateUser();
-				string generatedEmail = "cookie" + Guid.NewGuid().ToString() + "@swiftlink.com";
-				user.FirstName = "User";
-				user.LastName = "UserlAT";
-				user.Email = generatedEmail;
-				user.PhoneNumber = "1234567890";
-				user.CountryCode = "ZA";
-				user.UserName = generatedEmail;
-				user.NormalizedUserName = generatedEmail;
-				user.NormalizedEmail = generatedEmail;
-				user.PasswordHash = "AQAAAAEAACcQAAAAEH+MdVIf9JyT0rq9Q/+YY8LEzJtSkL1kCdWQPPQTo06tmiiuDbpWMfaDthgRlIMfXg==";
-				IdentityUser identity = user;
-				identity.UserName = user.UserName;
-				identity.Email = user.Email;
-				identity.NormalizedEmail = user.NormalizedEmail;
-				identity.NormalizedUserName = user.NormalizedUserName;
-				identity.PasswordHash = user.PasswordHash;
-				identity.PhoneNumber = user.PhoneNumber;
-				_app.Attach(user);
-				_app.Entry(user).State = EntityState.Added;
-				_app.SaveChanges();
-				user = await _signInManager.UserManager.FindByEmailAsync(user.Email);				
-				emailPersis = user.Email;
-				var result = await _signInManager.CheckPasswordSignInAsync(user, "Markaway86!", false);
+				var userA = await _signInManager.UserManager.FindByEmailAsync(token);
+				var result = await _signInManager.CheckPasswordSignInAsync(userA, "Markaway86!", false);
 				if (result.Succeeded)
 				{
 					var claims = new List<Claim>
-					{
-						new Claim("arr", "pwd"),
-					};
-					var roles = await _signInManager.UserManager.GetRolesAsync(user);
+						{
+							new Claim("arr", "pwd"),
+						};
+					var roles = await _signInManager.UserManager.GetRolesAsync(userA);
 					if (roles.Any())
 					{
 						//Gives Cookie [USER] Role
@@ -344,87 +351,30 @@ namespace WebScrapper_Prototype.Controllers
 					}
 					else
 					{
-						await _signInManager.UserManager.AddToRoleAsync(user, "User");
+						await _signInManager.UserManager.AddToRoleAsync(userA, "User");
+						await _userManager.UpdateAsync(userA);
 						var roleClaim = string.Join(",", roles);
 						claims.Add(new Claim("Roles", roleClaim));
 					}
-					await _signInManager.SignInWithClaimsAsync(user, true, claims);				 
-					_logger.LogInformation("User logged in.");
+					await _signInManager.SignInWithClaimsAsync(userA, true, claims);
 				}
-				return RedirectToPage("Index", "Shop");
 			}
 			else
 			{
-				var userA = await _signInManager.UserManager.FindByEmailAsync(token);
-				if(userA != null)//Debug Purpose (So that when switching Conn strings no error)
+				Console.WriteLine("ERROR 404: Can Not Find Email. Cookie Request Failed... Trying To Get UserToken From METHOD...");
+				try
 				{
-					if (User?.Identity.IsAuthenticated == false)
-					{
-						var result = await _signInManager.CheckPasswordSignInAsync(userA, "Markaway86!", false);
-						if (result.Succeeded)
-						{
-							var claims = new List<Claim>
-					{
-						new Claim("arr", "pwd"),
-					};
-							var roles = await _signInManager.UserManager.GetRolesAsync(userA);
-							if (roles.Any())
-							{
-								//Gives Cookie [USER] Role
-								var roleClaim = string.Join(",", roles);
-								claims.Add(new Claim("Roles", roleClaim));
-							}
-							else
-							{
-								await _signInManager.UserManager.AddToRoleAsync(userA, "User");
-								await _userManager.UpdateAsync(userA);
-								var roleClaim = string.Join(",", roles);
-								claims.Add(new Claim("Roles", roleClaim));
-							}
-							await _signInManager.SignInWithClaimsAsync(userA, true, claims);
-							_logger.LogInformation("User logged in.");
-						}
-						return RedirectToPage("Index", "Shop");
-					}
+					await signInCookieUser(getUserEmail());
 				}
-				else
+				catch
 				{
-					await cookieUser("404");
-				}			
-				return View();
+					Console.WriteLine("ERROR 800: CRITICAL ERROR: Unable to SignInCookieUser.....");
+				}
+
 			}
 		}
-		private ApplicationUser CreateUser()
-		{
-			try
-			{
-				return Activator.CreateInstance<ApplicationUser>();
-			}
-			catch
-			{
-				throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
-					$"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
-					$"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
-			}
-		}
-		public async Task<string> getUserEmail()
-		{
-			if (!String.IsNullOrEmpty(emailPersis))
-			{
-				var user = await _userManager.FindByEmailAsync(emailPersis);
-				var email = user.Email;
-				return email;
-			}
-			else
-			{
-				var user = await _userManager.GetUserAsync(User);
-				var email = user.Email;
-				return email;
-			}			
-		} 
-		[Authorize(Roles = "User, Manager")]
 		[HttpPost]
-		public int AddToCart(int productId)
+		public void AddToCart(int productId)
 		{
 			var prod = from p in _context.Products
 					   select p;
@@ -433,15 +383,11 @@ namespace WebScrapper_Prototype.Controllers
 				prod = prod.Where(p => p.ID == productId);
 				Basket shoppingBasket = new Basket();
 				shoppingBasket.ProductId = productId;
-				shoppingBasket.BasketId = getUserEmail().Result;
-				shoppingBasket.createdAt= DateTime.Now;
+				shoppingBasket.BasketId = getUserEmail();
 				_context.Attach(shoppingBasket);
 				_context.Entry(shoppingBasket).State = EntityState.Added;
 				_context.SaveChanges();
-
-				return shoppingBasket.Id;
-			}
-			return 0;
+			}			
 		}
 		[HttpPost]
 		public string AddToWishList(int productId)
@@ -453,7 +399,7 @@ namespace WebScrapper_Prototype.Controllers
 				prod = prod.Where(p => p.ID == productId);
 				UserWishList wishList = new UserWishList();
 				wishList.ProductId = productId;
-				wishList.UserId = getUserEmail().Result;
+				wishList.UserId = getUserEmail();
 				_context.Attach(wishList);
 				_context.Entry(wishList).State = EntityState.Added;
 				_context.SaveChanges();
@@ -473,11 +419,11 @@ namespace WebScrapper_Prototype.Controllers
 			return View(nameof(Index), onePageOfProducts);
 		}
 		[HttpPost]
-		public async Task<IActionResult> DeleteConfirmed(int BasketRemovePID, int WishListRemovePID, int IDB)
+		public async Task<IActionResult> DeleteConfirmed(int BasketRemovePID, int WishListRemovePID)
 		{
 			if (WishListRemovePID > 0)
 			{
-				var wishlist = from w in _context.UserWishList.Where(s => s.UserId.Equals(getUserEmail().Result))
+				var wishlist = from w in _context.UserWishList.Where(s => s.UserId.Equals(getUserEmail()))
 							   select w;
 				var wishlistRowsToDelete = wishlist.Where(w => w.ProductId == WishListRemovePID);
 
@@ -490,7 +436,7 @@ namespace WebScrapper_Prototype.Controllers
 			}
 			if (BasketRemovePID > 0)
 			{
-				var basket = from b in _context.ShopingBasket.Where(s => s.BasketId.Equals(getUserEmail().Result))
+				var basket = from b in _context.ShopingBasket.Where(s => s.BasketId.Equals(getUserEmail()))
 							 select b;				
 				var basketRowsToDelete = basket.Where(b => b.ProductId == BasketRemovePID);
 				if (basketRowsToDelete != null)
@@ -502,65 +448,19 @@ namespace WebScrapper_Prototype.Controllers
 			}
 			return RedirectToAction("Index", new { wishlistStart = 0 });
 		}
-		//public async Task<bool> CheckForUpdatesAsync()
-		//{
-		//	// set lastCheckedTime to the current time
-		//	var lastCheckedTime = DateTime.UtcNow;
-		//	// check if any new items have been added to the shopping basket	
-		//	var newItemsAdded = await _context.ShopingBasket.Where(i => i.createdAt > lastCheckedTime).AnyAsync();
-			
-
-		//	// check if any items in the shopping basket have been updated or removed
-		//	var itemsUpdatedOrRemoved = await _context.ShopingBasket.Where(i => i.createdAt > lastCheckedTime || i.IsDeleted).AnyAsync();
-
-
-
-		//	return newItemsAdded || itemsUpdatedOrRemoved;
-		//}
-
-		//public async Task<string> GetShoppingBasketAsync()
-		//{
-		//	// query the database for the current contents of the shopping basket
-		//	var shoppingBasketItems = await dbContext.ShoppingBasketItems
-		//		.Include(i => i.Item)
-		//		.Where(i => i.ShoppingBasketId == basketId)
-		//		.OrderByDescending(i => i.DateAdded)
-		//		.ToListAsync();
-
-		//	// format the shopping basket items as HTML
-		//	var sb = new StringBuilder();
-		//	sb.AppendLine("<ul>");
-		//	foreach (var item in shoppingBasketItems)
-		//	{
-		//		sb.AppendLine($"<li>{item.Item.Name} ({item.Quantity})</li>");
-		//	}
-		//	sb.AppendLine("</ul>");
-
-		//	return sb.ToString();
-		//}
-
-		//public async Task<IActionResult> Updates()
-		//{
-		//	Response.Headers.Add("Content-Type", "text/event-stream");
-		//	Response.Headers.Add("Cache-Control", "no-cache");
-
-		//	while (true)
-		//	{
-		//		// check for updates in the database
-		//		var updateAvailable = await CheckForUpdatesAsync();
-
-		//		if (updateAvailable)
-		//		{
-		//			// send the updated shopping basket to the client
-		//			var shoppingBasket = await GetShoppingBasketAsync();
-		//			var data = $"data: {shoppingBasket}\n\n";
-		//			await Response.WriteAsync(data);
-		//			await Response.Body.FlushAsync();
-		//		}
-
-		//		// wait for a short time before checking again
-		//		await Task.Delay(5000);
-		//	}
-		//}
+		public string getUserEmail()
+		{	
+			try
+			{
+                var user = _userManager.GetUserAsync(User).Result;
+                var email = user.Email;
+                return email;
+            }
+            catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message);
+                return "404";
+            }
+        }
 	}
 }
