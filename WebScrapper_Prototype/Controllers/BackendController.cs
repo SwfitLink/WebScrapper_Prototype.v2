@@ -1,10 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
+using System.Net.Http.Headers;
 using WebScrapper_Prototype.Data;
 using WebScrapper_Prototype.Models;
 using WebScrapper_Prototype.Services;
 using X.PagedList;
+using static WebScrapper_Prototype.Models.ProductImage;
 
 namespace WebScrapper_Prototype.Controllers
 {
@@ -19,7 +23,110 @@ namespace WebScrapper_Prototype.Controllers
             _webHostEnvironment = webHost;
             _httpContextAccessor = httpContextAccessor;
         }
-        [Authorize(Roles = "Administrator, Manager")]
+
+		[HttpPost]
+        public async Task DownloadAndSaveImages(int id, string? url)
+		{
+			List<string> consoleLogs = new List<string>();
+			try
+			{
+				using (var httpClient = new HttpClient())
+				{
+					consoleLogs.Add("Starting..."); ;
+					consoleLogs.Add("Download and Save Image Task has Started!");
+					consoleLogs.Add("---------------->> " + url);
+					Console.WriteLine();
+					var response = await httpClient.GetAsync(url);
+                    if (response.IsSuccessStatusCode)
+                    {
+						consoleLogs.Add("---------------->> " + response);
+                        consoleLogs.Add("Fetching Image Data...");
+                        var imageData = await response.Content.ReadAsByteArrayAsync();
+						consoleLogs.Add($"{imageData}" + " <<--------------");
+                        var fileName = Path.GetFileName(url);
+						consoleLogs.Add($"{fileName}" + " <<--------------");
+                        var fileType = Path.GetExtension(url);
+						consoleLogs.Add($"{fileType}" + " <<--------------");
+                        consoleLogs.Add("Creating ProductImage...");
+                        var Image = new ProductImage
+                        {
+                            ProductId = id,
+                            FileName = fileName,
+                            FileType = fileType,
+                            Content = imageData
+                        };
+                        consoleLogs.Add("Updating Database...");
+                        _context.ProductImages.Add(Image);
+                        await _context.SaveChangesAsync();
+                        GetImage(id);
+                        consoleLogs.Add("DONE!");
+                        Console.WriteLine("------------------------------------>>");
+                    }
+                    else
+                    {
+                        Console.WriteLine("FINISHED");                           
+                    }
+					foreach (var item in consoleLogs)
+                    {
+                        Console.WriteLine(item);
+                        ViewBag.ConsoleLog = item;
+                    }
+                }
+			}
+			catch (NotSupportedException ex)
+            {
+                Console.WriteLine("------------>> " + "!COMPLETED!" + " <<--------------");
+            };
+		}
+		[HttpGet]
+        public async Task<IActionResult> GetImages(int startAutoDownload, int id, int clear)
+        {
+			if (clear > 0)
+            {
+                await ClearImages();
+            }
+            if (startAutoDownload > 0)
+            {
+                Queue<int> productId = new Queue<int>();
+                Queue<string?> ImageURL = new Queue<string?>();
+
+                foreach (var product in _context.Products.ToList())
+                {
+                    productId.Enqueue(product.ID);
+                    ImageURL.Enqueue(product.ImageURL);
+                }
+                while (productId.Count > 0)
+                {
+					await DownloadAndSaveImages(productId.Dequeue(), ImageURL.Dequeue());                    
+				}				
+			}
+			var images = _context.ProductImages.ToList();
+			return View(images);
+		}
+		[HttpPost]
+		public async Task ClearImages()
+		{
+			var imageModel = _context.ProductImages;
+            foreach(var image in imageModel)
+            {
+                _context.ProductImages.Remove(image);                
+            }
+			await _context.SaveChangesAsync();
+		}
+		[HttpGet]
+		public IActionResult GetImage(int id)
+		{
+			var imageModel = _context.ProductImages.FirstOrDefault(img => img.ProductId == id);
+			if (imageModel != null)
+			{
+				return File(imageModel.Content, "image/jpeg");
+			}
+			else
+			{
+				return NotFound();
+			}
+		}
+		[Authorize(Roles = "Administrator, Manager")]
         [HttpGet]
         public IActionResult AutoProductCreateTest()
         {
@@ -90,7 +197,7 @@ namespace WebScrapper_Prototype.Controllers
 		}
 		[Authorize(Roles = "Administrator, Manager")]
 		[HttpGet]
-		public IActionResult Index(string view, string sortOrder, string findProduct, string currentFilter, string searchString, string dataBatch, int? page)
+		public async Task<IActionResult> Index (int startDisplay, int productId, string view, string sortOrder, string findProduct, string currentFilter, string searchString, string dataBatch, int? page, int startImageDownload)
         {
             ViewBag.setting = view;
             var products = from p in _context.Products

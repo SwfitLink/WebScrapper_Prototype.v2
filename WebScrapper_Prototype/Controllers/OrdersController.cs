@@ -49,17 +49,17 @@ namespace WebScrapper_Prototype.Controllers
             }
 			else
 			{
-				if (!HttpContext.Request.Cookies.ContainsKey("cookie2"))
+				if (!HttpContext.Request.Cookies.ContainsKey("cookieV5.3.1B"))
 				{
 					CookieOptions cookieOptions = new CookieOptions();
 					cookieOptions.Expires = new DateTimeOffset(DateTime.Now.AddDays(7));
 					cookieOptions.IsEssential = true;
-					HttpContext.Response.Cookies.Append("cookie2", userService.ManageUser().Result, cookieOptions);
+					HttpContext.Response.Cookies.Append("cookieV5.3.1B", userService.ManageUser().Result, cookieOptions);
 
 				}
 				else
 				{
-					var firstRequest = HttpContext.Request.Cookies["cookie2"];
+					var firstRequest = HttpContext.Request.Cookies["cookieV5.3.1B"];
 					await userService.signInUser(firstRequest.ToString());
 				}
                 if (!getUserEmail().Equals("404"))

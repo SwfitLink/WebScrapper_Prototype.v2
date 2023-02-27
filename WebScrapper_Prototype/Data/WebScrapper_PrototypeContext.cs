@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebScrapper_Prototype.Models;
 
-
 namespace WebScrapper_Prototype.Data
 {
 	public class WebScrapper_PrototypeContext : DbContext
@@ -17,6 +16,8 @@ namespace WebScrapper_Prototype.Data
 		public DbSet<Basket> ShopingBasket { get; set; }
 		public DbSet<Orders> Orders { get; set; }
         public DbSet<OrderProducts> OrderProducts { get; set; }
+		public DbSet<ProductImage> ProductImages { get; set; }
 
-    }
+
+	}
 }

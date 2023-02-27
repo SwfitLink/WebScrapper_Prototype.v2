@@ -494,23 +494,14 @@
 										<div class="single-product">
 											<div class="product-img">
 												<a href="/Shop/Product/@product.ID">
-													@if (product.ImageURL.Contains("www"))
+													<img src="@Url.Action("GetImage", "Backend", new { id = product.ID })" alt="@product.ProductName" />
+													@if (product.ProductBasePrice * 0.65m > product.ProductSalePrice)
 													{
-														<img crossorigin="anonymous" class="default-img" src="@product.ImageURL" alt="#">
-														<img crossorigin="anonymous" class="hover-img" src="@product.ImageURL" alt="#">
-														@if (product.ProductBasePrice * 0.65m > product.ProductSalePrice)
-														{
-															<span class="out-of-stock">Mega Discount</span>
-														}
-														else if (product.ProductBasePrice > 9000)
-														{
-															<span class="new">New</span>
-														}
+														<span class="out-of-stock">Mega Discount</span>
 													}
-													else
+													else if (product.ProductBasePrice > 9000)
 													{
-														<img crossorigin="anonymous" class="default-img" src="~/Uploads/@product.ImageURL" alt="#">
-														<img crossorigin="anonymous" class="hover-img" src="~/Uploads/@product.ImageURL" alt="#">
+														<span class="new">New</span>
 													}
 												</a>
 												<div class="button-head">
@@ -535,7 +526,6 @@
 									</div>
 								}
 							</div>
-
 							@if (ViewBag.ProductCount > 1)
 							{
 								<nav aria-label="Page navigation">
@@ -575,23 +565,14 @@
 											<div class="single-product">
 												<div class="product-img">
 													<a href="/Shop/Product/@product.ID">
-														@if (product.ImageURL.Contains("www"))
+														<img src="@Url.Action("GetImage", "Backend", new { id = product.ID })" alt="@product.ProductName" />
+														@if (product.ProductBasePrice * 0.65m > product.ProductSalePrice)
 														{
-															<img crossorigin="anonymous" class="default-img" src="@product.ImageURL" alt="#">
-															<img crossorigin="anonymous" class="hover-img" src="@product.ImageURL" alt="#">
-															@if (product.ProductBasePrice * 0.65m > product.ProductSalePrice)
-															{
-																<span class="out-of-stock">Mega Discount</span>
-															}
-															else if (product.ProductBasePrice > 9000)
-															{
-																<span class="new">New</span>
-															}
+															<span class="out-of-stock">Mega Discount</span>
 														}
-														else
+														else if (product.ProductBasePrice > 9000)
 														{
-															<img crossorigin="anonymous" class="default-img" src="~/Uploads/@product.ImageURL" alt="#">
-															<img crossorigin="anonymous" class="hover-img" src="~/Uploads/@product.ImageURL" alt="#">
+															<span class="new">New</span>
 														}
 													</a>
 													<div class="button-head">
@@ -639,23 +620,14 @@
 											<div class="single-product">
 												<div class="product-img">
 													<a href="/Shop/Product/@product].ID">
-														@if (product.ImageURL.Contains("www"))
+														<img src="@Url.Action("GetImage", "Backend", new { id = product.ID })" alt="@product.ProductName" />
+														@if (product.ProductBasePrice * 0.65m > product.ProductSalePrice)
 														{
-															<img crossorigin="anonymous" class="default-img" src="@product.ImageURL" alt="#">
-															<img crossorigin="anonymous" class="hover-img" src="@product.ImageURL" alt="#">
-																				@if (product.ProductBasePrice * 0.65m > product.ProductSalePrice)
-																				{
-																		<span class="out-of-stock">Mega Discount</span>
-																				}
-																				else if (product.ProductBasePrice > 9000)
-																				{
-																		<span class="new">New</span>
-																				}
+															<span class="out-of-stock">Mega Discount</span>
 														}
-														else
+														else if (product.ProductBasePrice > 9000)
 														{
-															<img crossorigin="anonymous" class="default-img" src="~/Uploads/@product.ImageURL" alt="#">
-															<img crossorigin="anonymous" class="hover-img" src="~/Uploads/@product.ImageURL" alt="#">
+															<span class="new">New</span>
 														}
 													</a>
 													<div class="button-head">
@@ -703,10 +675,7 @@
 											<div class="single-product">
 												<div class="product-img">
 													<a href="/Shop/Product/@product].ID">
-														@if (product.ImageURL.Contains("www"))
-														{
-															<img class="default-img" src="@product.ImageURL" alt="#">
-															<img class="hover-img" src="@product.ImageURL" alt="#">
+														<img src="@Url.Action("GetImage", "Backend", new { id = product.ID })" alt="@product.ProductName" />
 														@if (product.ProductBasePrice * 0.65m > product.ProductSalePrice)
 														{
 															<span class="out-of-stock">Mega Discount</span>
@@ -714,12 +683,6 @@
 														else if (product.ProductBasePrice > 9000)
 														{
 															<span class="new">New</span>
-														}	
-														}
-														else
-														{
-															<img class="default-img" src="~/Uploads/@product.ImageURL" alt="#">
-															<img class="hover-img" src="~/Uploads/@product.ImageURL" alt="#">
 														}
 													</a>
 													<div class="button-head">
@@ -767,23 +730,14 @@
 											<div class="single-product">
 												<div class="product-img">
 													<a href="/Shop/Product/@product.ID">
-														@if (product.ImageURL.Contains("www"))
+														<img src="@Url.Action("GetImage", "Backend", new { id = product.ID })" alt="@product.ProductName" />
+														@if (product.ProductBasePrice * 0.65m > product.ProductSalePrice)
 														{
-															<img class="default-img" src="@product.ImageURL" alt="#">
-															<img class="hover-img" src="@product.ImageURL" alt="#">
-															@if (product.ProductBasePrice * 0.65m > product.ProductSalePrice)
-															{
-																<span class="out-of-stock">Mega Discount</span>
-															}
-															else if (product.ProductBasePrice > 9000)
-															{
-																<span class="new">New</span>
-															}
+															<span class="out-of-stock">Mega Discount</span>
 														}
-														else
+														else if (product.ProductBasePrice > 9000)
 														{
-															<img class="default-img" src="~/Uploads/@product.ImageURL" alt="#">
-															<img class="hover-img" src="~/Uploads/@product.ImageURL" alt="#">
+															<span class="new">New</span>
 														}
 													</a>
 													<div class="button-head">
@@ -831,23 +785,14 @@
 											<div class="single-product">
 												<div class="product-img">
 													<a href="/Shop/Product/@product.ID">
-														@if (product.ImageURL.Contains("www"))
+														<img src="@Url.Action("GetImage", "Backend", new { id = product.ID })" alt="@product.ProductName" />
+														@if (product.ProductBasePrice * 0.65m > product.ProductSalePrice)
 														{
-															<img class="default-img" src="@product.ImageURL" alt="#">
-															<img class="hover-img" src="@product.ImageURL" alt="#">
-															@if (product.ProductBasePrice * 0.65m > product.ProductSalePrice)
-															{
-																<span class="out-of-stock">Mega Discount</span>
-															}
-															else if (product.ProductBasePrice > 9000)
-															{
-																<span class="new">New</span>
-															}
+															<span class="out-of-stock">Mega Discount</span>
 														}
-														else
+														else if (product.ProductBasePrice > 9000)
 														{
-															<img class="default-img" src="~/Uploads/@product.ImageURL" alt="#">
-															<img class="hover-img" src="~/Uploads/@product.ImageURL" alt="#">
+															<span class="new">New</span>
 														}
 													</a>
 													<div class="button-head">
@@ -895,23 +840,14 @@
 											<div class="single-product">
 												<div class="product-img">
 													<a href="/Shop/Product/@product.ID">
-														@if (product.ImageURL.Contains("www"))
+														<img src="@Url.Action("GetImage", "Backend", new { id = product.ID })" alt="@product.ProductName" />
+														@if (product.ProductBasePrice * 0.65m > product.ProductSalePrice)
 														{
-															<img class="default-img" src="@product.ImageURL" alt="#">
-															<img class="hover-img" src="@product.ImageURL" alt="#">
-															@if (product.ProductBasePrice * 0.65m > product.ProductSalePrice)
-															{
-																<span class="out-of-stock">Mega Discount</span>
-															}
-															else if (product.ProductBasePrice > 9000)
-															{
-																<span class="new">New</span>
-															}
+															<span class="out-of-stock">Mega Discount</span>
 														}
-														else
+														else if (product.ProductBasePrice > 9000)
 														{
-															<img class="default-img" src="~/Uploads/@product.ImageURL" alt="#">
-															<img class="hover-img" src="~/Uploads/@product.ImageURL" alt="#">
+															<span class="new">New</span>
 														}
 													</a>
 													<div class="button-head">
@@ -967,23 +903,14 @@
 									<div class="single-product">
 										<div class="product-img">
 											<a href="/Shop/Product/@product.ID">
-												@if (product.ImageURL.Contains("www"))
+												<img src="@Url.Action("GetImage", "Backend", new { id = product.ID })" alt="@product.ProductName" />
+												@if (product.ProductBasePrice * 0.65m > product.ProductSalePrice)
 												{
-													<img class="default-img" src="@product.ImageURL" alt="#">
-													<img class="hover-img" src="@product.ImageURL" alt="#">
-													@if (product.ProductBasePrice * 0.65m > product.ProductSalePrice)
-													{
-														<span class="out-of-stock">Mega Discount</span>
-													}
-													else if (product.ProductBasePrice > 9000)
-													{
-														<span class="new">New</span>
-													}
+													<span class="out-of-stock">Mega Discount</span>
 												}
-												else
+												else if (product.ProductBasePrice > 9000)
 												{
-													<img class="default-img" src="~/Uploads/@product.ImageURL" alt="#">
-													<img class="hover-img" src="~/Uploads/@product.ImageURL" alt="#">
+													<span class="new">New</span>
 												}
 											</a>
 											<div class="button-head">
@@ -1010,7 +937,6 @@
 						</div>
 					</div>
 				}
-
 			</div>
 		</div>
 	</section>
@@ -1304,16 +1230,12 @@
 			var msg = alertify.warning('msg');
 			msg.delay(13).setContent('Experiencing some bugs! Please let me know if you see them.');
 		}
-
 		// [Alertify]
 		// Message (Developer Update - CORS Policy)
 		function showDevAnnouncement2() {
 			setTimeout(function () {
-
-				var msg1 = alertify.alert('CORS Policy issues are Fixed... Maybe, please tell me if you dont see product images..').set({ 'pinnable': true, 'modal': false }).set('basic', true);;
-
+				var msg1 = alertify.alert('CORS Policy issues are Fixed... Maybe, please tell me if you dont see product images..').set({ 'pinnable': true, 'modal': false }).set('basic', true);
 				msg1.delay(13).setContent('CORS Policy issues are Fixed... Maybe, please tell me if you dont see product images..');
-
 			}, 10000);
 		}
 

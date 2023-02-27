@@ -14,7 +14,7 @@ namespace WebScrapper_Prototype.Mappers
             Map(x => x.ProductSalePrice).Name("ProductSalePrice");
             Map(x => x.VendorProductURL).Name("linked-href");
             Map(x => x.ProductCategory).Name("Cat");
-            Map(x => x.ImageURL).Name("Image-src");
+            Map(x => x.ImageURL).Name("ProductImages-src");
             Map(x => x.ProductDescription).Name("ProductShortDescription");
             Map(x => x.dataBatch).Name("DataBatchNumber");
             Map(x => x.Visible).Name("Visible");
