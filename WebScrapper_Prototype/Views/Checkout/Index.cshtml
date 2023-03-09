@@ -9,32 +9,39 @@
 <!DOCTYPE html>
 <html lang="zxx">
 <head>
+	<!-- Title Tag  -->
+	<title>Checkout</title>
 	<!-- Meta Tag -->
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name='copyright' content=''>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<!-- Title Tag  -->
-	<title>Checkout</title>
 	<!-- Favicon -->
 	<link rel="icon" type="image/png" href="#">
 	<!-- Web Font -->
-	<link href="https://fonts.googleapis.com/css?family=Poppins:200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Lato:200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap" rel="stylesheet">
+	<!-- StyleSheet -->
 	<!-- Bootstrap -->
 	<link rel="stylesheet" href="~/css/bootstrap.css">
+	<!-- Magnific Popup -->
+	<link rel="stylesheet" href="~/css/magnific-popup.min.css">
 	<!-- Font Awesome -->
 	<link rel="stylesheet" href="~/css/font-awesome.css">
 	<!-- Fancybox -->
 	<link rel="stylesheet" href="~/css/jquery.fancybox.min.css">
-	<!-- Nice Select JS -->		
-	<link rel="stylesheet" href="~/css/niceselect.css">
 	<!-- Themify Icons -->
 	<link rel="stylesheet" href="~/css/themify-icons.css">
 	<!-- Jquery Ui -->
 	<link rel="stylesheet" href="~/css/jquery-ui.css">
+	<!-- Nice Select CSS -->
+	<link rel="stylesheet" href="~/css/niceselect.css">
 	<!-- Animate CSS -->
 	<link rel="stylesheet" href="~/css/animate.css">
+	<!-- Flex Slider CSS -->
+	<link rel="stylesheet" href="~/css/flex-slider.min.css">
+	<!-- Owl Carousel -->
+	<link rel="stylesheet" href="~/css/owl-carousel.css">
 	<!-- Slicknav -->
 	<link rel="stylesheet" href="~/css/slicknav.min.css">
 	<!-- Alertify -->
@@ -42,6 +49,8 @@
 	<link rel="stylesheet" href="~/alertifyjs/css/themes/default.min.css" />
 	<!-- Reset CSS -->
 	<link rel="stylesheet" href="~/css/reset.css">
+	<!-- Nice Select JS -->
+	<link rel="stylesheet" href="~/css/niceselect.css">
 	<!-- Temp CSS -->
 	<link rel="stylesheet" href="~/css/style.css">
 	<!-- Responsive CSS -->
@@ -70,56 +79,7 @@
 	<!-- End Scroll -->
 	<div class="header shop">
 		<!-- Topbar -->
-		<div class="topbar">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-5 col-md-12 col-12">
-						<!-- Top Left -->
-						<div class="top-left">
-							<ul class="list-main">
-								<li><i class="ti-headphone-alt"></i> +27 (081) 565-0206</li>
-								<li>
-									<i class="ti-email"></i>
-									support@swiftlink.com
-								</li>
-							</ul>
-						</div>
-						<!--/ End Top Left -->
-					</div>
-					<div class="col-lg-6 col-md-12 col-12">
-						<!-- Top Right -->
-						<div class="right-content">
-							@if (User.IsInRole("Manager"))
-							{
-								<ul class="list-main">
-									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
-									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
-									<li><i class="ti-dashboard"></i><a href="/Dashboard">Dashboard</a></li>
-									<li><i class="ti-power-off"></i><a asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home" , new { area="" })">Logout</a></li>
-								</ul>
-							}
-							else if (User.IsInRole("User"))
-							{
-								<ul class="list-main">
-									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
-									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
-									<li><i class="ti-power-off"></i><a asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action(" Index", "Home" , new { area="" })">Logout</a></li>
-								</ul>
-							}
-							else
-							{
-								<ul class="list-main">
-									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
-									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
-									<li><i class="ti-power-off"></i><a href="/Identity/Account/Login">Login</a></li>
-								</ul>
-							}
-						</div>
-						<!-- End Top Right -->
-					</div>
-				</div>
-			</div>
-		</div>
+		<partial name="_topbar" />
 		<!-- End Topbar -->
 		<!-- Header Inner -->
 		<div class="header-inner">
@@ -133,9 +93,6 @@
 									<div class="navbar-collapse">
 										<div class="nav-inner">
 											<ul class="nav main-menu menu navbar-nav">
-												@*
-												<li><a href="/">Home</a></li>
-												*@
 												<li class="active">
 													<a href="/Shop">Shop<i class="ti-angle-down"></i></a>
 													<ul class="dropdown">																												
@@ -174,7 +131,12 @@
 	</div>
 	<!-- End Breadcrumbs -->
 	<!-- Start Checkout -->
-	<section class="shop checkout section">
+	<div id="loading-bar" style="display: none;">
+		<section class="shop checkout section">
+			<h4>Please wait while we process your order...</h4>
+		</section>
+	</div>
+	<section id="123Section" class="shop checkout section">
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-8 col-12">
@@ -232,7 +194,7 @@
 									</div>
 									<div class="col-lg-6 col-md-6 col-12">
 										<div class="form-group">
-											<label>Country<span>*</span></label>
+											<label>City<span>*</span></label>
 											<select name="locationCity" asp-for="LocationCity" id="locationCountry">
 												<option value="ZA">Cape Town (CPT)</option>
 												<option value="CH">Port Elizabeth (PE)</option>
@@ -283,9 +245,13 @@
 					<div class="order-details">
 						<!-- Order Widget -->
 						<div class="single-widget">
-							<h2>CART TOTALS</h2>
+							<h2>Order Summary</h2>
 							<div class="content">
 								<ul>
+									<li>
+										Total Items:
+										<span class="total-amount" style="font-weight:600;">@ViewBag.BasketCount</span>
+									</li>
 									<li>
 										Before Discount: 
 										<span class="total-amount" style="text-decoration-line:line-through; color:red;">R @ViewBag.CartTotalBase.ToString("#,##0.00")</span>
@@ -516,41 +482,43 @@
 	@section Scripts {
 		<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 	}
-	<!-- Site -->
-	<script src="~/js-site/site.js"></script>
 	<!-- Jquery -->
 	<script src="~/js/jquery.min.js"></script>
-	<script src="~/js/jquery-3.4.1.min.js"></script>
-	<script src="~/js/jquery-ui.min.js"></script>
+	<script src="~/js/jquery-migrate-3.0.0.js"></script>
+	<script src="~/s/jquery-ui.min.js"></script>
 	<!-- Popper JS -->
 	<script src="~/js/popper.min.js"></script>
 	<!-- Bootstrap JS -->
 	<script src="~/js/bootstrap.min.js"></script>
+	<!-- Color JS -->
+	<script src="~/js/colors.js"></script>
 	<!-- Slicknav JS -->
 	<script src="~/js/slicknav.min.js"></script>
+	<!-- Owl Carousel JS -->
+	<script src="~/js/owl-carousel.js"></script>
 	<!-- Magnific Popup JS -->
 	<script src="~/js/magnific-popup.js"></script>
-	<!-- Fancybox JS -->
-	<script src="~/js/facnybox.min.js"></script>
+	<!-- Waypoints JS -->
+	<script src="~/js/waypoints.min.js"></script>
 	<!-- Countdown JS -->
 	<script src="~/js/finalcountdown.min.js"></script>
 	<!-- Nice Select JS -->
 	<script src="~/js/nicesellect.js"></script>
+	<!-- Flex Slider JS -->
+	<script src="~/js/flex-slider.js"></script>
+	<!-- Alertify -->
+	<script src="~/alertifyjs/alertify.min.js"></script>
+	<!-- ScrollUp JS -->
+	<script src="~/js/scrollup.js"></script>
 	<!-- Onepage Nav JS -->
 	<script src="~/js/onepage-nav.min.js"></script>
 	<!-- Easing JS -->
 	<script src="~/js/easing.js"></script>
-	<!-- Alertify -->
-	<script src="~/alertifyjs/alertify.min.js"></script>
 	<!-- Active JS -->
 	<script src="~/js/active.js"></script>
-		<!-- NiceSelect JS -->
-	<script src="~/js/nicesellect.js"></script>
-	<!-- WOW thats cool -->
-	<script type="text/javascript">new WOW().init();</script>
 
 	<!-- Custom Scripts -->
-	<!--Load Scroll-->
+	<!--Load Scrolling Bar-->
 	<script type="text/javascript">
 		const progressBarContainer = document.querySelector("#progressBarContainer");
 		const progressBar = document.querySelector("#progressBar");
@@ -583,59 +551,35 @@
 	</script>
 	<!--Functions-->
 	<script type="text/javascript">
-		// [Alertify]
-		// Message (Not Active)
-		function showDevAnnouncement1() {
-			var msg = alertify.warning('msg');
-			msg.delay(13).setContent('Experiencing alot of bugs! Please let me know if you see them.');
-		}
-
-		// [Alertify]
-		// Message (Not Active)
-		function showDevAnnouncement2() {
-			setTimeout(function () {
-
-				var msg1 = alertify.alert('CORS Policy issues are Fixed... Maybe, please tell me if you dont see product images..').set({ 'pinnable': true, 'modal': false }).set('basic', true);;
-
-				msg1.delay(13).setContent('CORS Policy issues are Fixed... Maybe, please tell me if you dont see product images..');
-
-			}, 10000);
-		}
-
-		// [GET]
-		// Not Implemented! => This will streamline checkout at a later stage...
-		function loadValidation() {
-			let startCheck = 1;
-			$.ajax({
-				type: 'GET',
-				url: '/Checkout/Index',
-				data: { startCheck: startCheck },
-				success: function (r) {
-					$("#Wishlistbasket").html($(r).find("#Wishlistbasket").html());
-				},
-				error: function () {
-					$("#productInfo h2").text("Product is no Longer in Stock!");
-				}
-			});
-		}
-
+		// Hide the loading bar on page load
+		$(document).ready(function () {
+			$('#loading-bar').hide();
+			$('#123Section').show();
+		});
 		// [GET]
 		// Proceed to checkout
 		function proceedToCheckout() {
 			let startPlaceOrder = 1;
+			// Show the loading bar
+			$('#loading-bar').show();
+			$('#123Section').hide();
+			// Make an Ajax call to the server to start the processing
 			$.ajax({
-				type: 'GET',
+				type: "GET",
 				url: '/Checkout/Index',
 				data: { startPlaceOrder: startPlaceOrder },
 				success: function (r) {
+					// Hide the loading bar when the processing is complete
+					$('#loading-bar').hide();
+
+					// Do something with the server response, if necessary
+					alert('Thank You. Your Order has been placed. Please check your email!');
+					showMessageOrder();
 					window.location.href = '/Orders/Index';
-					showMessageOrder();					
-				},
-				error: function () {
-					showMessageOrderFail();
 				}
 			});
 		}
+
 		// [Alertify]
 		// Show Message for Order Create Success
 		function showMessageOrder() {
@@ -643,8 +587,8 @@
 		}
 		// [Alertify]
 		// Show Message for Order Create Error
-		function showMessageOrderFail() {
-			alertify.notify('Failed to Create Order!', 'warn', 2, function () { console.log('dismissed'); });
+		function showMessageOrderFail(e) {
+			alertify.notify(e, 'warn', 2, function () { console.log('dismissed'); });
 		}
 
 	</script>

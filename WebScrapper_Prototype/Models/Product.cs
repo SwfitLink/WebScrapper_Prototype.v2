@@ -6,7 +6,7 @@ namespace WebScrapper_Prototype.Models
     public class Product
     {
         [Key]
-        public int ID { get; set; }
+        public int Id { get; set; }
         [Required]
         public string? ProductName { get; set; }
         [Required]

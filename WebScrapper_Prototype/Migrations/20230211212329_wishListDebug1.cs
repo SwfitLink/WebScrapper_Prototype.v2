@@ -13,7 +13,7 @@ namespace WebScrapper_Prototype.Migrations
                 table: "UserWishList");
 
             migrationBuilder.RenameColumn(
-                name: "ID",
+                name: "Id",
                 table: "UserWishList",
                 newName: "Subscribed");
         }
@@ -23,7 +23,7 @@ namespace WebScrapper_Prototype.Migrations
             migrationBuilder.RenameColumn(
                 name: "Id",
                 table: "UserWishList",
-                newName: "ID");
+                newName: "Id");
 
             migrationBuilder.AddColumn<string>(
                 name: "ProductName",

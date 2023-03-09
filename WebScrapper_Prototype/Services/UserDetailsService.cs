@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.CodeAnalysis.VisualBasic.Syntax;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using WebScrapper_Prototype.Areas.Identity.Data;
@@ -8,19 +8,27 @@ using WebScrapper_Prototype.Models;
 
 namespace WebScrapper_Prototype.Services
 {
-	public class AutoUserService
+	public class UserDetailsService
 	{
-		private readonly ApplicationDbContext _app;
-		private readonly WebScrapper_PrototypeContext _context;
-		private readonly UserManager<ApplicationUser> _userManager;
-		private readonly SignInManager<ApplicationUser> _signInManager;
+		private readonly WebScrapper_PrototypeContext? _context;
+		private readonly UserManager<ApplicationUser>? _userManager;
+		private readonly ApplicationDbContext? _app;
+		private readonly SignInManager<ApplicationUser>? _signInManager;
+		private readonly IHttpContextAccessor? _httpContextAccessor;
 		private string emailPersis = string.Empty;
-		public AutoUserService(ApplicationDbContext app, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, WebScrapper_PrototypeContext context)
+
+		public UserDetailsService(IHttpContextAccessor httpContextAccessor)
 		{
-			_app = app;
-			_context = context;
+			_httpContextAccessor = httpContextAccessor;
+		}
+		public UserDetailsService(WebScrapper_PrototypeContext context, IHttpContextAccessor httpContextAccessor, ApplicationDbContext app,UserManager<ApplicationUser> usermanager, SignInManager<ApplicationUser> signInManager)
+		{
+			_userManager = usermanager;
 			_signInManager = signInManager;
-			_userManager = userManager;
+			_context = context;
+			_httpContextAccessor = httpContextAccessor;
+			_app = app;
+
 		}
 		public async Task<string> ManageUser()
 		{
@@ -78,7 +86,6 @@ namespace WebScrapper_Prototype.Services
 		}
 		public async Task<string> ManageUser(string token, CheckoutAccount updatedUser)
 		{
-			string userEmail = string.Empty;
 			if (token.Contains("cookie"))
 			{
 				var user = CreateUser();/// Start-->
@@ -100,26 +107,21 @@ namespace WebScrapper_Prototype.Services
 				identity.PhoneNumber = updatedUser.PhoneNumber;
 				identity.PhoneNumberConfirmed = false;
 				identity.EmailConfirmed = false;
-				var existingUser = _app.Users.FirstOrDefault(u => u.Email == updatedUser.ContactEmail);
-				if (existingUser != null)
-					userEmail = existingUser.Email;
-				else
-				{					
-					/// Create: user
-					_app.Attach(user);/// Start-->
-					_app.Entry(user).State = EntityState.Added;
-					/// Save Changes
-					_app.SaveChanges();
-					/// -->END
-					userEmail = user.Email;
-				}
+
+				/// Create: user
+				_app.Attach(user);/// Start-->
+				_app.Entry(user).State = EntityState.Added;
+				/// Save Changes
+				_app.SaveChanges();
+				/// -->END
+
 				/// Update: ShoppingCart
 				/// UserId: cookieEmail -> UserId: contactEmail			 
 				var basketProducts = _context.ShopingBasket.Where(s => s.UserId.Equals(token));/// Start-->
-				if (basketProducts != null)
+				if (basketProducts.Any())
 				{
-					foreach (var product in basketProducts)
-						product.UserId = userEmail;
+					foreach (var product in _context.ShopingBasket)
+						product.UserId = user.Email;
 					/// Save Changes
 					_context.SaveChanges();
 
@@ -128,27 +130,26 @@ namespace WebScrapper_Prototype.Services
 				 /// Update: UserWishList
 				 /// UserId: cookieEmail -> UserId: contactEmail			 
 				var wishListProducts = _context.UserWishList.Where(s => s.UserId.Equals(token));/// Start-->
-				if (wishListProducts != null)
+				if (wishListProducts.Any())
 				{
-					foreach (var product in wishListProducts)
-						product.UserId = userEmail;
+					foreach (var product in _context.UserWishList)
+						product.UserId = user.Email;
 					/// Save Changes
 					_context.SaveChanges();
 					/// END
 				}/// -->END
 
+
 				/// Remove: oldUser
 				var oldUser = await _userManager.FindByEmailAsync(token);/// Start-->
-				if(oldUser != null)
-				{
-					_app.Attach(oldUser);
-					_app.Remove(oldUser);
-					/// Save Changes
-					_app.SaveChanges();
-					/// -->END
-				}
+				_app.Attach(oldUser);
+				_app.Remove(oldUser);
+				/// Save Changes
+				_app.SaveChanges();
+				/// -->END
+
 				/// SignIn -> NewUser
-				user = await _signInManager.UserManager.FindByEmailAsync(userEmail);/// Start-->
+				user = await _signInManager.UserManager.FindByEmailAsync(user.Email);/// Start-->
 				emailPersis = user.Email;
 				var result = await _signInManager.CheckPasswordSignInAsync(user, "Markaway86!", false);
 				if (result.Succeeded)
@@ -191,6 +192,59 @@ namespace WebScrapper_Prototype.Services
 					$"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
 					$"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
 			}
+		}
+		public async Task<string> SignIn(string token)
+		{
+			/// Handle Null Exceptions
+			if (_signInManager == null || _userManager == null || _signInManager.UserManager == null)
+			{				
+				return "--------------------------------------------------ERROR: httpContextAccessor is NULL!!";
+			}
+			/// Handle Null Exceptions
+			var userA = await _signInManager.UserManager.FindByEmailAsync(token);
+			if (userA != null)
+			{
+				var result = await _signInManager.CheckPasswordSignInAsync(userA, "Markaway86!", false);
+				if (result.Succeeded)
+				{
+					var claims = new List<Claim>
+						{
+							new Claim("arr", "pwd"),
+						};
+					var roles = await _signInManager.UserManager.GetRolesAsync(userA);
+					if (roles.Any())
+					{
+						//Gives Cookie [USER] Role
+						var roleClaim = string.Join(",", roles);
+						claims.Add(new Claim("Roles", roleClaim));
+					}
+					else
+					{
+						await _signInManager.UserManager.AddToRoleAsync(userA, "User");
+						await _userManager.UpdateAsync(userA);
+						var roleClaim = string.Join(",", roles);
+						claims.Add(new Claim("Roles", roleClaim));
+					}
+					await _signInManager.SignInWithClaimsAsync(userA, true, claims);
+				}
+			}
+			else
+			{
+				await ManageUser();
+			}
+			return "Successfully SignedIn!";
+		}		
+		public string? GetSignedInUserEmail()
+		{
+			/// Handle Null Exceptions
+			if (_httpContextAccessor == null || _httpContextAccessor.HttpContext == null)
+			{
+				// return a default value or throw an exception, depending on your use case
+				return "--------------------------------------------------ERROR: httpContextAccessor is NULL!!";
+			}
+			/// Handle Null Exceptions
+			var emailClaim = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+			return emailClaim?.Value;
 		}
 	}
 }

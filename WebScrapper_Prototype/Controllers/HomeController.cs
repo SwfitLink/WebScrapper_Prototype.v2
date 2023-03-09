@@ -33,7 +33,7 @@ namespace WebScrapper_Prototype.Controllers
 						   select p;
 			if (id > 0)
 			{			
-				products = products.Where(a => a.ID == id);
+				products = products.Where(a => a.Id == id);
 			}
 			//return View(products.ToPagedList());
 			return Redirect("/Shop");
@@ -60,7 +60,7 @@ namespace WebScrapper_Prototype.Controllers
 			if (productId > 0)
 			{
 				var a = AddToCart(productId);
-				basket = basket.Where(b => b.BasketId.Equals(a));
+				basket = basket.Where(b => b.UserId.Equals(a));
 			}
 			if (productIdW > 0)
 			{
@@ -104,7 +104,7 @@ namespace WebScrapper_Prototype.Controllers
 			{
 				var query = from p in _context.Products
 							join w in _context.UserWishList.Where(s => s.UserId.Equals(getUserEmail().Result))
-							on p.ID equals w.ProductId
+							on p.Id equals w.ProductId
 							select new { p, w };
 				products = query.Select(q => q.p);
 				ViewBag.Wishlist = 1;
@@ -117,8 +117,8 @@ namespace WebScrapper_Prototype.Controllers
 			if (basketId == 1)
 			{
 				var query = from p in _context.Products
-							join b in _context.ShopingBasket.Where(s => s.BasketId.Equals(getUserEmail().Result))
-							on p.ID equals b.ProductId
+							join b in _context.ShopingBasket.Where(s => s.UserId.Equals(getUserEmail().Result))
+							on p.Id equals b.ProductId
 							select new { p, b };
 				products = query.Select(s => s.p);
 				foreach (var item in products)
@@ -213,7 +213,7 @@ namespace WebScrapper_Prototype.Controllers
 			}
 			if (BasketRemovePID > 0)
 			{
-				var basket = from b in _context.ShopingBasket.Where(s => s.BasketId.Equals(getUserEmail().Result))
+				var basket = from b in _context.ShopingBasket.Where(s => s.UserId.Equals(getUserEmail().Result))
                              select b;
 				var basketRowsToDelete = basket.Where(b => b.ProductId == BasketRemovePID);
 
@@ -234,15 +234,15 @@ namespace WebScrapper_Prototype.Controllers
 					   select p;
 			if (productId > 0)
 			{
-				prod = prod.Where(p => p.ID == productId);
+				prod = prod.Where(p => p.Id == productId);
 				Basket shoppingBasket = new Basket();
 				shoppingBasket.ProductId = productId;
-				shoppingBasket.BasketId = getUserEmail().Result;
+				shoppingBasket.UserId = getUserEmail().Result;
 				_context.Attach(shoppingBasket);
 				_context.Entry(shoppingBasket).State = EntityState.Added;
 				_context.SaveChanges();
 				
-				return shoppingBasket.BasketId;
+				return shoppingBasket.UserId;
 			}
 			return null;
 		}
@@ -254,7 +254,7 @@ namespace WebScrapper_Prototype.Controllers
 					   select p;
 			if (productId > 0)
 			{
-				prod = prod.Where(p => p.ID == productId);
+				prod = prod.Where(p => p.Id == productId);
 				UserWishList wishList = new UserWishList();
 				wishList.ProductId = productId;
 				wishList.UserId = getUserEmail().Result;

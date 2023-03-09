@@ -19,7 +19,11 @@
     <link href="css/_products.css" rel="stylesheet">
 </head>
 <body>
-    <partial name="_AdminPartial" />
+    <a class="btn btn-outline-white btn-lg" style="margin:15px;" href="/">
+        <img src="~/Media/Navigation/Back.png" height="50" width="50" /> Back
+    </a>
+    <h1>This page is currently be restructured!</h1>
+    <div class="hidden">
     <div class="container" style="margin-top:100px;">
         <div class="card">
             <div class="card-header">
@@ -201,14 +205,15 @@
                         </strong>
                     </td>
                     <td data-label="Manage" data-align="center">
-                        <a class="table-button" asp-action="Details" asp-route-id="@item.ID">View</a>
-                        <a class="table-button" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
-                        <a class="table-button" asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                        <a class="table-button" asp-action="Details" asp-route-id="@item.Id">View</a>
+                        <a class="table-button" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        <a class="table-button" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
+    </div>
     <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
     <script type="text/javascript" src="js/popper.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
@@ -216,7 +221,6 @@
     <script type="text/javascript">new WOW().init();</script>
     
     <script type="text/javascript">
-
         function loadDisplayProductImages(startDisplay) {
             $.ajax({
                 type: 'GET',

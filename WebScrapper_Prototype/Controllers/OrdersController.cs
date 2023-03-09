@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using System.Web.Helpers;
 using Microsoft.AspNetCore.Identity;
@@ -11,6 +13,7 @@ using WebScrapper_Prototype.Areas.Identity.Data;
 using WebScrapper_Prototype.Data;
 using WebScrapper_Prototype.Models;
 using WebScrapper_Prototype.Services;
+using X.PagedList;
 
 namespace WebScrapper_Prototype.Controllers
 {
@@ -22,224 +25,105 @@ namespace WebScrapper_Prototype.Controllers
 		private readonly SignInManager<ApplicationUser> _signInManager;
 		private readonly IHttpContextAccessor _httpContextAccessor;
 
-
 		public OrdersController(WebScrapper_PrototypeContext context, UserManager<ApplicationUser> usermanager, SignInManager<ApplicationUser> signInManager, IHttpContextAccessor httpContextAccessor, ApplicationDbContext app)
 		{
 			_userManager = usermanager;
 			_signInManager = signInManager;
 			_context = context;
 			_httpContextAccessor = httpContextAccessor;
-			_app = app;
+			_app = app;			
 		}
-
-		// GET: Orders
+		/// <summary>
+		/// Handles Order Reviewing
+		/// </summary>
 		public async Task<IActionResult> Index()
         {
-			AutoUserService userService = new AutoUserService(_app, _signInManager, _userManager, _context);
-			if (!User?.Identity.IsAuthenticated == false)
-			{
-                if (!getUserEmail().Equals("404"))
-                {
-                    Console.WriteLine("COOKIE: WORKING...");
-                }
-                else
-                {
-                    Console.WriteLine("ERROR: UserEmail is NULL!!!" + getUserEmail());
-                }
-            }
-			else
-			{
-				if (!HttpContext.Request.Cookies.ContainsKey("cookieV5.3.1B"))
-				{
-					CookieOptions cookieOptions = new CookieOptions();
-					cookieOptions.Expires = new DateTimeOffset(DateTime.Now.AddDays(7));
-					cookieOptions.IsEssential = true;
-					HttpContext.Response.Cookies.Append("cookieV5.3.1B", userService.ManageUser().Result, cookieOptions);
+			UserDetailsService userDetailsService = new(_httpContextAccessor);
+			// User Details Cookie
+			await CheckUserCookie();
+			var userEmail = getUserEmail();
+			var products = from o in _context.Orders
+						 join op in _context.OrderProducts on o.Id equals op.OrderId
+						 join p in _context.Products on op.ProductId equals p.Id
+						 select p;
+			//var order = from o in _context.Orders
+			//			select o.Id;
+			//var products = from p in _context.Products
+			//			   join op in _context.OrderProducts						   
+			//			   on p.Id equals op.ProductId
+			//			   where op.OrderId.Equals(order)
+			//			   select p;
 
-				}
-				else
-				{
-					var firstRequest = HttpContext.Request.Cookies["cookieV5.3.1B"];
-					await userService.signInUser(firstRequest.ToString());
-				}
-                if (!getUserEmail().Equals("404"))
-                {
-                    Console.WriteLine("COOKIE: WORKING...");
-                }
-                else
-                {
-                    Console.WriteLine("ERROR: UserEmail is NULL!!!" + getUserEmail());
-                }
-            }
-
-            var products = _context.Products
-                .Join(_context.ShopingBasket.Where(s => s.BasketId.Equals(getUserEmail())), p => p.ID, b => b.ProductId, (p, b) => p)
-                .ToList();
-
-            var order = _context.Orders.Where(o => o.UserId.Equals(getUserEmail()));
+			var orderDetails = _context.Orders.Where(o => o.UserId != null && o.UserId.Equals(getUserEmail()));
             decimal orderSubTotal = 0;
             decimal shippingTotal = 0;
             decimal fee = 0;
             decimal orderGrandTotal = 0;
-            foreach (var item in order)
+			int id = 0;
+	
+            foreach (var detail in orderDetails)
             {
-                orderSubTotal = item.OrderSubTotal;
-                shippingTotal = item.ShippingTotal;
-                fee = item.Fee;
-                orderGrandTotal = item.OrderGrandTotal;
+				id = detail.Id;
+                orderSubTotal = detail.OrderSubTotal;
+                shippingTotal = detail.ShippingTotal;
+                fee = detail.Fee;
+                orderGrandTotal = detail.OrderGrandTotal;
             }
+			
             ViewBag.SubTotal = orderSubTotal;
             ViewBag.ShippingTotal = shippingTotal;
             ViewBag.Fee = fee;
             ViewBag.OrderGrandTotal = orderGrandTotal;
             return View(products);
         }
-
-        // GET: Orders/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.Orders == null)
-            {
-                return NotFound();
-            }
-
-            var orders = await _context.Orders
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (orders == null)
-            {
-                return NotFound();
-            }
-
-            return View(orders);
-        }
-
-        // GET: Orders/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Orders/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserId,OrderSubTotal,ShippingTotal,Fee,OrderGrandTotal")] Orders orders)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(orders);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(orders);
-        }
-
-        // GET: Orders/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Orders == null)
-            {
-                return NotFound();
-            }
-
-            var orders = await _context.Orders.FindAsync(id);
-            if (orders == null)
-            {
-                return NotFound();
-            }
-            return View(orders);
-        }
-
-        // POST: Orders/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,UserId,OrderSubTotal,ShippingTotal,Fee,OrderGrandTotal")] Orders orders)
-        {
-            if (id != orders.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(orders);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!OrdersExists(orders.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(orders);
-        }
-
-        // GET: Orders/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.Orders == null)
-            {
-                return NotFound();
-            }
-
-            var orders = await _context.Orders
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (orders == null)
-            {
-                return NotFound();
-            }
-
-            return View(orders);
-        }
-
-        // POST: Orders/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Orders == null)
-            {
-                return Problem("Entity set 'WebScrapper_PrototypeContext.Orders'  is null.");
-            }
-            var orders = await _context.Orders.FindAsync(id);
-            if (orders != null)
-            {
-                _context.Orders.Remove(orders);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool OrdersExists(int id)
-        {
-          return _context.Orders.Any(e => e.Id == id);
-        }
-        public string getUserEmail()
-        {
-            try
-            {
-                var user = _userManager.GetUserAsync(User).Result;
-                var email = user.Email;
-                return email;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return "404";
-            }
-        }
-    }
+		/// <summary>
+		/// Checks if there is a cookie present for the user, if not, creates one and signs in the user.
+		/// </summary>
+		private async Task CheckUserCookie()
+		{
+			UserDetailsService detailsService = new UserDetailsService(_context, _httpContextAccessor, _app, _userManager, _signInManager);
+			// If user is not authenticated
+			if (User?.Identity?.IsAuthenticated == false)
+			{
+				const string cookieName = "SwiftLinkUserCookieVer5.5A";
+				var requestCookies = HttpContext.Request.Cookies;
+				// Checks for User Cookie
+				if (!requestCookies.ContainsKey(cookieName))
+				{
+					// Create cookie options
+					var cookieOptions = new CookieOptions
+					{
+						Expires = DateTimeOffset.Now.AddDays(7),
+						IsEssential = true
+					};
+					// Create new User Cookie
+					HttpContext.Response.Cookies.Append(cookieName, await detailsService.ManageUser(), cookieOptions);
+				}
+				else
+				{
+					// Get User Cookie
+					var firstRequest = requestCookies[cookieName];
+					if (firstRequest == null)
+					{
+						// If the cookie cannot be found, return error message
+						ViewData["ErrorMessage"] = "Cookie Failed";
+					}
+					// Sign in user using cookie
+					if (firstRequest != null)
+						await detailsService.SignIn(firstRequest);
+				}
+			}
+		}
+		/// <summary>
+		/// Gets User Email
+		/// </summary>
+		private string getUserEmail()
+		{
+			UserDetailsService userDetailsService = new UserDetailsService(_httpContextAccessor);
+			string? email = userDetailsService.GetSignedInUserEmail();
+			if (email != null)
+				return email;
+			else return string.Empty;
+		}
+	}
 }
