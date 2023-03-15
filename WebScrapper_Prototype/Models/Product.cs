@@ -8,25 +8,25 @@ namespace WebScrapper_Prototype.Models
         [Key]
         public int Id { get; set; }
         [Required]
-        public string? ProductName { get; set; }
-        [Required]
-        public string? ProductStock { get; set; }
-        [Required]
-        public string? ProductDescription { get; set; }
-        [Required]
-        public string? ProductStatus { get; set; }
-        [Required]
-        public string? ProductCategory { get; set; }
-        [Required]
-        public decimal? ProductBasePrice { get; set; }
-        [Required]
-        public decimal? ProductSalePrice { get; set; }
-        [Required]
-        public string? ImageURL { get; set; }
-        [Required]
         public string? VendorSite { get; set; }
         [Required]
         public string? VendorProductURL { get; set; }
+        [Required]
+		public string? ProductKey { get; set; }
+		[Required]
+		public string? ProductCategory { get; set; }
+		[Required]
+        public string? ProductName { get; set; }
+        [Required]
+        public string? ProductStock { get; set; }
+		[Required]
+		public decimal? ProductBasePrice { get; set; }
+		[Required]
+		public decimal? ProductSalePrice { get; set; }
+		[Required]
+        public string? ProductDescription { get; set; }
+        [Required]
+        public string? ProductImageURL { get; set; }
         [Required]
         public string? Visible { get; set; }
         [Required]

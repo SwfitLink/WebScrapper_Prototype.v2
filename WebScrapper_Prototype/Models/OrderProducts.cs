@@ -9,6 +9,6 @@ namespace WebScrapper_Prototype.Models
         [Required]
         public int OrderId { get; set; }
         [Required]
-        public int ProductId { get; set; }
+        public int ProductKey { get; set; }
     }
 }

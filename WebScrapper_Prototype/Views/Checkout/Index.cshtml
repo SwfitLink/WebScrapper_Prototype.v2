@@ -71,7 +71,7 @@
 			</div>
 		</div>
 	</div>
-	<!-- End Preloader -->		
+	<!-- End Preloader -->
 	<!-- End Scroll -->
 	<div id="progressBarContainer">
 		<div id="progressBar"></div>
@@ -95,7 +95,7 @@
 											<ul class="nav main-menu menu navbar-nav">
 												<li class="active">
 													<a href="/Shop">Shop<i class="ti-angle-down"></i></a>
-													<ul class="dropdown">																												
+													<ul class="dropdown">
 														<li><a href="/Cart">Shop</a></li>
 														<li><a href="/Cart">View Cart</a></li>
 													</ul>
@@ -138,14 +138,15 @@
 	</div>
 	<section id="123Section" class="shop checkout section">
 		<div class="container">
+			<div class="col-md-12 col-md-8 col-12">
 			<div class="row">
-				<div class="col-lg-8 col-12">
-					@if (ViewBag.userIsCookie)
-					{
+				@if (ViewBag.userIsCookie)
+				{
+					<div class="col-lg-8 col-12">
 						<div class="checkout-form">
 							<h2>Make Your Checkout Here</h2>
 							<p>Please register in order to checkout more quickly</p>
-							<!-- Form -->				                         
+							<!-- Form -->
 							<form id="registerForm" asp-action="CheckoutAccount" class="form" method="post">
 								<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 								<div class="row">
@@ -220,7 +221,7 @@
 										</div>
 									</div>
 									<div class="col-lg-6 col-md-6 col-12">
-										<div class="form-group create-account">										
+										<div class="form-group create-account">
 											<input asp-for="IsSubscribed" name="isSubscribed" id="cbox" type="checkbox">
 											<label>Subscribe to Newsletter?</label>
 										</div>
@@ -231,94 +232,145 @@
 								</div>
 							</form>
 							<!--/ End Form -->
-						</div>						
-					}
-					else
-					{
-						<div class="checkout-form">
-							<h2>Make Your Checkout Here</h2>
-							<p>You are already Register: Proceed with checkout...</p>
 						</div>
-					}
-				</div>
-					<div class="col-lg-4 col-12">
-					<div class="order-details">
-						<!-- Order Widget -->
-						<div class="single-widget">
-							<h2>Order Summary</h2>
-							<div class="content">
-								<ul>
-									<li>
-										Total Items:
-										<span class="total-amount" style="font-weight:600;">@ViewBag.BasketCount</span>
-									</li>
-									<li>
-										Before Discount: 
-										<span class="total-amount" style="text-decoration-line:line-through; color:red;">R @ViewBag.CartTotalBase.ToString("#,##0.00")</span>
-									</li>
-									<li>
-										You Save: 
-										<span class="total-amount" style="color:forestgreen;font-weight:800;">R @ViewBag.Savings.ToString("#,##0.00")</span>
-									</li>
-									<li>
-										Sub Total:
-										<span class="total-amount" style="font-weight:600;">R @ViewBag.CartTotalSale.ToString("#,##0.00")</span>
-									</li>
-									<li>Shipping:
-										@if (ViewBag.GetFreeShipping > 0)
-										{
-											<label>Spend R <span style="text-decoration-line:underline;">@ViewBag.GetFreeShipping</span> to get <b>FREE</b> Shipping</label>
-										}
-										else
-										{
-											<span><b>FREE</b></span>
-				
-										}
-										</li>
-									<li style="color:gray;">
-										Handling Fee <i class="fa fa-info-circle" style="white-space: nowrap;" data-toggle="tooltip" data-placement="right" title="Think of our handling fee like a secret seasoning - it's the special ingredient that adds value to your shopping experience and helps us continue providing top-notch service without sacrificing our bottom line."></i> :
-											<span style="color:gray;">R @ViewBag.HandlingFee</span>
-										</li>
-									<li class="last">Total: <span style="text-decoration-line:underline;font-weight:700;">R @ViewBag.GrandTotal.ToString("#,##0.00")</span></li>
-								</ul>
-							</div>
-							<script>
-								$(function () {
-									$('[data-toggle="tooltip"]').tooltip()
-								})
-							</script>
-						</div>
-						<!--/ End Order Widget -->
-						<!-- Order Widget -->
-						<div class="single-widget">
-							<h2>Payments</h2>
-							<div class="content">
-								<div class="checkbox">
-									<label class="checkbox-inline" for="1"><input name="updates" id="1" type="checkbox"> Check Payments</label>
-									<label class="checkbox-inline" for="2"><input name="news" id="2" type="checkbox"> Cash On Delivery</label>
-									<label class="checkbox-inline" for="3"><input name="news" id="3" type="checkbox"> PayPal</label>
-								</div>
-							</div>
-						</div>
-						<!--/ End Order Widget -->
-						<!-- Payment Method Widget -->
-						<div class="single-widget payement">
-							<div class="content">
-								<img src="images/payment-method.png" alt="#">
-							</div>
-						</div>
-						<!--/ End Payment Method Widget -->
-						<!-- Button Widget -->
-						<div class="single-widget get-button">
-							<div class="content">
-								<div class="button">
-									<a href="#" onclick="proceedToCheckout()" class="btn">Proceed to checkout</a>
-								</div>
-							</div>
-						</div>
-						<!--/ End Button Widget -->
 					</div>
-				</div>
+				}
+				else
+					{
+						<div class="col-lg-6 col-md-6 col-12">
+							<div class="order-details">
+								<!-- Order Widget -->
+								<div class="single-widget">
+									<h2>Verify Account Details</h2>
+									<div class="content">
+										<ul>
+											<li>
+												First Name:
+												<span class="total-amount">@Model.FirstName</span>
+											</li>
+											<li>
+												LastName:
+												<span class="total-amount">@Model.LastName</span>
+											</li>
+											<li>
+												Contact Email:
+												<span class="total-amount">@Model.ContactEmail</span>
+											</li>
+											<li>
+												Cellphone Number:
+												<span class="total-amount">@Model.PhoneNumber</span>
+											</li>
+											<li class="last">
+												Shipping Address:
+												<span class="total-amount">@Model.AddressLine1</span><br>
+												<span class="total-amount">@Model.AddressLine2</span><br>
+												<span class="total-amount">@Model.LocationCity</span><br>
+												<span class="total-amount">@Model.LocationProvince</span><br>
+												<span class="total-amount">@Model.PostalCode</span><br>
+											</li>
+										</ul>
+									</div>
+								</div>
+								<!--/ End Order Widget -->
+								<!-- Button Widget -->
+								<div class="single-widget get-button">
+									<div class="content">
+										<div class="button">
+											<a href="#" onclick="editDetails()" class="btn disabled">Edit Details</a>
+										</div>
+									</div>
+								</div>
+								<!--/ End Button Widget -->
+							</div>
+						</div>
+						<div class="col-lg-6 col-md-6 col-12">
+							<div class="order-details">
+								<!-- Order Widget -->
+								<div class="single-widget">
+									<h2>Order Summary</h2>
+									<div class="content">
+										<ul>
+											<li>
+												Total Items:
+												<span class="total-amount" style="font-weight:600;">@ViewBag.BasketCount</span>
+											</li>
+											<li>
+												Before Discount:
+												<span class="total-amount" style="text-decoration-line:line-through; color:red;">R @ViewBag.CartTotalBase.ToString("#,##0.00")</span>
+											</li>
+											<li>
+												You Save:
+												<span class="total-amount" style="color:forestgreen;font-weight:800;">R @ViewBag.Savings.ToString("#,##0.00")</span>
+											</li>
+											<li>
+												Sub Total:
+												<span class="total-amount" style="font-weight:600;">R @ViewBag.CartTotalSale.ToString("#,##0.00")</span>
+											</li>
+											<li>
+												Shipping:
+												@if (ViewBag.GetFreeShipping > 0)
+												{
+													<label>Spend R <span style="text-decoration-line:underline;">@ViewBag.GetFreeShipping</span> to get <b>FREE</b> Shipping</label>
+												}
+												else
+												{
+													<span><b>FREE</b></span>
+
+												}
+											</li>
+											<li style="color:gray;">
+												Handling Fee <i class="fa fa-info-circle" style="white-space: nowrap;" data-toggle="tooltip" data-placement="right" title="Think of our handling fee like a secret seasoning - it's the special ingredient that adds value to your shopping experience and helps us continue providing top-notch service without sacrificing our bottom line."></i> :
+												<span style="color:gray;">R @ViewBag.HandlingFee</span>
+											</li>
+											<li class="last">Total: <span style="text-decoration-line:underline;font-weight:700;">R @ViewBag.GrandTotal.ToString("#,##0.00")</span></li>
+										</ul>
+									</div>
+									<script>
+										$(function () {
+											$('[data-toggle="tooltip"]').tooltip()
+										})
+									</script>
+								</div>
+								<!--/ End Order Widget -->	
+							</div>
+						</div>
+						<h2 id="makepayment">Select Payment Method Below:</h2>
+						<div class="col-lg-12 col-md-6 col-12">
+							<div class="order-details">
+								<!-- Order Widget -->
+								<div class="single-widget">
+									<h2 id="makepayment">Payment Methods</h2>
+									<div class="content">
+										<ul class="check-box-list">
+											<li>
+												<label class="checkbox-inline" for="0"><input name="EFT" id="0" type="checkbox"> EFT</label>
+											</li>
+											<li>
+												<label class="checkbox-inline" for="1"><input name="PayPal" id="1" type="checkbox"> PayPal</label>
+											</li>
+											<li>
+												<label class="checkbox-inline" for="2"><input name="CreditCard" id="2" type="checkbox"> Credit Card</label>
+											</li>
+											<li>
+												<label class="checkbox-inline" for="3"><input name="PayFast" id="3" type="checkbox"> PayFast</label>
+											</li>
+										</ul>
+									</div>
+								</div>
+								<!--/ End Order Widget -->
+								<!-- Button Widget -->
+								<div class="single-widget get-button">
+									<div class="content">
+										<div class="button">
+											<a href="#" onclick="proceedToCheckout()" class="btn">Proceed with payment</a>
+										</div>
+									</div>
+								</div>
+								<!--/ End Button Widget -->
+							</div>
+						</div>
+					}
+			</div>
 			</div>
 		</div>
 	</section>
@@ -556,6 +608,7 @@
 			$('#loading-bar').hide();
 			$('#123Section').show();
 		});
+
 		// [GET]
 		// Proceed to checkout
 		function proceedToCheckout() {
@@ -569,28 +622,20 @@
 				url: '/Checkout/Index',
 				data: { startPlaceOrder: startPlaceOrder },
 				success: function (r) {
+					alertify.notify('Order Created!', 'success', 2, function () { console.log('dismissed'); });
 					// Hide the loading bar when the processing is complete
 					$('#loading-bar').hide();
 
 					// Do something with the server response, if necessary
 					alert('Thank You. Your Order has been placed. Please check your email!');
-					showMessageOrder();
 					window.location.href = '/Orders/Index';
+				},
+				error: function (e) {
+					alertify.error('Error: JavaScript Function (proceedToCheckout)');
+					alertify.error(e);
 				}
 			});
 		}
-
-		// [Alertify]
-		// Show Message for Order Create Success
-		function showMessageOrder() {
-			alertify.notify('Order Created!', 'success', 2, function () { console.log('dismissed'); });
-		}
-		// [Alertify]
-		// Show Message for Order Create Error
-		function showMessageOrderFail(e) {
-			alertify.notify(e, 'warn', 2, function () { console.log('dismissed'); });
-		}
-
 	</script>
 </body>
 

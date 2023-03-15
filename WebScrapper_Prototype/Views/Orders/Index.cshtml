@@ -30,6 +30,8 @@
 	<link rel="stylesheet" href="~/css/jquery.fancybox.min.css">
 	<!-- Themify Icons -->
 	<link rel="stylesheet" href="~/css/themify-icons.css">
+	<!-- Jquery Ui -->
+	<link rel="stylesheet" href="~/css/jquery-ui.css">
 	<!-- Nice Select CSS -->
 	<link rel="stylesheet" href="~/css/niceselect.css">
 	<!-- Animate CSS -->
@@ -40,11 +42,19 @@
 	<link rel="stylesheet" href="~/css/owl-carousel.css">
 	<!-- Slicknav -->
 	<link rel="stylesheet" href="~/css/slicknav.min.css">
-	<!-- Eshop StyleSheet -->
+	<!-- Alertify -->
+	<link rel="stylesheet" href="~/alertifyjs/css/alertify.min.css" />
+	<link rel="stylesheet" href="~/alertifyjs/css/themes/default.min.css" />
+	<!-- Reset CSS -->
 	<link rel="stylesheet" href="~/css/reset.css">
+	<!-- Nice Select JS -->
+	<link rel="stylesheet" href="~/css/niceselect.css">
+	<!-- Temp CSS -->
 	<link rel="stylesheet" href="~/css/style.css">
+	<!-- Responsive CSS -->
 	<link rel="stylesheet" href="~/css/responsive.css">
-	<link href="~/Content/PagedList.css" type="text/css" rel="stylesheet">
+	<!-- Site CSS -->
+	<link rel="stylesheet" href="~/css/site.css">
 </head>
 <body class="js">
 	<!-- Preloader -->
@@ -97,7 +107,6 @@
 								<ul class="list-main">
 									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
 									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
-									<li><i class="ti-power-off"></i><a asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action(" Index", "Home" , new { area="" })">Logout</a></li>
 								</ul>
 							}
 							else
@@ -167,74 +176,7 @@
 		</div>
 	</div>
 	<!-- End Breadcrumbs -->
-<h2 style="margin:10px;">ORDER SUMAMRY:</h2>
-<p style ="margin:15px;">This is just for testing purposes</p>
-<br />
-	<h2 style="margin:10px;">Statement</h2>
-	<table class="product-table" title="Order Statement" style="margin:20px; padding:5px;">
-		<thead>
-			<tr>
-				<th scope="col">SubTotal</th>
-				<th scope="col">Shipping Costs</th>
-				<th scope="col">HandlingFee</th>
-				<th scope="col">TOTAL ORDER COST</th>
-
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td>
-					@ViewBag.SubTotal.ToString("#,##0.00")
-				</td>
-				<td>
-					@ViewBag.ShippingTotal.ToString("#,##0.00")
-				</td>
-				<td>
-					@ViewBag.Fee.ToString("#,##0.00")
-				</td>
-				<td>
-					@ViewBag.OrderGrandTotal.ToString("#,##0.00")
-				</td>
-			</tr>
-		</tbody>
-
-	</table>
-<h4 style="margin:10px;">Ordered Products</h4>
-<table class="product-table" title="Ordered Products" style="margin:20px; padding:5px;">
-    <thead>
-        <tr>
-            <th scope="col">Image</th>
-            <th scope="col">Name</th>
-            <th scope="col">Batch No.</th>
-            <th scope="col">Price</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>				
-                <td data-label="Image">
-						<img src="@Url.Action("GetImage", "Backend", new { id = item.Id })" alt="@item.ProductName" />
-                </td>
-                <td data-label="Product Name">
-                    <strong>
-                        @Html.DisplayFor(modelItem => item.ProductName)
-                    </strong>
-                </td>
-                <td data-label="Product Name">
-                    <strong>
-                        @Html.DisplayFor(modelItem => item.dataBatch)
-                    </strong>
-                </td>
-                <td data-label="Price">
-                    <strong>
-                        SwiftLink Price: R @Html.DisplayFor(modelItem => item.ProductSalePrice)
-                    </strong>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+	<h2>Coming Soon</h2>
 	<footer class="footer">
 		<!-- Footer Top -->
 		<div class="footer-top section">
@@ -353,6 +295,8 @@
 	<script src="~/js/nicesellect.js"></script>
 	<!-- Flex Slider JS -->
 	<script src="~/js/flex-slider.js"></script>
+	<!-- Alertify -->
+	<script src="~/alertifyjs/alertify.min.js"></script>
 	<!-- ScrollUp JS -->
 	<script src="~/js/scrollup.js"></script>
 	<!-- Onepage Nav JS -->

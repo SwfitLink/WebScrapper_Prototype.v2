@@ -73,13 +73,13 @@
 								<div class="single-product">
 									<div class="product-img">
 										<a href="/Shop/Product/@product.Id">
-											<img src="@Url.Action("GetImage", "Backend", new { id = product.ProductId })" alt="Nothing to show" />
+											<img src="@Url.Action("GetImage", "Backend", new { id = product.ProductKey })" alt="Nothing to show" />
 										</a>
 									</div>
 									<div class="product-content">										
 											<ul>
 												<li>
-													Product Id: @product.ProductId
+													Product Id: @product.ProductKey
 												</li>
 												<li>
 													Image Id: @product.Id
@@ -146,12 +146,10 @@
 				url: '/Backend/GetImages',
 				data: { startAutoDownload: startAutoDownload },
 				success: function (r) {
-					showMessageSucess();
-					location.reload();
+					showMessageSucess();					
 				},
 				error: function () {
-					showMessageSucess();
-					location.reload();
+					showMessageSucess();					
 				}
 			});
 		}

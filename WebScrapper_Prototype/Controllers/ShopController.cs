@@ -57,8 +57,8 @@ namespace WebScrapper_Prototype.Controllers
 			var products = from p in _context.Products
 						   select p;
 			var query = from p in _context.Products
-						join b in _context.ShopingBasket.Where(s => s.UserId.Equals(getUserEmail()))
-						on p.Id equals b.ProductId
+						join b in _context.ShopingBasket.Where(s => s.UserId.Equals(UserEmail()))
+						on p.Id equals b.ProductKey
 						select new { p, b };
 			products = query.Select(q => q.p);
 			foreach (var item in products)
@@ -192,7 +192,8 @@ namespace WebScrapper_Prototype.Controllers
 			{
 				if (category.Equals("All"))
 				{
-					products = products.OrderBy(s => s.ProductCategory);
+					products = from p in _context.Products
+							   select p;
 				}
 				else
 				{
@@ -239,7 +240,7 @@ namespace WebScrapper_Prototype.Controllers
 			// Populates Default Shop Grid & ViewBags
 			if (pageSize == 0)
 			{
-				pageSize = 24;
+				pageSize = 1000;
 			}
 			int pageNumber = (page ?? 1);
 			var onePageOfProducts = products.ToPagedList(pageNumber, pageSize);
@@ -279,8 +280,8 @@ namespace WebScrapper_Prototype.Controllers
 			Queue<decimal?> salePrice = new Queue<decimal?>();
 			Queue<decimal?> cartTotal = new Queue<decimal?>();
 			// Get user's shopping basket
-			var basket = from b in _context.ShopingBasket.Where(b => b.UserId.Equals(getUserEmail().ToString()))
-						 select b.ProductId;
+			var basket = from b in _context.ShopingBasket.Where(b => b.UserId.Equals(UserEmail().ToString()))
+						 select b.ProductKey;
 			var products = from p in _context.Products
 						   where basket.Contains(p.Id)
 						   select p;
@@ -344,9 +345,9 @@ namespace WebScrapper_Prototype.Controllers
 		public IPagedList LoadWishList()
 		{
 			// Get user's wish list
-			var wishlist = from w in _context.UserWishList.Where(b => b.UserId.Equals(getUserEmail().ToString()))
+			var wishlist = from w in _context.UserWishList.Where(b => b.UserId.Equals(UserEmail().ToString()))
 						 select w;
-			var productID = wishlist.Select(w => w.ProductId).FirstOrDefault();
+			var productID = wishlist.Select(w => w.ProductKey).FirstOrDefault();
 			var products = from p in _context.Products.Where(p => p.Id == productID)
 						   select p;
 			ViewBag.Wishlist = 1;
@@ -400,16 +401,19 @@ namespace WebScrapper_Prototype.Controllers
 		{
 			var prod = from p in _context.Products
 					   select p;
+			var basket = from b in _context.ShopingBasket
+					   select b;
 			if (productId > 0)
-			{
+			{				
 				prod = prod.Where(p => p.Id == productId);
 				Basket shoppingBasket = new Basket();
-				shoppingBasket.ProductId = productId;
-				shoppingBasket.UserId = getUserEmail();
+				shoppingBasket.ProductKey = productId;
+				shoppingBasket.UserId = UserEmail();
 				_context.Attach(shoppingBasket);
 				_context.Entry(shoppingBasket).State = EntityState.Added;
 				_context.SaveChanges();
-			}
+				ViewBag.CartCount = basket.Count();
+            }
 		}
 		/// <summary>
 		/// Add Product to Wish List
@@ -423,8 +427,8 @@ namespace WebScrapper_Prototype.Controllers
 			{
 				prod = prod.Where(p => p.Id == productId);
 				UserWishList wishList = new UserWishList();
-				wishList.ProductId = productId;
-				wishList.UserId = getUserEmail();
+				wishList.ProductKey = productId;
+				wishList.UserId = UserEmail();
 				_context.Attach(wishList);
 				_context.Entry(wishList).State = EntityState.Added;
 				_context.SaveChanges();
@@ -438,9 +442,9 @@ namespace WebScrapper_Prototype.Controllers
 		{
 			if (WishListRemovePID > 0)
 			{
-				var wishlist = from w in _context.UserWishList.Where(s => s.UserId.Equals(getUserEmail()))
+				var wishlist = from w in _context.UserWishList.Where(s => s.UserId.Equals(UserEmail()))
 							   select w;
-				var wishlistRowsToDelete = wishlist.Where(w => w.ProductId == WishListRemovePID);
+				var wishlistRowsToDelete = wishlist.Where(w => w.ProductKey == WishListRemovePID);
 
 				if (wishlistRowsToDelete != null)
 				{
@@ -451,9 +455,9 @@ namespace WebScrapper_Prototype.Controllers
 			}
 			if (BasketRemovePID > 0)
 			{
-				var basket = from b in _context.ShopingBasket.Where(s => s.UserId.Equals(getUserEmail()))
+				var basket = from b in _context.ShopingBasket.Where(s => s.UserId.Equals(UserEmail()))
 							 select b;
-				var basketRowsToDelete = basket.Where(b => b.ProductId == BasketRemovePID);
+				var basketRowsToDelete = basket.Where(b => b.ProductKey == BasketRemovePID);
 				if (basketRowsToDelete != null)
 				{
 					_context.ShopingBasket.RemoveRange(basketRowsToDelete.First());
@@ -466,7 +470,7 @@ namespace WebScrapper_Prototype.Controllers
 		/// <summary>
 		/// Gets User Email
 		/// </summary>
-		private string getUserEmail()
+		private string UserEmail()
 		{
 			UserDetailsService userDetailsService = new UserDetailsService(_httpContextAccessor);
 			string? email = userDetailsService.GetSignedInUserEmail();

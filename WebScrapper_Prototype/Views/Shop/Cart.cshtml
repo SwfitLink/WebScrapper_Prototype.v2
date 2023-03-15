@@ -35,6 +35,8 @@
 	<link rel="stylesheet" href="~/css/jquery.fancybox.min.css">
 	<!-- Themify Icons -->
 	<link rel="stylesheet" href="~/css/themify-icons.css">
+	<!-- Jquery Ui -->
+	<link rel="stylesheet" href="~/css/jquery-ui.css">
 	<!-- Nice Select CSS -->
 	<link rel="stylesheet" href="~/css/niceselect.css">
 	<!-- Animate CSS -->
@@ -45,12 +47,21 @@
 	<link rel="stylesheet" href="~/css/owl-carousel.css">
 	<!-- Slicknav -->
 	<link rel="stylesheet" href="~/css/slicknav.min.css">
-	<!-- Eshop StyleSheet -->
+	<!-- Alertify -->
+	<link rel="stylesheet" href="~/alertifyjs/css/alertify.min.css" />
+	<link rel="stylesheet" href="~/alertifyjs/css/themes/default.min.css" />
+	<!-- Reset CSS -->
 	<link rel="stylesheet" href="~/css/reset.css">
+	<!-- Nice Select JS -->
+	<link rel="stylesheet" href="~/css/niceselect.css">
+	<!-- Temp CSS -->
 	<link rel="stylesheet" href="~/css/style.css">
+	<!-- Responsive CSS -->
 	<link rel="stylesheet" href="~/css/responsive.css">
+	<!-- Site CSS -->
+	<link rel="stylesheet" href="~/css/site.css">
 </head>
-<body class="js">
+<body class="js" onload="fireOncePerSession1();">
 	<!-- Preloader -->
 	<div class="preloader">
 		<div class="preloader-inner">
@@ -61,182 +72,59 @@
 		</div>
 	</div>
 	<!-- End Preloader -->
-	<!-- Header -->
+	<!-- End Scroll -->
 	<div class="header shop">
 		<!-- Topbar -->
-		<partial name="_topbar" />
-		<!-- End Topbar -->
-		<div class="middle-inner">
+		<div class="topbar">
 			<div class="container">
 				<div class="row">
-					<div class="col-lg-2 col-md-2 col-12">
-						<!-- Logo -->
-						<div class="logo">
-							<a href="/"><img src="#" alt="logo"></a>
+					<div class="col-lg-5 col-md-12 col-12">
+						<!-- Top Left -->
+						<div class="top-left">
+							<ul class="list-main">
+								<li><i class="ti-headphone-alt"></i> +27 (081) 565-0206</li>
+								<li>
+									<i class="ti-email"></i>
+									support@swiftlink.com
+								</li>
+							</ul>
 						</div>
-						<!--/ End Logo -->
-						<!-- Search Form -->
-						<div class="search-top">
-							<div class="top-search"><a href="#0"><i class="ti-search"></i></a></div>
-							<!-- Search Form -->
-							<div class="search-top">
-								<form class="search-form">
-									@Html.TextBox("SearchString", ViewBag.CurrentFilter as string,
-									new {Class="form-control me-2", PlaceHolder="Search Products..."})
-									<button value="search" type="submit"><i class="ti-search"></i></button>
-								</form>
-							</div>
-							<!--/ End Search Form -->
-						</div>
-						<!--/ End Search Form -->
-						<div class="mobile-nav"></div>
+						<!--/ End Top Left -->
 					</div>
-					<div class="col-lg-8 col-md-7 col-12">
-						<div class="search-bar-top">
-							<div class="search-bar">
-								<select>
-									<option selected="selected">All Categories</option>
-								</select>
-								<form>
-									@Html.TextBox("SearchString", ViewBag.CurrentFilter as string,
-									new {Class="form-control me-2", PlaceHolder="Search Products..."})
-									<button class="btnn" type="submit"><i class="ti-search"></i></button>
-								</form>
-							</div>
+					<div class="col-lg-6 col-md-12 col-12">
+						<!-- Top Right -->
+						<div class="right-content">
+							@if (User.IsInRole("Manager"))
+							{
+								<ul class="list-main">
+									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
+									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
+									<li><i class="ti-dashboard"></i><a href="/Dashboard">Dashboard</a></li>
+									<li><i class="ti-power-off"></i><a asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home" , new { area="" })">Logout</a></li>
+								</ul>
+							}
+							else if (User.IsInRole("User"))
+							{
+								<ul class="list-main">
+									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
+									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
+								</ul>
+							}
+							else
+							{
+								<ul class="list-main">
+									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
+									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
+									<li><i class="ti-power-off"></i><a href="/Identity/Account/Login">Login</a></li>
+								</ul>
+							}
 						</div>
-					</div>
-					<div class="col-lg-2 col-md-3 col-12">
-						<div class="right-bar">
-							<!-- Search Form -->
-							<div class="sinlge-bar shopping">
-								<a href="#" onclick="loadWishlist()" class="single-icon"><i class="fa fa-heart-o"></i></a>
-								<!-- Wishlist Item -->
-								<div id="Wishlistbasket" class="shopping-item">
-									@if (ViewBag.Wishlist == 1)
-									{
-										@if (Model.Count() > 0)
-										{
-											<div class="dropdown-cart-header">
-												<span>Items: @Model.Count</span>
-												<a href="/Shop/Cart">
-													My Wishlist
-												</a>
-											</div>
-											@foreach (var product in Model)
-											{
-												<ul class="shopping-list">
-													<li>
-														<a href="#" class="remove" title="Remove this item" onclick="loadDeleteCart('@product.Id')"><i class="fa fa-remove"></i></a>
-														<a class="cart-img" href="/Shop/Product/@product.Id"><img src="@product.ImageURL" alt="#"></a>
-														<h4><a href="/Shop/Product/@product.Id">@product.ProductName.Substring(0,20) ...</a></h4>
-														<p class="quantity">
-															1x - <span class="amount" style="text-decoration-line:line-through;">R @product.ProductBasePrice</span>
-															<span class="amount" style="color:red;font-weight:800;">R @product.ProductSalePrice</span>
-														</p>
-													</li>
-												</ul>
-											}
-											<div class="bottom"></div>
-										}
-										else
-										{
-											<p>Your Wish list is Empty</p>
-										}
-									}
-									else
-									{
-										<p onclick="loadCart()">Click to load</p>
-									}
-								</div>
-							</div>
-							<!--/ End Wishlist Item -->
-							<div class="sinlge-bar">
-								<a href="#" id="basketHover" class="single-icon"><i class="fa fa-user-circle-o" aria-hidden="true"></i></a>
-							</div>
-							<div class="sinlge-bar shopping">
-								<a href="#" onclick="loadCart()" class="single-icon">
-									<i class="ti-bag"></i>
-									<span class="total-count">
-										@ViewBag.BasketCount
-									</span>
-								</a>
-								<!-- Shopping Item -->
-								<div id="shoppingbasket" class="shopping-item">
-									@*						<script type="text/javascript">
-									$(document).ready(function () {
-									$('#basketHover').mouseenter(function () {
-									let basketId = 1;
-									$.ajax({
-									type: 'GET',
-									url: '/Home/Index',
-									data: { basketId: basketId },
-									success: function (r) {
-									$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
-									},
-									error: function () {
-									$("#productInfo h2").text("Product is no Longer in Stock!");
-									}
-									});
-									});
-									});
-									</script>*@
-									@if (ViewBag.BasketLoad == 1)
-									{
-										@if (Model.Count() > 0)
-										{
-											<div class="dropdown-cart-header">
-												<span>Items: @Model.Count</span>
-												<a href="/Shop/Cart">
-													View Cart
-												</a>
-											</div>
-											@foreach (var product in Model)
-											{
-												<ul class="shopping-list">
-													<li>
-														<a href="#" class="remove" title="Remove this item" onclick="loadDeleteCart('@product.Id')"><i class="fa fa-remove"></i></a>
-														<a class="cart-img" href="/Shop/Product/@product.Id"><img src="@product.ImageURL" alt="#"></a>
-														<h4><a href="/Shop/Product/@product.Id">@product.ProductName.Substring(0,20) ...</a></h4>
-														<p class="quantity">
-															1x - <span class="amount" style="text-decoration-line:line-through;">R @product.ProductBasePrice</span>
-															<span class="amount" style="color:red;font-weight:800;">R @product.ProductSalePrice</span>
-														</p>
-													</li>
-												</ul>
-											}
-											<div class="bottom">
-												<div class="total">
-													<span>Sub Total:</span>
-													<span class="total-amount" style="text-decoration-line:line-through; color:red;">R @ViewBag.CartTotalBase</span>
-												</div>
-												<div class="total">
-													<span>Discount:</span>
-													<span class="total-amount" style="color:red;font-weight:800;">R @ViewBag.Savings</span>
-												</div>
-												<div class="total">
-													<span>Total:</span>
-													<span class="total-amount" style="text-decoration-line:underline">R @ViewBag.CartTotalSale</span>
-												</div>
-												<a href="/Home/UnderConstruction" class="btn animate">Checkout</a>
-											</div>
-										}
-										else
-										{
-											<p>Your Cart is Empty</p>
-										}
-									}
-									else
-									{
-										<p onclick="loadCart()">Click to load</p>
-									}
-								</div>
-								<!--/ End Shopping Item -->
-							</div>
-						</div>
+						<!-- End Top Right -->
 					</div>
 				</div>
 			</div>
 		</div>
+		<!-- End Topbar -->
 		<!-- Header Inner -->
 		<div class="header-inner">
 			<div class="container">
@@ -255,17 +143,9 @@
 												<li class="active">
 													<a href="/Shop">Shop<i class="ti-angle-down"></i></a>
 													<ul class="dropdown">
+														<li><a href="/Cart">Shop</a></li>
 														<li><a href="/Cart">View Cart</a></li>
-														<li><a href="/Home/UnderConstruction">Checkout</a></li>
 													</ul>
-												<li>
-													<a href="#">PC Builder<i class="ti-angle-down"></i><span class="new">New</span></a>
-													<ul class="dropdown">
-														<li><a href="/Home/UnderConstruction">Pre-built</a></li>
-														<li><a href="/Home/UnderConstruction">Customize</a></li>
-														<li><a href="/Home/UnderConstruction">Learn</a></li>
-													</ul>
-												</li>
 												<li><a href="/Home/UnderConstruction">Contact Us</a></li>
 											</ul>
 										</div>
@@ -320,7 +200,7 @@
 								@foreach (var product in Model)
 								{
 									<tr>
-										<td class="image" data-title="No"><img src="@product.ImageURL" alt="#"></td>
+										<td class="image" data-title="Image"><img src="@Url.Action("GetImage", "Backend", new { id = product.Id })" alt="@product.ProductName" /></td>
 										<td class="product-des" data-title="Description">
 											<p class="product-name"><a href="/Shop/Product/@product.Id">@product.ProductName.Substring(0,35) ...</a></p>
 										</td>
@@ -571,6 +451,9 @@
 		</div>
 	</footer>
 	<!-- /End Footer Area -->
+	@section Scripts {
+		<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+	}
 	<!-- Jquery -->
 	<script src="~/js/jquery.min.js"></script>
 	<script src="~/js/jquery-migrate-3.0.0.js"></script>
@@ -595,6 +478,8 @@
 	<script src="~/js/nicesellect.js"></script>
 	<!-- Flex Slider JS -->
 	<script src="~/js/flex-slider.js"></script>
+	<!-- Alertify -->
+	<script src="~/alertifyjs/alertify.min.js"></script>
 	<!-- ScrollUp JS -->
 	<script src="~/js/scrollup.js"></script>
 	<!-- Onepage Nav JS -->
@@ -603,74 +488,9 @@
 	<script src="~/js/easing.js"></script>
 	<!-- Active JS -->
 	<script src="~/js/active.js"></script>
-	<!---Load QuickShop-->
-	<script type="text/javascript">
-		function loadQuickShop(id) {
-			$.ajax({
-				type: 'POST',
-				url: '/Home/Index',
-				data: { id: id },
-				success: function (r) {
-					$("#QuickShopModal").html($(r).find("#QuickShopModal").html());
-				},
-				error: function () {
-					$("#productInfo h2").text("Product is no Longer in Stock!");
-				}
-			});
-		}
-	</script>
-	<!---Load AddToCart-->
-	<script type="text/javascript">
-		function loadAddToCart(productId) {
-			$.ajax({
-				type: 'GET',
-				url: '/Home/Index',
-				data: { productId: productId },
-				success: function (r) {
-					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
-				},
-				error: function () {
-					$("#productInfo h2").text("Product is no Longer in Stock!");
-					showMessageAddToCartAddToCart();
-				}
-			});
-		}
-		function showMessageAddToCartAddToCart() {
-			var notification = alertify.notify('Added!', 'success', 5, function () { console.log('dismissed'); });
-		}
-		function loadDeleteCart(productId) {
-			$.ajax({
-				type: 'POST',
-				url: '/Shop/DeleteConfirmed',
-				data: { BasketRemovePID: productId },
-				success: function (r) {
-					$("#Cart").html($(r).find("#Cart").html());
-					showMessageDeleteCart();
-				},
-				error: function () {
-					$("#Cart").text("Product is no Longer in Stock!");
-				}
-			});
-		}
-		function showMessageDeleteCart() {
-			alertify.notify('Removed!', 'custom', 2, function () { console.log('dismissed'); });
-		}
-		function loadCart() {
-			let basketId = 1;
-			$.ajax({
-				type: 'GET',
-				url: '/Home/Index',
-				data: { basketId: basketId },
-				success: function (r) {
-					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
-				},
-				error: function () {
-					$("#productInfo h2").text("Product is no Longer in Stock!");
-				}
-			});
-		}
-	</script>
-	<!---Load Progressbar-->
+
+	<!-- Custom Scripts -->
+	<!-- Load ProgressBar -->
 	<script type="text/javascript">
 		const progressBarContainer = document.querySelector("#progressBarContainer");
 		const progressBar = document.querySelector("#progressBar");
@@ -700,8 +520,62 @@
 				behavior: 'smooth'
 			});
 		});
-	</script>	
+	</script>
+	<!--Functions-->
 	<script type="text/javascript">
+		// [Alertify]
+		// Prompt user to accept or decline cookies
+		function fireOncePerSession1() {
+			if (!sessionStorage.getItem('hasFired1')) {
+				$(document).ready(function () {
+					alertify.confirm('Cookies', 'We use Cookies to Enhance Your Experience!',
+						function () { alertify.success('Accepted') },
+						function () { alertify.error('Declined') }).set('movable', false);
+				});
+				sessionStorage.setItem('hasFired1', true);
+			}
+		}
+
+		// [Alertify] & [POST]
+		// If user is not subscribed then prompt user with pop-up (Delay: 25 secs)
+		function SendSubAlert() {
+			setTimeout(function () {
+				alertify.prompt('Subscribe to Our Weekly Newsletter and get 10% Off Your First Order!', ' Enter Your Email', ' ',
+					function (evt, value) {
+						$.ajax({
+							type: 'POST',
+							url: '/Home/UpdateSubscribedStatus',
+							data: { email: value },
+							success: function () {
+								sessionStorage.setItem('hasFired2', true);
+							},
+							error: function () {
+								console.error('Error saving email!');
+							}
+						});
+					},
+					function () { alertify.error('Cancel') });
+			}, 25000);
+		}
+		
+		// [GET]
+		// Load Shopping Cart
+		function loadCart() {
+			let basketStart = 1;
+			$.ajax({
+				type: 'GET',
+				url: '/Shop/Index',
+				data: { basketStart: basketStart },
+				success: function (r) {
+					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
+				},
+				error: function (e) {
+					alertify.error('Error: JavaScript Function (loadCart)');
+					alertify.error(e);
+				}
+			});
+		}
+
 		// [POST]
 		// Delete from Cart
 		function loadDeleteCart(productId) {
@@ -710,19 +584,14 @@
 				url: '/Shop/DeleteConfirmed',
 				data: { BasketRemovePID: productId },
 				success: function (r) {
-					$("#Cart").html($(r).find("#Cart").html());
-					showMessageDeleteCart();
-
+					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
+					alertify.notify('Removed from Cart!', 'custom', 2, function () { console.log('dismissed'); });
 				},
-				error: function () {
-					$("#productInfo h2").text("Product is no Longer in Stock!");
+				error: function (e) {
+					alertify.error('Error: JavaScript Function (loadAddToCart)');
+					alertify.error(e);
 				}
 			});
-		}
-		// [Alertify]
-		// Show Message for Delete from Cart
-		function showMessageDeleteCart() {
-			alertify.notify('Removed!', 'custom', 2, function () { console.log('dismissed'); });
 		}
 	</script>
 </body>

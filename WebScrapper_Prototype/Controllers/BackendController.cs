@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Text;
+using System.Web;
 using WebScrapper_Prototype.Data;
 using WebScrapper_Prototype.Models;
 using WebScrapper_Prototype.Services;
@@ -16,101 +17,194 @@ namespace WebScrapper_Prototype.Controllers
         private readonly WebScrapper_PrototypeContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private const string API_KEY = "b4798a48-3db7-4bfd-8cdf-7e1d4dde5ed2";
+        private static readonly HttpClient client = new HttpClient();
         public BackendController(WebScrapper_PrototypeContext context, IWebHostEnvironment webHost, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _webHostEnvironment = webHost;
             _httpContextAccessor = httpContextAccessor;
         }
-        /// <summary>
-        /// Downloads and Image is URL. Saves Downloaded Image to Database
-        /// </summary>
-		[HttpPost]
-        public async Task<List<string>> DownloadAndSaveImage(int id, string? url)
+		[HttpGet]
+		public async Task<IActionResult> ScrapeUrl(int startScraper)
 		{
-			List<string> consoleLogs = new List<string>();
-			try
+			if(startScraper > 0)
 			{
-				using (var httpClient = new HttpClient())
-				{
-					consoleLogs.Add("Starting..."); ;
-					consoleLogs.Add("Download and Save Image Task has Started!");
-					consoleLogs.Add("---------------->> " + url);
-					Console.WriteLine();
-					var response = await httpClient.GetAsync(url);
-                    if (response.IsSuccessStatusCode)
-                    {
-						consoleLogs.Add("---------------->> " + response);
-                        consoleLogs.Add("Fetching Image Data...");
-                        var imageData = await response.Content.ReadAsByteArrayAsync();
-						consoleLogs.Add($"{imageData}" + " <<--------------");
-                        var fileName = Path.GetFileName(url);
-						consoleLogs.Add($"{fileName}" + " <<--------------");
-                        var fileType = Path.GetExtension(url);
-						consoleLogs.Add($"{fileType}" + " <<--------------");
-                        consoleLogs.Add("Creating ProductImage...");
-                        var Image = new ProductImage
-                        {
-                            ProductId = id,
-                            FileName = fileName,
-                            FileType = fileType,
-                            Content = imageData
-                        };
-                        consoleLogs.Add("Updating Database...");
-                        _context.ProductImages.Add(Image);
-                        await _context.SaveChangesAsync();
-                        GetImage(id);
-                        consoleLogs.Add("DONE!");
-                        Console.WriteLine("------------------------------------>>");
-                    }
-                    else
-                    {
-                        Console.WriteLine("FINISHED");                           
-                    }
-					foreach (var item in consoleLogs)
-                    {
-                        Console.WriteLine(item);
-                    }
-                }
+				WebscrapperIoApiClient webscrapper = new(_context);
+				await webscrapper.StartRequests();
 			}
-			catch (NotSupportedException ex)
-            {
-				Console.WriteLine(ex.Message);
-                Console.WriteLine("------------>> " + "!COMPLETED!" + " <<--------------");
-            };
-            return consoleLogs;
+			return View();
+		}
+		/// <summary>
+		/// Downloads and Image is URL. Saves Downloaded Image to Database
+		/// </summary>
+		[HttpGet]
+		public async Task DownloadAndSaveImage(Dictionary<int, string> productUrls)
+		{
+			Console.WriteLine("Preparing to Download Images...");
+			string proxy = "https://proxy.scrapeops.io/v1/";
+			string apiKey = "b4798a48-3db7-4bfd-8cdf-7e1d4dde5ed2";
+			var productImages = from s in _context.ProductImages
+								select s.FileName;
+			foreach (KeyValuePair<int, string> productUrl in productUrls)
+			{
+				using var httpClient = new HttpClient();
+				httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36");
+				httpClient.Timeout = TimeSpan.FromMinutes(5);
+				var query = System.Web.HttpUtility.ParseQueryString(string.Empty);
+				query["api_key"] = apiKey;
+				query["url"] = productUrl.Value;
+
+				var proxyUrl = $"{productUrl.Value}?{query}";
+
+				Console.ForegroundColor = ConsoleColor.White;
+				Console.BackgroundColor = ConsoleColor.DarkMagenta;
+				Console.WriteLine();
+				Console.WriteLine("\n------------------------------------------------->>");
+				Console.WriteLine(
+					$"	Connecting to Proxy:\n" +
+					$"		Proxy:\n" +
+					$"		{proxy}\n" +
+					$"		Target:\n" +
+					$"		{proxyUrl}\n");
+				using var response = await httpClient.GetAsync(proxyUrl);
+				if (response.IsSuccessStatusCode)
+				{
+					Console.Beep(1500, 100);
+					Console.ForegroundColor = ConsoleColor.Black;
+					Console.BackgroundColor = ConsoleColor.Green;
+					Console.WriteLine();
+					Console.WriteLine("\n<<-------------------------------------------------");
+					Console.WriteLine(
+						$"	{proxy} Responded!\n" +
+						$"		Response:\n" +
+						$"		{response.StatusCode}\n");
+					var imageData = await response.Content.ReadAsByteArrayAsync();
+					var fileName = Path.GetFileName(productUrl.Value);
+					var fileType = Path.GetExtension(productUrl.Value);
+					var Image = new ProductImage
+					{
+						ProductKey = productUrl.Key,
+						FileName = $"{fileName}",
+						FileType = fileType,
+						Content = imageData
+					};
+					if (productImages.Contains(fileName))
+					{
+						Console.WriteLine("File Exists");
+					}
+					else
+					{
+						Console.WriteLine(
+						$"Saving File...\n" +
+						$"File: {Image.FileName}");
+						_context.ProductImages.Add(Image);
+						await _context.SaveChangesAsync();
+					}
+				}
+				else
+				{
+					Console.WriteLine($"Fail!\n" +
+						$"Response: {response}\n");
+				}
+			}
+			/// <summary>
+			///try
+			///{
+			///	using (var httpClient = new HttpClient())
+			///	{
+			///		consoleLogs.Add("Starting..."); ;
+			///		httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0");
+			///		httpClient.DefaultRequestHeaders.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8");
+			///		httpClient.DefaultRequestHeaders.Add("Accept-Language", "en-US,en;q=0.5");
+			///		httpClient.DefaultRequestHeaders.Add("Accept-Encoding", "gzip, deflate");
+			///		httpClient.DefaultRequestHeaders.Add("Connection", "keep-alive");
+			///		httpClient.DefaultRequestHeaders.Add("Upgrade-Insecure-Requests", "1");
+			///		httpClient.DefaultRequestHeaders.Add("Sec-Fetch-Dest", "document");
+			///		httpClient.DefaultRequestHeaders.Add("Sec-Fetch-Mode", "navigate");
+			///		httpClient.DefaultRequestHeaders.Add("Sec-Fetch-Site", "none");
+			///		httpClient.DefaultRequestHeaders.Add("Sec-Fetch-User", "?1");
+			///		httpClient.DefaultRequestHeaders.Add("Cache-Control", "max-age=0");
+			///		HttpResponseMessage response = await httpClient.GetAsync(url);
+			///		//var response = await httpClient.GetAsync(url);
+			///		if (response.IsSuccessStatusCode)
+			///	{
+			///			consoleLogs.Add("Download and Save Image Task has Started!");
+			///			Console.WriteLine();
+			///			consoleLogs.Add("---------------->> " + response);
+			///			consoleLogs.Add("Fetching Image Data...");
+			///			var imageData = await response.Content.ReadAsByteArrayAsync();
+			///			consoleLogs.Add($"{imageData}" + " <<--------------");
+			///			var fileName = Path.GetFileName(url);
+			///			consoleLogs.Add($"{fileName}" + " <<--------------");
+			///			var fileType = Path.GetExtension(url);
+			///			consoleLogs.Add($"{fileType}" + " <<--------------");
+			///			consoleLogs.Add("Creating ProductImage...");
+			///			var Image = new ProductImage
+			///			{
+			///				ProductKey = id,
+			///				FileName = fileName,
+			///				FileType = fileType,
+			///				Content = imageData
+			///			};
+			///			consoleLogs.Add("Updating Database...");
+			///			_context.ProductImages.Add(Image);
+			///			await _context.SaveChangesAsync();
+			///			GetImage(id);
+			///			consoleLogs.Add("DONE!");
+			///			Console.WriteLine("------------------------------------>>");
+			///		}
+			///		else
+			///		{
+			///			consoleLogs.Add("---------------->> " + response);
+			///		}
+			///		foreach (var item in consoleLogs)
+			///		{
+			///			Console.WriteLine(item);
+			///		}
+			///	}
+			///}
+			///catch (NotSupportedException ex)
+			///{
+			///	Console.WriteLine(ex.Message);
+			///	Console.WriteLine("------------>> " + "!COMPLETED!" + " <<--------------");
+			///};
+			///return consoleLogs;
+			/// </summary>
 		}
 		/// <summary>
 		/// View method for Downloading and Saving Images. Gets and passes image URL to correct methods
 		/// </summary>
-		[HttpGet]
-        public async Task<IActionResult> GetImages(int startAutoDownload, int clear)
-        {
+		//[HttpGet]
+		public async Task<IActionResult> GetImages(int startAutoDownload, int clear)
+		{
+			var products = from p in _context.Products
+						   select p;
+			var images = from i in _context.ProductImages
+						 select i;
 			if (clear > 0)
-            {
-                await ClearImages();
-            }
-            if (startAutoDownload > 0)
-            {
-                Queue<int> productId = new Queue<int>();
-                Queue<string?> ImageURL = new Queue<string?>();
-
-                foreach (var product in _context.Products.ToList())
-                {
-                    productId.Enqueue(product.Id);
-                    ImageURL.Enqueue(product.ImageURL);
-                }
-                while (productId.Count > 0)
-                {
-					await DownloadAndSaveImage(productId.Dequeue(), ImageURL.Dequeue());                    
-				}				
+			{
+				await ClearImages();
 			}
-			var images = _context.ProductImages.ToList();
-			return View(images);
+			if (startAutoDownload > 0)
+			{
+				Dictionary<int, string> productUrls = new();
+				Queue<int> id = new();
+				Queue<string> url = new();
+				foreach (var product in products)
+				{
+					Console.WriteLine("Loading Product...\n" +
+						$"Id: {product.Id}\n" +
+						$"URL: {product.ProductImageURL}");
+					productUrls.Add(product.Id, product.ProductImageURL);
+				}
+				await DownloadAndSaveImage(productUrls);
+			}
+			return View();
 		}
-        /// <summary>
-        /// Method called to Delete all images from Database
-        /// </summary>
+		/// <summary>
+		/// Method called to Delete all images from Database
+		/// </summary>
 		[HttpPost]
 		public async Task ClearImages()
 		{
@@ -127,10 +221,11 @@ namespace WebScrapper_Prototype.Controllers
 		[HttpGet]
 		public IActionResult GetImage(int id)
 		{
-			var imageModel = _context.ProductImages.FirstOrDefault(img => img.ProductId == id);
-			if (imageModel != null && imageModel.Content != null)
-				return File(imageModel.Content, "image/jpeg");
-			else return NotFound();
+            var imageModel = _context.ProductImages.FirstOrDefault(img => img.ProductKey.Equals(id));
+            if (imageModel != null && imageModel.Content != null)
+                return File(imageModel.Content, "image/jpeg");
+            else return NotFound();
+
 		}
 		[HttpPost]
 		public async Task<ActionResult> Gpt3Recipe(Gpt3 ingredients)
@@ -184,42 +279,74 @@ namespace WebScrapper_Prototype.Controllers
 			ViewBag.recipe = text;
 			return View();
 		}
-		/// <summary>
-		/// Automates Adding Products from csv file. Calls Services.
-		/// </summary>
-		[Authorize(Roles = "Administrator, Manager")]
+        /// <summary>
+        /// Automates Adding Products from CSV file. Calls Services.
+        /// </summary>
         [HttpGet]
+		public IActionResult AutoProductCreateTestImage()
+		{
+			AddCSV product = new AddCSV();
+			return View(product);
+		}
+        /// <summary>
+        /// Automates Adding Products from CSV file. Calls Services.
+        /// </summary>
+        [HttpPost]
+		public ActionResult AutoProductCreateTestImage(AddCSV addCSV)
+		{
+			var _productService = new ProductService();
+			string uniqueCSVFileName = ProcessUploadedCSVFile(addCSV);
+			var location = "wwwroot\\Uploads\\" + uniqueCSVFileName;
+			var rowData = _productService.ReadCSVFileImage(location);
+			foreach (ProductImageURLs item in rowData)
+			{
+				ProductImageURLs productImages = new ProductImageURLs
+				{
+					VendorSiteOrigin = item.VendorSiteOrigin,
+					VendorSiteProduct = item.VendorSiteProduct,
+					ProductKey = item.ProductKey,
+					ImageURL = item.ImageURL
+				};
+				_context.Attach(productImages);
+				_context.Entry(productImages).State = EntityState.Added;
+				_context.SaveChanges();
+			}
+			return RedirectToAction(nameof(Index));
+		}
+		/// <summary>
+		/// Automates Adding Products from CSV file. Calls Services.
+		/// </summary>
+		[HttpGet]
         public IActionResult AutoProductCreateTest()
         {
             AddCSV product = new AddCSV();
             return View(product);
         }
-		/// <summary>
-		/// Automates Adding Products from csv file. Calls Services.
-		/// </summary>
-		[Authorize(Roles = "Administrator, Manager")]
+        /// <summary>
+        /// Automates Adding Products from CSV file. Calls Services.
+        /// </summary>
         [HttpPost]
         public ActionResult AutoProductCreateTest(AddCSV addCSV)
         {
             var _productService = new ProductService();
             string uniqueCSVFileName = ProcessUploadedCSVFile(addCSV);
             var location = "wwwroot\\Uploads\\" + uniqueCSVFileName;
-            var rowData = _productService.ReadCSVFile(location);
+            var rowData = _productService.ReadCSVFileSingle(location);
             foreach (Product item in rowData)
             {
                 Product product = new Product();
+                product.VendorSite = item.VendorSite;
+				product.VendorProductURL = item.VendorProductURL;
+				product.ProductKey = item.ProductKey;
+                product.ProductCategory = item.ProductCategory;
                 product.ProductName = item.ProductName;
                 product.ProductStock = item.ProductStock;
-                product.ProductDescription = item.ProductDescription;
-                product.ProductStatus = "New";
-                product.ProductCategory = item.ProductCategory;
                 product.ProductBasePrice = item.ProductBasePrice;
                 product.ProductSalePrice = item.ProductSalePrice;
-                product.ImageURL = item.ImageURL;
-                product.VendorSite = item.VendorSite;
-                product.VendorProductURL = item.VendorProductURL;
-                product.Visible = item.Visible;
-                product.dataBatch = item.dataBatch;
+                product.ProductDescription = item.ProductDescription;
+				product.ProductImageURL = item.ProductImageURL;             
+                product.Visible = "Visible";
+                product.dataBatch = "March23";
                 _context.Attach(product);
                 _context.Entry(product).State = EntityState.Added;
                 _context.SaveChanges();
@@ -229,7 +356,6 @@ namespace WebScrapper_Prototype.Controllers
         /// <summary>
         /// Method is called to process CSV File
         /// </summary>
-        [Authorize(Roles = "Administrator, Manager")]
         private string ProcessUploadedCSVFile(AddCSV model)
         {
             string uniqueFileName = "ERROR";
@@ -253,7 +379,6 @@ namespace WebScrapper_Prototype.Controllers
         /// <summary>
         /// Index View for Backend
         /// </summary>
-		[Authorize(Roles = "Administrator, Manager")]
 		[HttpPost]
 		public IActionResult Index(int id)
 		{
@@ -268,9 +393,8 @@ namespace WebScrapper_Prototype.Controllers
 		/// <summary>
 		/// Index View for Backend
 		/// </summary>
-		[Authorize(Roles = "Administrator, Manager")]
 		[HttpGet]
-		public IActionResult Index(int startDisplay, int productId, string view, string sortOrder, string findProduct, string currentFilter, string searchString, string dataBatch, int? page, int startImageDownload)
+		public IActionResult Index(int merge, int startDisplay, int productId, string view, string sortOrder, string findProduct, string currentFilter, string searchString, string dataBatch, int? page, int startImageDownload)
 		{
 			ViewBag.setting = view;
 			var products = from p in _context.Products

@@ -35,6 +35,8 @@
 	<link rel="stylesheet" href="~/css/jquery.fancybox.min.css">
 	<!-- Themify Icons -->
 	<link rel="stylesheet" href="~/css/themify-icons.css">
+	<!-- Jquery Ui -->
+	<link rel="stylesheet" href="~/css/jquery-ui.css">
 	<!-- Nice Select CSS -->
 	<link rel="stylesheet" href="~/css/niceselect.css">
 	<!-- Animate CSS -->
@@ -45,12 +47,21 @@
 	<link rel="stylesheet" href="~/css/owl-carousel.css">
 	<!-- Slicknav -->
 	<link rel="stylesheet" href="~/css/slicknav.min.css">
-	<!-- Eshop StyleSheet -->
+	<!-- Alertify -->
+	<link rel="stylesheet" href="~/alertifyjs/css/alertify.min.css" />
+	<link rel="stylesheet" href="~/alertifyjs/css/themes/default.min.css" />
+	<!-- Reset CSS -->
 	<link rel="stylesheet" href="~/css/reset.css">
+	<!-- Nice Select JS -->
+	<link rel="stylesheet" href="~/css/niceselect.css">
+	<!-- Temp CSS -->
 	<link rel="stylesheet" href="~/css/style.css">
+	<!-- Responsive CSS -->
 	<link rel="stylesheet" href="~/css/responsive.css">
+	<!-- Site CSS -->
+	<link rel="stylesheet" href="~/css/site.css">
 </head>
-<body class="js">
+<body class="js" onload="fireOncePerSession1();">
 	<!-- Preloader -->
 	<div class="preloader">
 		<div class="preloader-inner">
@@ -127,7 +138,7 @@
 												<ul class="shopping-list">
 													<li>
 														<a href="#" class="remove" title="Remove this item" onclick="loadDeleteCart('@product.Id')"><i class="fa fa-remove"></i></a>
-														<a class="cart-img" href="/Shop/Product/@product.Id"><img src="@product.ImageURL" alt="#"></a>
+														<a class="cart-img" href="/Shop/Product/@product.Id"><img src="@Url.Action("GetImage", "Backend", new { id = product.Id })" alt="@product.ProductName" /></a>
 														<h4><a href="/Shop/Product/@product.Id">@product.ProductName.Substring(0,20) ...</a></h4>
 														<p class="quantity">
 															1x - <span class="amount" style="text-decoration-line:line-through;">R @product.ProductBasePrice</span>
@@ -195,7 +206,7 @@
 												<ul class="shopping-list">
 													<li>
 														<a href="#" class="remove" title="Remove this item" onclick="loadDeleteCart('@product.Id')"><i class="fa fa-remove"></i></a>
-														<a class="cart-img" href="/Shop/Product/@product.Id"><img src="@product.ImageURL" alt="#"></a>
+														<a class="cart-img" href="/Shop/Product/@product.Id"><img src="@Url.Action("GetImage", "Backend", new { id = product.Id })" alt="@product.ProductName" /></a>
 														<h4><a href="/Shop/Product/@product.Id">@product.ProductName.Substring(0,20) ...</a></h4>
 														<p class="quantity">
 															1x - <span class="amount" style="text-decoration-line:line-through;">R @product.ProductBasePrice</span>
@@ -314,15 +325,7 @@
 						<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
 							<!-- Product Slider -->
 							<div class="product-gallery">
-										@if (product.ImageURL.Contains("www"))
-										{
-											<img src="@product.ImageURL" alt="#">					
-										}
-										else
-										{
-											<img src="~/Uploads/@product.ImageURL" alt="#">
-										}
-					
+								<img src="@Url.Action("GetImage", "Backend", new { id = product.Id })" alt="@product.ProductName" />					
 							</div>
 							<!-- End Product slider -->
 						</div>
@@ -480,6 +483,9 @@
 		</div>
 	</footer>
 	<!-- /End Footer Area -->
+	@section Scripts {
+		<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+	}
 	<!-- Jquery -->
 	<script src="~/js/jquery.min.js"></script>
 	<script src="~/js/jquery-migrate-3.0.0.js"></script>
@@ -504,6 +510,8 @@
 	<script src="~/js/nicesellect.js"></script>
 	<!-- Flex Slider JS -->
 	<script src="~/js/flex-slider.js"></script>
+	<!-- Alertify -->
+	<script src="~/alertifyjs/alertify.min.js"></script>
 	<!-- ScrollUp JS -->
 	<script src="~/js/scrollup.js"></script>
 	<!-- Onepage Nav JS -->
@@ -512,8 +520,9 @@
 	<script src="~/js/easing.js"></script>
 	<!-- Active JS -->
 	<script src="~/js/active.js"></script>
+
 	<!-- Custom Scripts -->
-	<!--Load Scrolling Bar-->
+	<!-- Load ProgressBar -->
 	<script type="text/javascript">
 		const progressBarContainer = document.querySelector("#progressBarContainer");
 		const progressBar = document.querySelector("#progressBar");
@@ -546,6 +555,43 @@
 	</script>
 	<!--Functions-->
 	<script type="text/javascript">
+		// [Alertify]
+		// Prompt user to accept or decline cookies
+		function fireOncePerSession1() {
+			if (!sessionStorage.getItem('hasFired1')) {
+				$(document).ready(function () {
+					alertify.confirm('Cookies', 'We use Cookies to Enhance Your Experience!',
+						function () { alertify.success('Accepted') },
+						function () { alertify.error('Declined') }).set('movable', false);
+				});
+				sessionStorage.setItem('hasFired1', true);
+			}
+		}
+
+		// [Alertify] & [POST]
+		// If user is not subscribed then prompt user with pop-up (Delay: 25 secs)
+		function SendSubAlert() {
+			setTimeout(function () {
+				alertify.prompt('Subscribe to Our Weekly Newsletter and get 10% Off Your First Order!', ' Enter Your Email', ' ',
+					function (evt, value) {
+						$.ajax({
+							type: 'POST',
+							url: '/Home/UpdateSubscribedStatus',
+							data: { email: value },
+							success: function () {
+								sessionStorage.setItem('hasFired2', true);
+							},
+							error: function () {
+								console.error('Error saving email!');
+							}
+						});
+					},
+					function () { alertify.error('Cancel') });
+			}, 25000);
+		}
+
+		// [GET]
+		// Add to Cart
 		function loadAddToCart(productId) {
 			$.ajax({
 				type: 'GET',
@@ -553,30 +599,35 @@
 				data: { productId: productId },
 				success: function (r) {
 					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
-					showMessage();
+					alertify.notify('Added to Cart!', 'success', 5, function () { console.log('dismissed'); });
 				},
-				error: function () {
-					$("#productInfo h2").text("Product is no Longer in Stock!");
+				error: function (e) {
+					alertify.error('Error: JavaScript Function (loadAddToCart)');
+					alertify.error(e);
 				}
 			});
 		}
-		function showMessage() {
-			var notification = alertify.notify('Added!', 'success', 5, function () { console.log('dismissed'); });
-		}
+
+		// [GET]
+		// Load Shopping Cart
 		function loadCart() {
-			let basketId = 1;
+			let basketStart = 1;
 			$.ajax({
 				type: 'GET',
-				url: '/Home/Index',
-				data: { basketId: basketId },
+				url: '/Shop/Index',
+				data: { basketStart: basketStart },
 				success: function (r) {
 					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
 				},
-				error: function () {
-					$("#productInfo h2").text("Product is no Longer in Stock!");
+				error: function (e) {
+					alertify.error('Error: JavaScript Function (loadCart)');
+					alertify.error(e);
 				}
 			});
 		}
+
+		// [POST]
+		// Delete from Cart
 		function loadDeleteCart(productId) {
 			$.ajax({
 				type: 'POST',
@@ -584,44 +635,35 @@
 				data: { BasketRemovePID: productId },
 				success: function (r) {
 					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
-					showMessageDeleteCart();
-
+					alertify.notify('Removed from Cart!', 'custom', 2, function () { console.log('dismissed'); });
 				},
-				error: function () {
-					$("#productInfo h2").text("Product is no Longer in Stock!");
+				error: function (e) {
+					alertify.error('Error: JavaScript Function (loadAddToCart)');
+					alertify.error(e);
 				}
 			});
 		}
-		function showMessageDeleteCart() {
-			alertify.notify('Removed!', 'custom', 2, function () { console.log('dismissed'); });
-		}
+
+		// [GET]
+		// Add to Wish list
 		function loadAddToWishlist(productId) {
 			let wishlistStart = 1;
 			$.ajax({
 				type: 'GET',
-				url: '/Home/Index',
+				url: '/Shop/Index',
 				data: { productIdW: productId },
 				success: function (r) {
 					$("#Wishlistbasket").html($(r).find("#Wishlistbasket").html());
 				},
-				error: function () {
-					$("#productInfo h2").text("Product is no Longer in Stock!");
+				error: function (e) {
+					alertify.error('Error: JavaScript Function (loadAddToWishlist)');
+					alertify.error(e);
 				}
 			});
 		}
-		function loadDeleteWishlist(productId) {
-			$.ajax({
-				type: 'POST',
-				url: '/Shop/DeleteConfirmed',
-				data: { WishListRemovePID: productId },
-				success: function (r) {
-					$("#Wishlistbasket").html($(r).find("#Wishlistbasket").html());
-				},
-				error: function () {
-					$("#productInfo h2").text("Product is no Longer in Stock!");
-				}
-			});
-		}
+
+		// [GET]
+		// Load Wish list
 		function loadWishlist() {
 			let wishlistStart = 1;
 			$.ajax({
@@ -631,8 +673,44 @@
 				success: function (r) {
 					$("#Wishlistbasket").html($(r).find("#Wishlistbasket").html());
 				},
-				error: function () {
-					$("#productInfo h2").text("Product is no Longer in Stock!");
+				error: function (e) {
+					alertify.error('Error: JavaScript Function (loadDeleteWishlist)');
+					alertify.error(e);
+				}
+			});
+		}
+
+		// [POST]
+		// Delete from Wish list
+		function loadDeleteWishlist(productId) {
+			$.ajax({
+				type: 'POST',
+				url: '/Shop/DeleteConfirmed',
+				data: { WishListRemovePID: productId },
+				success: function (r) {
+					$("#Wishlistbasket").html($(r).find("#Wishlistbasket").html());
+					alertify.notify('Added to Wish list!', 'success', 5, function () { console.log('dismissed'); });
+				},
+				error: function (e) {
+					alertify.error('Error: JavaScript Function (loadDeleteWishlist)');
+					alertify.error(e);
+				}
+			});
+		}
+
+		// [POST]
+		// Load QuickShop
+		function loadQuickShop(id) {
+			$.ajax({
+				type: 'POST',
+				url: '/Shop/Index',
+				data: { id: id },
+				success: function (r) {
+					$("#QuickShopModal").html($(r).find("#QuickShopModal").html());
+				},
+				error: function (e) {
+					alertify.error('Error: JavaScript Function (loadDeleteWishlist)');
+					alertify.error(e);
 				}
 			});
 		}

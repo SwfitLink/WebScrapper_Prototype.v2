@@ -30,7 +30,7 @@ namespace WebScrapper_Prototype.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("ProductId")
+                    b.Property<int>("ProductKey")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -53,7 +53,7 @@ namespace WebScrapper_Prototype.Migrations
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProductId")
+                    b.Property<int>("ProductKey")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -98,10 +98,6 @@ namespace WebScrapper_Prototype.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("ImageURL")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<decimal?>("ProductBasePrice")
                         .IsRequired()
                         .HasColumnType("decimal(18,2)");
@@ -114,6 +110,14 @@ namespace WebScrapper_Prototype.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ProductImageURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProductKey")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ProductName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -121,10 +125,6 @@ namespace WebScrapper_Prototype.Migrations
                     b.Property<decimal?>("ProductSalePrice")
                         .IsRequired()
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("ProductStatus")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProductStock")
                         .IsRequired()
@@ -171,12 +171,41 @@ namespace WebScrapper_Prototype.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProductId")
+                    b.Property<int>("ProductKey")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.ToTable("ProductImages");
+                });
+
+            modelBuilder.Entity("WebScrapper_Prototype.Models.ProductImageURLs", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ImageURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProductKey")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VendorSiteOrigin")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VendorSiteProduct")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProductImageURLs");
                 });
 
             modelBuilder.Entity("WebScrapper_Prototype.Models.UserWishList", b =>
@@ -187,7 +216,7 @@ namespace WebScrapper_Prototype.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int?>("ProductId")
+                    b.Property<int?>("ProductKey")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")

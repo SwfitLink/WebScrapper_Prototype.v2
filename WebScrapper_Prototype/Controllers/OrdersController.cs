@@ -44,13 +44,13 @@ namespace WebScrapper_Prototype.Controllers
 			var userEmail = getUserEmail();
 			var products = from o in _context.Orders
 						 join op in _context.OrderProducts on o.Id equals op.OrderId
-						 join p in _context.Products on op.ProductId equals p.Id
+						 join p in _context.Products on op.ProductKey equals p.Id
 						 select p;
 			//var order = from o in _context.Orders
 			//			select o.Id;
 			//var products = from p in _context.Products
 			//			   join op in _context.OrderProducts						   
-			//			   on p.Id equals op.ProductId
+			//			   on p.Id equals op.ProductKey
 			//			   where op.OrderId.Equals(order)
 			//			   select p;
 
@@ -74,6 +74,7 @@ namespace WebScrapper_Prototype.Controllers
             ViewBag.ShippingTotal = shippingTotal;
             ViewBag.Fee = fee;
             ViewBag.OrderGrandTotal = orderGrandTotal;
+			ViewBag.OrderId = id;
             return View(products);
         }
 		/// <summary>

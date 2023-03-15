@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using WebScrapper_Prototype.Areas.Identity.Data;
@@ -107,21 +108,26 @@ namespace WebScrapper_Prototype.Services
 				identity.PhoneNumber = updatedUser.PhoneNumber;
 				identity.PhoneNumberConfirmed = false;
 				identity.EmailConfirmed = false;
-
-				/// Create: user
-				_app.Attach(user);/// Start-->
-				_app.Entry(user).State = EntityState.Added;
-				/// Save Changes
-				_app.SaveChanges();
-				/// -->END
-
+				var existingUser = _app.Users.FirstOrDefault(u => u.Email == updatedUser.ContactEmail);
+				if (existingUser != null)
+					emailPersis = existingUser.Email;
+				else
+				{
+					/// Create: user
+					_app.Attach(user);/// Start-->
+					_app.Entry(user).State = EntityState.Added;
+					/// Save Changes
+					_app.SaveChanges();
+					/// -->END
+					emailPersis = user.Email;
+				}
 				/// Update: ShoppingCart
 				/// UserId: cookieEmail -> UserId: contactEmail			 
 				var basketProducts = _context.ShopingBasket.Where(s => s.UserId.Equals(token));/// Start-->
-				if (basketProducts.Any())
+				if (basketProducts != null)
 				{
-					foreach (var product in _context.ShopingBasket)
-						product.UserId = user.Email;
+					foreach (var product in basketProducts)
+						product.UserId = emailPersis;
 					/// Save Changes
 					_context.SaveChanges();
 
@@ -130,26 +136,27 @@ namespace WebScrapper_Prototype.Services
 				 /// Update: UserWishList
 				 /// UserId: cookieEmail -> UserId: contactEmail			 
 				var wishListProducts = _context.UserWishList.Where(s => s.UserId.Equals(token));/// Start-->
-				if (wishListProducts.Any())
+				if (wishListProducts != null)
 				{
-					foreach (var product in _context.UserWishList)
-						product.UserId = user.Email;
+					foreach (var product in wishListProducts)
+						product.UserId = emailPersis;
 					/// Save Changes
 					_context.SaveChanges();
 					/// END
 				}/// -->END
 
-
-				/// Remove: oldUser
+				 /// Remove: oldUser
 				var oldUser = await _userManager.FindByEmailAsync(token);/// Start-->
-				_app.Attach(oldUser);
-				_app.Remove(oldUser);
-				/// Save Changes
-				_app.SaveChanges();
-				/// -->END
-
+				if (oldUser != null)
+				{
+					_app.Attach(oldUser);
+					_app.Remove(oldUser);
+					/// Save Changes
+					_app.SaveChanges();
+					/// -->END
+				}
 				/// SignIn -> NewUser
-				user = await _signInManager.UserManager.FindByEmailAsync(user.Email);/// Start-->
+				user = await _signInManager.UserManager.FindByEmailAsync(emailPersis);/// Start-->
 				emailPersis = user.Email;
 				var result = await _signInManager.CheckPasswordSignInAsync(user, "Markaway86!", false);
 				if (result.Succeeded)
@@ -192,6 +199,29 @@ namespace WebScrapper_Prototype.Services
 					$"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
 					$"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
 			}
+		}
+		public async Task<CheckoutAccount> CheckoutAccount(string token)
+		{
+			if(_userManager != null)
+			{
+				var userA = await _userManager.FindByEmailAsync(token);
+				var user = new CheckoutAccount
+				{
+					IsSubscribed = true,
+					FirstName = userA.FirstName,
+					LastName = userA.LastName,
+					ContactEmail = userA.Email,
+					PhoneNumber = userA.PhoneNumber,
+					CountryCode = userA.CountryCode,
+					LocationProvince = userA.LocationProvince,
+					LocationCity = userA.LocationCity,
+					AddressLine1 = userA.AddressLine1,
+					AddressLine2 = userA.AddressLine2,
+					PostalCode = userA.PostalCode
+				};
+				return user;
+			}
+			return null;
 		}
 		public async Task<string> SignIn(string token)
 		{

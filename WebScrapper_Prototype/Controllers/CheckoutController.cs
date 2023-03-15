@@ -7,6 +7,7 @@ using WebScrapper_Prototype.Areas.Identity.Data;
 using WebScrapper_Prototype.Data;
 using WebScrapper_Prototype.Models;
 using WebScrapper_Prototype.Services;
+using NuGet.Common;
 
 namespace WebScrapper_Prototype.Controllers
 {
@@ -30,16 +31,12 @@ namespace WebScrapper_Prototype.Controllers
 			_httpContextAccessor = httpContextAccessor;
 		}
 		[HttpGet]
-		public async Task<IActionResult> Index(int showOrder)
+		public async Task<IActionResult> Index()
 		{
 			// User Details Cookie
 			await CheckUserCookie();
 			// Check if user account is cookie
 			var userEmail = getUserEmail();
-			if (userEmail.Contains("cookie"))
-				ViewBag.userIsCookie = true;
-			else		
-				ViewBag.userIsCookie = false;
 			// Place Order
 			decimal orderSubTotal = 0;
 			decimal shippingTotal = 0;
@@ -47,7 +44,7 @@ namespace WebScrapper_Prototype.Controllers
 			decimal orderGrandTotal = 0;
 			var products = from p in _context.Products
 						   join b in _context.ShopingBasket
-						   on p.Id equals b.ProductId
+						   on p.Id equals b.ProductKey
 						   where b.UserId.Equals(getUserEmail())
 						   select p;
 			var salePriceSum = products.Sum(p => p.ProductSalePrice);
@@ -153,17 +150,37 @@ namespace WebScrapper_Prototype.Controllers
 			};
 			await _context.Orders.AddAsync(order);
 			await _context.SaveChangesAsync();
-			ViewBag.ShowOrder = 0;
-			if (showOrder > 0)
+			if (userEmail.Contains("cookie"))
+				ViewBag.userIsCookie = true;
+			else
 			{
-				ViewBag.ShowOrder = 1;
+				ViewBag.userIsCookie = false;
+				var user = await CheckAccount(userEmail);
+				return View(user);
 			}
 			return View();
 		}
-		[HttpPost]
+		public async Task<CheckoutAccount> CheckAccount(string userEmail)
+		{
+			UserDetailsService userDetailsService = new(_context, _httpContextAccessor, _app, _userManager, _signInManager);
+			var user = await userDetailsService.CheckoutAccount(userEmail);
+			return user;
+		}
+        public async Task<CheckoutAccount> PlaceOrder(string userEmail)
+        {
+            UserDetailsService userDetailsService = new(_context, _httpContextAccessor, _app, _userManager, _signInManager);
+            Console.WriteLine(
+				"------------------------------------------------------------------------------------->>\n" +
+                "[GET] New User ------------------------------------------>>\n");
+            var user = await userDetailsService.CheckoutAccount(userEmail);
+			Console.WriteLine(user.ContactEmail + "<<-------------------------------------------------------------------------------------\n");
+            return user;
+        }
+        [HttpPost]
 		public async Task<ActionResult> CheckoutAccount(CheckoutAccount updatedUser)
-		{			
-			UserDetailsService userDetailsService = new(_httpContextAccessor);
+		{
+            List<string> consoleLogs = new List<string>();
+            UserDetailsService detailsService = new(_context, _httpContextAccessor, _app, _userManager, _signInManager);
 			AutoUserService autoUser = new(_app, _signInManager, _userManager, _context);
 			var order = from o in _context.Orders.Where(o => o.UserId != null && o.UserId.Equals(getUserEmail()))
 						select o;
@@ -180,33 +197,35 @@ namespace WebScrapper_Prototype.Controllers
 				orderGrandTotal = detail.OrderGrandTotal;
 				orderId = detail.Id;
 			}
-			await PlaceOrder(orderSubTotal, shippingTotal, fee, orderGrandTotal, orderId);
-			emailPersis = await autoUser.ManageUser(getUserEmail(), updatedUser);
-			try
-			{
-				await userDetailsService.SignIn(emailPersis);
-			} catch (Exception ex) {
-				Console.WriteLine(ex.Message);
-			}
-			return RedirectToAction("Index", new RouteValueDictionary(new { showOrder = 1 }));
+            Console.WriteLine("Removing Cookie User & Creating New User...\n");           
+            Console.WriteLine(		
+				"------------------------------------------------------------------------------------->>\n" +
+				"[POST] New User -->" + updatedUser.ContactEmail.ToString() + "------------------------------------------>>\n");
+			var userEmail = await detailsService.ManageUser(getUserEmail(), updatedUser);
+			Console.WriteLine("DONE! <<-------------------------------------------------------------------------------------\n");
+			Console.WriteLine("------------------------------------------------------------------------------------->>\n" +
+				"Sending New User an Email ------------------------------------------>>\n");
+			var sendEmail = await SendEmail(updatedUser.ContactEmail.ToString(), orderSubTotal, shippingTotal, fee, orderGrandTotal, orderId);
+            Console.WriteLine(sendEmail.ToString() + "<<-------------------------------------------------------------------------------------\n");
+			return RedirectToAction(nameof(Index));
 		}
-		/// -------PlaceOrder------------
+		/// -------SendEmail------------
 		/// ↓SUMMARY↓: (HttpPost) First Iteration
 		/// ↓----------------------------
 		[HttpPost]
-		public async Task PlaceOrder(decimal orderSubTotal, decimal shippingTotal, decimal fee, decimal orderGrandTotal, int orderId)
+		public async Task<string> SendEmail(string userEmail, decimal orderSubTotal, decimal shippingTotal, decimal fee, decimal orderGrandTotal, int orderId)
 		{
 			/// -------Table[Orders]-------
 			/// ↓SUMMARY↓: GET Products from User ShoppingCart -> Create OrderProducts -> SaveChanges()
 			/// ↓--------------------------		
 			var basketItems = from b in _context.ShopingBasket.Where(s => s.UserId.Equals(getUserEmail())).ToList()
-							  select b.ProductId;
+							  select b.ProductKey;
 			foreach (var basketItem in basketItems)
 			{
 				var orderProducts = new OrderProducts
 				{
 					OrderId = orderId,
-					ProductId = basketItem
+					ProductKey = basketItem
 				};
 				await _context.OrderProducts.AddAsync(orderProducts);
 			}
@@ -235,12 +254,13 @@ namespace WebScrapper_Prototype.Controllers
 				SmtpServer.EnableSsl = true;
 				SmtpServer.UseDefaultCredentials = false;
 				SmtpServer.Credentials = new NetworkCredential("brandenconnected@gmail.com", "mueadqbombixceuk");
-				SmtpServer.Send(email);
-				Console.WriteLine("Email Successfully Sent");				
+				SmtpServer.Send(email);	
+				return "Email Successfully Sent";
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.ToString());	
+				Console.WriteLine(ex.ToString());
+				return ex.ToString();
 			}		
 		}
 		/// <summary>

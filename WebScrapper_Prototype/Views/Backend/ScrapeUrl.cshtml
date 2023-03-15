@@ -1,12 +1,11 @@
-﻿@model WebScrapper_Prototype.Models.Gpt3
-@{
-	ViewData["Title"] = "Gpt";
+﻿@{
+	ViewData["Title"] = "WebScrapper";
 }
 <!DOCTYPE html>
 <html lang="zxx">
 <head>
 	<!-- Title Tag  -->
-	<title>Gpt3 API</title>
+	<title>WebScrapper</title>
 	<!-- Meta Tag -->
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -81,93 +80,55 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-lg-8 col-12">
-						<div class="checkout-form">
-							<h2>List 5 Ingredients you have</h2>
-							<p>Get a recipe with instructions instantly</p>
-							<!-- Form -->
-							<form id="registerForm" asp-action="Gpt3Recipe" class="form" method="post">
-								<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-								<div class="row">
-									<div class="col-lg-6 col-md-6 col-12">
-										<div class="form-group">
-											<label>First Ingredient<span>*</span></label>
-											<input asp-for="Ingredient1" type="text" name="Ingredient1" placeholder="Enter a Ingredient" required="required">
-										</div>
-									</div>
-									<div class="col-lg-6 col-md-6 col-12">
-										<div class="form-group">
-											<label>Second Ingredient<span>*</span></label>
-											<input asp-for="Ingredient2" type="text" name="Ingredient2" placeholder="Enter a Ingredient" required="required">
-										</div>
-									</div>
-									<div class="col-lg-6 col-md-6 col-12">
-										<div class="form-group">
-											<label>Third Ingredient<span>*</span></label>
-											<input asp-for="Ingredient3" type="text" name="Ingredient3" placeholder="Enter a Ingredient" required="required">
-										</div>
-									</div>
-									<div class="col-lg-6 col-md-6 col-12">
-										<div class="form-group">
-											<label>Fourth Ingredient<span>*</span></label>
-											<input asp-for="Ingredient4" type="text" name="Ingredient4" placeholder="Enter a Ingredient" required="required">
-										</div>
-									</div>																	
-									<div class="col-lg-6 col-md-6 col-12">
-										<div class="form-group">
-											<label>Fifth Ingredient<span>*</span></label>
-											<input asp-for="Ingredient5" type="text" name="Ingredient5" placeholder="Enter a Ingredient" required="required">
-										</div>
-									</div>								
-									<div class="col-12">
-										<input type="submit" value="Submit Details" class="btn btn-primary" />
-									</div>
-								</div>
+						<button class="btn" onclick="loadScrap()">Start Scraper</button>
+@*						<div class="search-top">
+							<h2>Enter a websites URL to scrape</h2>
+							<form class="search-form">
+								@Html.TextBox("url", ViewBag.CurrentFilter as string,
+								new {Class="form-control me-2", PlaceHolder="Search Products..."})
+								<button value="search" type="submit"><i class="ti-search"></i></button>
 							</form>
-							<!--/ End Form -->
 						</div>
+						<div class="search-top">
+							<h2>Enter a websites URL to scrape</h2>
+							<form class="search-form">
+								@Html.TextBox("url", ViewBag.CurrentFilter as string,
+								new {Class="form-control me-2", PlaceHolder="Website URL..."})
+								<button value="search" type="submit"><i class="ti-search"></i></button>
+							</form>
+						</div>
+						<div class="search-top">
+							<h2>Enter site map ID</h2>
+							<form class="search-form">
+								@Html.TextBox("sitemapId", ViewBag.CurrentFilter as string,
+								new {Class="form-control me-2", PlaceHolder="Site map ID..."})
+								<button value="search" type="submit"><i class="ti-search"></i></button>
+							</form>
+						</div>
+						<div class="search-top">
+							<h2>Enter Format to be returned</h2>
+							<form class="search-form">
+								@Html.TextBox("format", ViewBag.CurrentFilter as string,
+								new {Class="form-control me-2", PlaceHolder="Format..."})
+								<button value="search" type="submit"><i class="ti-search"></i></button>
+							</form>
+						</div>*@
 						<div class="col-lg-4 col-12">
 							<div class="order-details">
 								<!-- Order Widget -->
 								<div class="single-widget">
-									<h2>Your Recipe</h2>
-									<div class="content">
-										@ViewBag.recipe
-									</div>	
-								</div>
-								<!--/ End Order Widget -->
-								<!-- Order Widget -->
-								<div class="single-widget">
-									<h2>...</h2>
+									<h2>Response</h2>
 									<div class="content">
 									</div>
 								</div>
 								<!--/ End Order Widget -->
-								<!-- Payment Method Widget -->
-								<div class="single-widget payement">
-									<div class="content">
-										<img src="images/payment-method.png" alt="#">
-									</div>
-								</div>
-								<!--/ End Payment Method Widget -->
-								<!-- Button Widget -->
-								<div class="single-widget get-button">
-									<div class="content">
-										<div class="button">
-											<a href="#" onclick="#" class="btn">Regenerate Recipe</a><i class="fa fa-info-circle" style="white-space: nowrap;" data-toggle="tooltip" data-placement="right" title="Get a different recipe based on the ingredients you have already entered."></i>
-										</div>
-										<div class="button">
-											<a href="#" onclick="#" class="btn">New Recipe</a>
-										</div>
-									</div>
-								</div>
-								<!--/ End Button Widget -->
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</section>
-	</div>	
+	</div>
 	<!-- /End Footer Area -->
 	@section Scripts {
 		<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
@@ -204,5 +165,24 @@
 	<script src="~/js/easing.js"></script>
 	<!-- Active JS -->
 	<script src="~/js/active.js"></script>
+	<script type="text/javascript">
+		// [GET]
+		// Load Shopping Cart
+		function loadScrap() {
+			let startScraper = 1;
+			$.ajax({
+				type: 'GET',
+				url: '/Backend/ScrapeUrl',
+				data: { startScraper: startScraper },
+				success: function (r) {
+					alertify.notify('Scraping...' + r, 'custom', 2, function () { console.log('dismissed'); });
+				},
+				error: function (e) {
+					alertify.error('Error: JavaScript Function (loadScrap)');
+					alertify.error(e);
+				}
+			});
+		}		
+	</script>
 </body>
 </html>
