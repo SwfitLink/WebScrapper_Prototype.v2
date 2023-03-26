@@ -2,14 +2,8 @@
 using WebScrapper_Prototype.Data;
 using WebScrapper_Prototype.Models;
 using System.Diagnostics;
-using X.PagedList;
 using Microsoft.AspNetCore.Identity;
 using WebScrapper_Prototype.Areas.Identity.Data;
-using Microsoft.AspNetCore.Authorization;
-using System.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.CodeAnalysis;
-using Microsoft.AspNetCore.Cors;
 
 namespace WebScrapper_Prototype.Controllers
 {

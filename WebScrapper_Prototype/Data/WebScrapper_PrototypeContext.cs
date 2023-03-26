@@ -13,7 +13,9 @@ namespace WebScrapper_Prototype.Data
 		public DbSet<Orders> Orders { get; set; }
         public DbSet<OrderProducts> OrderProducts { get; set; }
 		public DbSet<ProductImage> ProductImages { get; set; }
-		public DbSet<ProductImageURLs> ProductImageURLs { get; set; }
+		public DbSet<ProductImageURLs> ProductImageURLs { get; set; }			
+		public DbSet<UserModel> UserModels { get; set; }
+		public DbSet<UserShipping> UserShippings { get; set; }
 
 
 

@@ -1,5 +1,4 @@
-﻿@model IList<WebScrapper_Prototype.Models.ProductImage>
-@{
+﻿@{
     ViewData["Title"] = "Product Images";
 }
 <!DOCTYPE html>
@@ -11,7 +10,7 @@
 	<!-- Title Tag  -->
 	<title>Download and Save Images</title>
 	<!-- Favicon -->
-	<link rel="icon" type="image/png" href="#">
+		<link rel="icon" type="image/png" href="http://swiftlinkprod-env.eba-s2qbd5re.eu-central-1.elasticbeanstalk.com/favicon.ico/Media/LogoCropped.png">
 	<!-- Web Font -->
 	<link href="https://fonts.googleapis.com/css?family=Poppins:200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap" rel="stylesheet">
 	<!-- Bootstrap -->
@@ -66,29 +65,7 @@
 							<!--/ End Shop Top -->
 						</div>
 					</div>
-					<div id="products" class="row">
-						@foreach (var product in Model)
-						{
-							<div class="col-lg-4 col-md-6 col-12">
-								<div class="single-product">
-									<div class="product-img">
-										<a href="/Shop/Product/@product.Id">
-											<img src="@Url.Action("GetImage", "Backend", new { id = product.ProductKey })" alt="Nothing to show" />
-										</a>
-									</div>
-									<div class="product-content">										
-											<ul>
-												<li>
-													Product Id: @product.ProductKey
-												</li>
-												<li>
-													Image Id: @product.Id
-												</li>
-											</ul>										
-									</div>
-								</div>
-							</div>
-						}
+					<div id="products" class="row">						
 					</div>
 				</div>
 			</div>

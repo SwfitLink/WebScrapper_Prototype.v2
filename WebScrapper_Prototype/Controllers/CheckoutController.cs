@@ -2,12 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mail;
 using System.Net;
-using System.Web.Helpers;
 using WebScrapper_Prototype.Areas.Identity.Data;
 using WebScrapper_Prototype.Data;
 using WebScrapper_Prototype.Models;
 using WebScrapper_Prototype.Services;
-using NuGet.Common;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebScrapper_Prototype.Controllers
 {
@@ -19,7 +19,8 @@ namespace WebScrapper_Prototype.Controllers
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly SignInManager<ApplicationUser> _signInManager;
 		private readonly IHttpContextAccessor _httpContextAccessor;
-		private string emailPersis = string.Empty;
+		private string userEmail = string.Empty;
+		Queue<string> _userDetails = new();
 
 		public CheckoutController(ILogger<ShopController> logger, WebScrapper_PrototypeContext context, ApplicationDbContext app, UserManager<ApplicationUser> usermanager, SignInManager<ApplicationUser> signInManager, IHttpContextAccessor httpContextAccessor)
 		{
@@ -31,12 +32,24 @@ namespace WebScrapper_Prototype.Controllers
 			_httpContextAccessor = httpContextAccessor;
 		}
 		[HttpGet]
-		public async Task<IActionResult> Index()
+		public async Task<IActionResult> Index(int startPlaceOrder)
 		{
-			// User Details Cookie
-			await CheckUserCookie();
 			// Check if user account is cookie
-			var userEmail = getUserEmail();
+			userEmail = await CheckUserCookie();
+			var view = new UserViewModel
+			{
+				FirstName = string.Empty,
+				LastName = string.Empty,
+				Email = string.Empty,
+				PhoneNumber = string.Empty,
+				Province = string.Empty,
+				City = string.Empty,
+				PostalCode = string.Empty,
+				Unit = string.Empty,
+				Street = string.Empty,
+				Area = string.Empty
+			};
+			var user = _context!.UserModels.FirstOrDefault(u => u.Email == userEmail);
 			// Place Order
 			decimal orderSubTotal = 0;
 			decimal shippingTotal = 0;
@@ -45,7 +58,7 @@ namespace WebScrapper_Prototype.Controllers
 			var products = from p in _context.Products
 						   join b in _context.ShopingBasket
 						   on p.Id equals b.ProductKey
-						   where b.UserId.Equals(getUserEmail())
+						   where b.UserId.Equals(userEmail)
 						   select p;
 			var salePriceSum = products.Sum(p => p.ProductSalePrice);
 			ViewBag.BasketCount = products.Count();
@@ -70,12 +83,12 @@ namespace WebScrapper_Prototype.Controllers
 			decimal handlingFee = 0;
 			decimal cartAverage = 0;
 			int productCount = products.Count();
-			if(salePriceSum > 0)
+			if (salePriceSum > 0)
 				cartAverage = (decimal)(salePriceSum / productCount);
 			/// -------HandlingFee-----------
 			/// ↓SUMMARY↓: First Iteration
 			/// ↓----------------------------
-			if(productCount > 0)
+			if (productCount > 0)
 				switch (productCount)
 				{
 					/// -----------------------------
@@ -140,97 +153,142 @@ namespace WebScrapper_Prototype.Controllers
 			orderSubTotal = ViewBag.CartTotalSale;
 			fee = handlingFee;
 			orderGrandTotal = ViewBag.GrandTotal;
-			var order = new Orders
-			{
-				UserId = getUserEmail(),
-				OrderSubTotal = orderSubTotal,
-				ShippingTotal = shippingTotal,
-				Fee = fee,
-				OrderGrandTotal = orderGrandTotal,
-			};
-			await _context.Orders.AddAsync(order);
-			await _context.SaveChangesAsync();
+			ViewBag.Items = products;
 			if (userEmail.Contains("cookie"))
 				ViewBag.userIsCookie = true;
 			else
 			{
 				ViewBag.userIsCookie = false;
-				var user = await CheckAccount(userEmail);
-				return View(user);
+				var userShipping = _context.UserShippings.FirstOrDefault(u => u.UserId == userEmail);
+				if (userShipping != null)
+				{
+					view = new UserViewModel
+					{
+						FirstName = user.FirstName,
+						LastName = user.LastName,
+						Email = user.Email,
+						PhoneNumber = user.PhoneNumber,
+						Province = userShipping.Province,
+						City = userShipping.City,
+						PostalCode = userShipping.PostalCode,
+						Unit = userShipping.Unit,
+						Street = userShipping.Street,
+						Area = userShipping.Area
+					};
+				}
+				else
+				{
+					view = new UserViewModel
+					{
+						FirstName = user.FirstName,
+						LastName = user.LastName,
+						Email = user.Email,
+						PhoneNumber = user.PhoneNumber
+					};
+				}
 			}
-			return View();
+			if (startPlaceOrder > 0)
+				await Proceed(orderSubTotal, shippingTotal, fee, orderGrandTotal, userEmail, user.FirstName, user.LastName);
+			return View(view);
 		}
-		public async Task<CheckoutAccount> CheckAccount(string userEmail)
+		[HttpPost]
+		public async Task<ActionResult> EntireUser(UserViewModel model)
 		{
-			UserDetailsService userDetailsService = new(_context, _httpContextAccessor, _app, _userManager, _signInManager);
-			var user = await userDetailsService.CheckoutAccount(userEmail);
-			return user;
-		}
-        public async Task<CheckoutAccount> PlaceOrder(string userEmail)
-        {
-            UserDetailsService userDetailsService = new(_context, _httpContextAccessor, _app, _userManager, _signInManager);
-            Console.WriteLine(
-				"------------------------------------------------------------------------------------->>\n" +
-                "[GET] New User ------------------------------------------>>\n");
-            var user = await userDetailsService.CheckoutAccount(userEmail);
-			Console.WriteLine(user.ContactEmail + "<<-------------------------------------------------------------------------------------\n");
-            return user;
-        }
-        [HttpPost]
-		public async Task<ActionResult> CheckoutAccount(CheckoutAccount updatedUser)
-		{
-            List<string> consoleLogs = new List<string>();
-            UserDetailsService detailsService = new(_context, _httpContextAccessor, _app, _userManager, _signInManager);
-			AutoUserService autoUser = new(_app, _signInManager, _userManager, _context);
-			var order = from o in _context.Orders.Where(o => o.UserId != null && o.UserId.Equals(getUserEmail()))
-						select o;
-			decimal orderSubTotal = 0;
-			decimal shippingTotal = 0;
-			decimal fee = 0;
-			decimal orderGrandTotal = 0;
-			int orderId = 0;
-			foreach (var detail in order)
-			{
-				orderSubTotal = detail.OrderSubTotal;
-				shippingTotal = detail.ShippingTotal;
-				fee = detail.Fee;
-				orderGrandTotal = detail.OrderGrandTotal;
-				orderId = detail.Id;
-			}
-            Console.WriteLine("Removing Cookie User & Creating New User...\n");           
-            Console.WriteLine(		
-				"------------------------------------------------------------------------------------->>\n" +
-				"[POST] New User -->" + updatedUser.ContactEmail.ToString() + "------------------------------------------>>\n");
-			var userEmail = await detailsService.ManageUser(getUserEmail(), updatedUser);
-			Console.WriteLine("DONE! <<-------------------------------------------------------------------------------------\n");
-			Console.WriteLine("------------------------------------------------------------------------------------->>\n" +
-				"Sending New User an Email ------------------------------------------>>\n");
-			var sendEmail = await SendEmail(updatedUser.ContactEmail.ToString(), orderSubTotal, shippingTotal, fee, orderGrandTotal, orderId);
-            Console.WriteLine(sendEmail.ToString() + "<<-------------------------------------------------------------------------------------\n");
+			UserDetailsService service = new(_context, _httpContextAccessor, _app, _userManager, _signInManager);
+			string token = await CheckUserCookie();
+			await service.EntireUser(model, token);
 			return RedirectToAction(nameof(Index));
 		}
-		/// -------SendEmail------------
-		/// ↓SUMMARY↓: (HttpPost) First Iteration
-		/// ↓----------------------------
 		[HttpPost]
-		public async Task<string> SendEmail(string userEmail, decimal orderSubTotal, decimal shippingTotal, decimal fee, decimal orderGrandTotal, int orderId)
+		public async Task<ActionResult> ShippingUser(UserShipping model)
 		{
-			/// -------Table[Orders]-------
-			/// ↓SUMMARY↓: GET Products from User ShoppingCart -> Create OrderProducts -> SaveChanges()
-			/// ↓--------------------------		
-			var basketItems = from b in _context.ShopingBasket.Where(s => s.UserId.Equals(getUserEmail())).ToList()
-							  select b.ProductKey;
+			UserDetailsService service = new(_context, _httpContextAccessor, _app, _userManager, _signInManager);
+			string token = await CheckUserCookie();
+			await service.ShippingUser(model, token);
+			return RedirectToAction(nameof(Index));
+		}
+		public ActionResult Edit()
+		{
+			return RedirectToAction("Index", "User");
+		}
+		public async Task Proceed(decimal orderSubTotal, decimal shippingTotal, decimal fee, decimal orderGrandTotal, string userEmail, string firstName, string lastName)
+		{
+			Console.WriteLine("------------------------------------------------------------------------------------->>\n" +
+					"Placing New Order ------------------------------------------>>\n" +
+					"Email: " + userEmail);
+			int orderId = await PlaceOrder(orderSubTotal, shippingTotal, fee, orderGrandTotal);
+			Console.WriteLine("Order Placed" + "<<-------------------------------------------------------------------------------------\n");
+			Console.WriteLine("------------------------------------------------------------------------------------->>\n" +
+				"Sending New User an Email ------------------------------------------>>\n" +
+				"Email: " + userEmail);
+			await SendEmail(userEmail, firstName + " " + lastName, orderSubTotal, shippingTotal, fee, orderGrandTotal, orderId);
+			Console.WriteLine("Email Sent" + "<<-------------------------------------------------------------------------------------\n");
+		}
+		private async Task<string> CheckUserCookie()
+		{
+			UserDetailsService detailsService = new(_context, _httpContextAccessor, _app, _userManager, _signInManager);
+			const string cookieName = "wazawarecookie6";
+			var requestCookies = HttpContext.Request.Cookies;
+			var firstRequest = requestCookies[cookieName];
+			// If user is not authenticated
+			if (User?.Identity?.IsAuthenticated == false)
+			{
+				var cookieOptions = new CookieOptions
+				{
+					Expires = DateTimeOffset.Now.AddDays(7),
+					IsEssential = true
+				};
+				// Checks for User Cookie
+				if (!requestCookies.ContainsKey(cookieName))
+				{
+					userEmail = await detailsService.Cookie();
+					// Create new User Cookie					
+					HttpContext.Response.Cookies.Append(cookieName, userEmail, cookieOptions);
+				}
+				else
+				{
+					userEmail = await detailsService.Cookie();
+					HttpContext.Response.Cookies.Append(cookieName, userEmail, cookieOptions);
+				}
+			}
+			if (!String.IsNullOrEmpty(firstRequest))
+				return firstRequest;
+			else
+				return await detailsService.Cookie();
+		}
+		[HttpPost]
+		public async Task<int> PlaceOrder(decimal orderSubTotal, decimal shippingTotal, decimal fee, decimal orderGrandTotal)
+		{
+			var basketItems = _context.ShopingBasket
+				.Where(s => s.UserId.Equals(userEmail));
+			var order = new Orders
+			{
+				UserId = userEmail,
+				OrderSubTotal = orderSubTotal,
+				ShippingTotal = shippingTotal,
+				Fee = fee,
+				OrderGrandTotal = orderGrandTotal,
+			};
+			_context.Orders.Attach(order);
+			_context.Entry(order).State = EntityState.Added;
 			foreach (var basketItem in basketItems)
 			{
 				var orderProducts = new OrderProducts
 				{
-					OrderId = orderId,
-					ProductKey = basketItem
+					OrderId = order.Id,
+					ProductKey = basketItem.ProductKey
 				};
-				await _context.OrderProducts.AddAsync(orderProducts);
+				_context.OrderProducts.Attach(orderProducts);
+				_context.Entry(orderProducts).State = EntityState.Added;
 			}
+			_context.ShopingBasket.AttachRange(basketItems);			
+			_context.ShopingBasket.RemoveRange(basketItems);
 			await _context.SaveChangesAsync();
-			await RemoveBasketItems();
+			return order.Id;
+		}
+		[HttpPost]
+		public async Task SendEmail(string userEmail, string fullName, decimal orderSubTotal, decimal shippingTotal, decimal fee, decimal orderGrandTotal, int orderId)
+		{
 			try
 			{
 				SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com", 587);
@@ -238,15 +296,32 @@ namespace WebScrapper_Prototype.Controllers
 				MailMessage email = new MailMessage();
 				// START
 				email.From = new MailAddress("brandenconnected@gmail.com");
-				email.To.Add(getUserEmail());
+				email.To.Add(userEmail);
 				email.CC.Add("brandenconnected@gmail.com");
-				email.Subject = "SwiftLink: Order Placed (" + orderId + ")";
-				email.Body = "<html><body><h1>Congratulations!</h1><h2>Your Order has been placed and you will receive a tracking code shortly.</h2><br>" +
-					"<h3>Look how much you have Saved!</h3>" +
-					"<br>" +
-					"<p>How much you would've paid if everything was Full Price: <span style='color:red;'>R" + orderSubTotal.ToString("#,##0.00") + "</span>" +
-					"<br>" + 
-					"With our incredible discounted prices, driven by AI - You only paid: <span style='color:forestgreen'>R" + orderGrandTotal.ToString("#,##0.00") + "</span></p>" + 
+				email.Subject = "SwiftLink Order Confirmation";
+				email.Body = "" +
+					"<!DOCTYPE html>" +
+					"<html> " +
+					"<head> " +
+					"<meta charset=\"utf-8\"/> " +
+					"<style>/* Styling for the header */ .header{display: flex; justify-content: space-between; align-items: center; padding: 20px;}.header img{height: 50px;}.header h1{margin: 0; font-size: 24px; color: #333;}/* Styling for the message */ .message{background-color: #f5f5f5; padding: 20px;}.message h2{margin-top: 0; font-size: 20px; color: #333;}.message p{margin: 0; font-size: 16px; line-height: 1.5; color: #666;}/* Styling for the banner */ .banner{text-align: center; padding: 20px;}.banner img{max-width: 100%;}/* Styling for the signature */ .signature{text-align: center; padding: 20px;}.signature p{margin: 0; font-size: 16px; line-height: 1.5; color: #666;}</style> " +
+					"</head> " +
+					"<body> " +
+					"<div class=\"header\"> " +
+					"<img src=\"/Media/LogoCropped.png\" alt=\"Logo\"/> " +
+					"<h1>SwiftLink Order Confirmation</h1> </div><div class=\"message\"> " +
+					"<h2>Thank You for Your Order!</h2> " +
+					"<p> Dear <strong>" + fullName + "</strong>, " +
+					"<br/> Thank you for placing your order with SwiftLink. We are now processing your order and it can take between 1 - 2 working days. " +
+					"You will receive a shipping tracking number once your order is processed and on its way." +
+					"</p><p>You can review your order by clicking on the following link: <a href='https://longdogechallenge.com/'>Order Details</a></p>" +
+					"</div>" +
+					"<div class=\"banner\"> " +
+					"<img src=\"https://example.com/banner.png\" alt=\"Banner\"/> " +
+					"</div>" +
+					"<div class=\"signature\"> " +
+					"<p>Kind regards,</p><p>The SwiftLink Team</p>" +
+					"</div>" +
 					"</body></html>";
 				email.IsBodyHtml = true;
 				//END
@@ -254,75 +329,13 @@ namespace WebScrapper_Prototype.Controllers
 				SmtpServer.EnableSsl = true;
 				SmtpServer.UseDefaultCredentials = false;
 				SmtpServer.Credentials = new NetworkCredential("brandenconnected@gmail.com", "mueadqbombixceuk");
-				SmtpServer.Send(email);	
-				return "Email Successfully Sent";
+				await SmtpServer.SendMailAsync(email);
 			}
 			catch (Exception ex)
 			{
 				Console.WriteLine(ex.ToString());
-				return ex.ToString();
-			}		
-		}
-		/// <summary>
-		/// Checks if there is a cookie present for the user, if not, creates one and signs in the user.
-		/// </summary>
-		private async Task CheckUserCookie()
-		{
-			UserDetailsService detailsService = new(_context, _httpContextAccessor, _app, _userManager, _signInManager);
-			// If user is not authenticated
-			if (User?.Identity?.IsAuthenticated == false)
-			{
-				const string cookieName = "SwiftLinkUserCookieVer5.5A";
-				var requestCookies = HttpContext.Request.Cookies;
-				// Checks for User Cookie
-				if (!requestCookies.ContainsKey(cookieName))
-				{
-					// Create cookie options
-					var cookieOptions = new CookieOptions
-					{
-						Expires = DateTimeOffset.Now.AddDays(7),
-						IsEssential = true
-					};
-					// Create new User Cookie
-					HttpContext.Response.Cookies.Append(cookieName, await detailsService.ManageUser(), cookieOptions);
-				}
-				else
-				{
-					// Get User Cookie
-					var firstRequest = requestCookies[cookieName];
-					if (firstRequest == null)
-					{
-						// If the cookie cannot be found, return error message
-						ViewData["ErrorMessage"] = "Cookie Failed";
-					}
-					// Sign in user using cookie
-					if (firstRequest != null)
-						await detailsService.SignIn(firstRequest);
-				}
 			}
-		}
-		/// <summary>
-		/// Gets User Email
-		/// </summary>
-		public async Task RemoveBasketItems()
-		{
-			var BasketItems = _context.ShopingBasket.Where(s => s.UserId.Equals(getUserEmail()));
-			_context.ShopingBasket.AttachRange(BasketItems);
-			_context.ShopingBasket.RemoveRange(BasketItems);
-			/// Save Changes
-			await _context.SaveChangesAsync();
-			/// -->END
-		}
-		/// <summary>
-		/// Gets User Email
-		/// </summary>
-		private string getUserEmail()
-		{
-			UserDetailsService userDetailsService = new UserDetailsService(_httpContextAccessor);
-			string? email = userDetailsService.GetSignedInUserEmail();
-			if (email != null)
-				return email;
-			else return string.Empty;
+
 		}
 	}
 }

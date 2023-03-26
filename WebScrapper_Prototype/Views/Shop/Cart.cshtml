@@ -21,7 +21,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<!-- Favicon -->
-	<link rel="icon" type="image/png" href="#">
+		<link rel="icon" type="image/png" href="http://swiftlinkprod-env.eba-s2qbd5re.eu-central-1.elasticbeanstalk.com/favicon.ico/Media/LogoCropped.png">
 	<!-- Web Font -->
 	<link href="https://fonts.googleapis.com/css?family=Lato:200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap" rel="stylesheet">
 	<!-- StyleSheet -->
@@ -98,8 +98,8 @@
 							{
 								<ul class="list-main">
 									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
-									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
-									<li><i class="ti-dashboard"></i><a href="/Dashboard">Dashboard</a></li>
+									<li><i class="ti-bag"></i><a href="#products">Shop</a></li>
+									<li><i class="ti-dashboard"></i><a href="/Backend">Backend</a></li>
 									<li><i class="ti-power-off"></i><a asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home" , new { area="" })">Logout</a></li>
 								</ul>
 							}
@@ -107,7 +107,7 @@
 							{
 								<ul class="list-main">
 									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
-									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
+									<li><i class="ti-bag"></i><a href="#products">Shop</a></li>
 								</ul>
 							}
 							else
@@ -115,7 +115,7 @@
 								<ul class="list-main">
 									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
 									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
-									<li><i class="ti-power-off"></i><a href="/Identity/Account/Login">Login</a></li>
+									<li><i class="ti-power-off"></i><a href="/User">Sign up</a></li>
 								</ul>
 							}
 						</div>
@@ -125,6 +125,201 @@
 			</div>
 		</div>
 		<!-- End Topbar -->
+		<!-- Middle Inner -->
+		<div class="middle-inner">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-2 col-md-2 col-12">
+						<!-- Logo -->
+						<div class="logo">
+							<a href="/"><img src="/Media/LogoCropped.png" alt="logo"></a>
+						</div>
+						<!--/ End Logo -->
+						<!-- Search Form -->
+						<div class="search-top">
+							<div class="top-search"><a href="#0"><i class="ti-search"></i></a></div>
+							<!-- Search Form -->
+							<div class="search-top">
+								<form class="search-form">
+									@Html.TextBox("SearchString", ViewBag.CurrentFilter as string,
+									new {Class="form-control me-2", PlaceHolder="Search Products..."})
+									<button value="search" type="submit"><i class="ti-search"></i></button>
+								</form>
+							</div>
+							<!--/ End Search Form -->
+						</div>
+						<!--/ End Search Form -->
+						<div class="mobile-nav"></div>
+					</div>
+					<div class="col-lg-8 col-md-7 col-12">
+						<div class="search-bar-top">
+							<div class="search-bar">
+								<select>
+									<option selected="selected">All Categories</option>
+								</select>
+								<form>
+									@Html.TextBox("SearchString", ViewBag.CurrentFilter as string,
+									new {Class="form-control me-2", PlaceHolder="Search Products..."})
+									<button class="btnn" type="submit"><i class="ti-search"></i></button>
+								</form>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-2 col-md-3 col-12">
+						<div class="right-bar">
+							<div id="wishList" class="sinlge-bar shopping">
+								<a id="wishlistHover" href="#" onclick="loadWishlist()" class="single-icon"><i class="fa fa-heart-o"></i></a>
+								<div id="Wishlistbasket" class="shopping-item">
+									@if (ViewBag.Wishlist == 1)
+									{
+										@if (Model.Count() > 0)
+										{
+											<div class="dropdown-cart-header">
+												<span>Items: @Model.Count</span>
+												<a href="/Shop/Cart">
+													My Wishlist
+												</a>
+											</div>
+											@foreach (var product in Model)
+											{
+												<ul class="shopping-list">
+													<li>
+														<a href="#" class="remove" title="Remove this item" onclick="loadDeleteCart('@product.Id')"><i class="fa fa-remove"></i></a>
+														<a class="cart-img" href="/Shop/Product/@product.Id">
+															<img src="@Url.Action("GetImage", "Backend", new { id = product.Id })" alt="@product.ProductName" />
+														</a>
+														<h4><a href="/Shop/Product/@product.Id">@product.ProductName.Substring(0,20) ...</a></h4>
+														<p class="quantity">
+															1x - <span class="amount" style="text-decoration-line:line-through;">R @product.ProductBasePrice</span>
+															<span class="amount" style="color:red;font-weight:800;">R @product.ProductSalePrice</span>
+														</p>
+													</li>
+												</ul>
+											}
+											<div class="bottom"></div>
+										}
+										else
+										{
+											<p>Your Wish list is Empty</p>
+										}
+									}
+									else
+									{
+										<p onclick="loadCart()">Click to load</p>
+									}
+								</div>
+							</div>
+							<div id="account" class="sinlge-bar shopping">
+								<a id="AccountHover" href="#" onclick="loadAccount()" class="single-icon"><i class="fa fa-user-circle-o"></i></a>
+								@if (ViewBag.IsCookie)
+								{
+									<div id="AccountOptions" class="shopping-item">
+										<div class="dropdown-cart-header">
+											<p class="h4">@ViewBag.FirstName</p>
+										</div>
+										<ul class="shopping-list">
+											<li>
+												<a class="h5" href="/User">Login</a>
+											</li>
+											<li>
+												<a class="h5" href="/User">Register</a>
+											</li>
+										</ul>
+										<div class="bottom">
+											<a href="/User/Logout" class="btn animate">Logout</a>
+										</div>
+									</div>
+								}
+								else
+								{
+									<div id="AccountOptions" class="shopping-item">
+										<div class="dropdown-cart-header">
+											<p>Hello <span class="font-weight-bold">@ViewBag.FirstName</span>,<br /> What would you like to do?</p>
+										</div>
+										<ul class="shopping-list">
+											<li>
+												<a class="cart-img" href="/User"><img src="#" alt="UserImage" /></a>
+											</li>
+											<li>
+												<a class="h4" href="/User">My Account</a>
+											</li>
+											<li>
+												<a class="h5" href="/User">My Orders</a>
+											</li>
+											<li>
+												<a class="h6" href="/User">Check Order Status</a>
+											</li>
+										</ul>
+										<div class="bottom">
+											<a href="/User/Logout" class="btn animate">Logout</a>
+										</div>
+									</div>
+								}
+							</div>
+							<div id="shoppingbasket" class="sinlge-bar shopping">
+								<a id="basketHover" href="#" onclick="loadCart()" class="single-icon"><i class="ti-bag"></i><span class="total-count">@ViewBag.ItemCount</span></a>
+								<!-- Shopping Item -->
+								<div class="shopping-item">
+									@if (ViewBag.BasketLoad == 1)
+									{
+										@if (Model.Count() > 0)
+										{
+											<div class="dropdown-cart-header">
+												<span>Items: @Model.Count</span>
+												<a href="/Shop/Cart">
+													View Cart
+												</a>
+											</div>
+											@foreach (var product in Model)
+											{
+												<ul class="shopping-list">
+													<li>
+														<a href="#" class="remove" title="Remove this item" onclick="loadDeleteCart('@product.Id')"><i class="fa fa-remove"></i></a>
+														<a class="cart-img" href="/Shop/Product/@product.Id">
+															<img src="@Url.Action("GetImage", "Backend", new { id = product.Id })" alt="@product.ProductName" />
+														</a>
+														<h4><a href="/Shop/Product/@product.Id">@product.ProductName.Substring(0,20) ...</a></h4>
+														<p class="quantity">
+															1x - <span class="amount" style="text-decoration-line:line-through;">R @product.ProductBasePrice</span>
+															<span class="amount" style="color:red;font-weight:800;">R @product.ProductSalePrice</span>
+														</p>
+													</li>
+												</ul>
+											}
+											<div class="bottom">
+												<div class="total">
+													<span>Sub Total:</span>
+													<span class="total-amount" style="text-decoration-line:line-through; color:red;">R @ViewBag.CartTotalBase</span>
+												</div>
+												<div class="total">
+													<span>Discount:</span>
+													<span class="total-amount" style="color:red;font-weight:800;">R @ViewBag.Savings</span>
+												</div>
+												<div class="total">
+													<span>Total:</span>
+													<span class="total-amount" style="text-decoration-line:underline">R @ViewBag.CartTotalSale</span>
+												</div>
+												<a href="/Checkout" class="btn animate">Checkout</a>
+											</div>
+										}
+										else
+										{
+											<p>Your Cart is Empty</p>
+										}
+									}
+									else
+									{
+										<p onclick="loadCart()">Click to load</p>
+									}
+								</div>
+								<!--/ End Shopping Item -->
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--/ End Middle Inner -->
 		<!-- Header Inner -->
 		<div class="header-inner">
 			<div class="container">
@@ -137,16 +332,26 @@
 									<div class="navbar-collapse">
 										<div class="nav-inner">
 											<ul class="nav main-menu menu navbar-nav">
-												@*
-												<li><a href="/">Home</a></li>
-												*@
 												<li class="active">
-													<a href="/Shop">Shop<i class="ti-angle-down"></i></a>
+													<a href="/Shop">Shop</a>
+												</li>
+												<li>
+													<a>Upgrade Kits & Combos<i class="ti-angle-down"></i></a>
 													<ul class="dropdown">
-														<li><a href="/Cart">Shop</a></li>
-														<li><a href="/Cart">View Cart</a></li>
+														<li><a href="/Cart">Upgrade Kits</a></li>
+														<li><a href="/Cart">CPUs & Coolers Combos</a></li>
+														<li><a href="/Cart">Peripherals Combos</a></li>
 													</ul>
-												<li><a href="/Home/UnderConstruction">Contact Us</a></li>
+												</li>
+												<li>
+													<a>Trending Products<i class="ti-angle-down"></i><span class="new">New</span></a>
+													<ul class="dropdown">
+														<li><a href="/Cart">Intels Latest i7 & i5 CPUs</a></li>
+														<li><a href="/Cart">AMD Ryzen</a></li>
+														<li><a href="/Cart">Nvidia RTX</a></li>
+														<li><a href="/Cart">Gaming Peripherals & Accessories</a></li>
+													</ul>
+												</li>
 											</ul>
 										</div>
 									</div>
@@ -369,10 +574,10 @@
 						<!-- Single Widget -->
 						<div class="single-footer about">
 							<div class="logo">
-								<a href="index.html"><img src="images/logo2.png" alt="#"></a>
+								<a href="/"><img src="/Media/LogoCropped.png" alt="#"></a>
 							</div>
-							<p class="text">Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue,  magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus.</p>
-							<p class="call">Got Question? Call us 24/7<span><a href="tel:123456789">+0123 456 789</a></span></p>
+							<p class="text"></p>
+							<p class="call">Got Question? Call us 24/7<span><a href="tel:+27815650206">(081) 565 0206</a></span></p>
 						</div>
 						<!-- End Single Widget -->
 					</div>

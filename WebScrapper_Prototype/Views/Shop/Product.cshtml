@@ -21,7 +21,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<!-- Favicon -->
-	<link rel="icon" type="image/png" href="#">
+		<link rel="icon" type="image/png" href="http://swiftlinkprod-env.eba-s2qbd5re.eu-central-1.elasticbeanstalk.com/favicon.ico/Media/LogoCropped.png">
 	<!-- Web Font -->
 	<link href="https://fonts.googleapis.com/css?family=Lato:200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap" rel="stylesheet">
 	<!-- StyleSheet -->
@@ -75,15 +75,64 @@
 	<!-- Header -->
 	<div class="header shop">
 		<!-- Topbar -->
-		<partial name="_topbar" />
+		<div class="topbar">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-5 col-md-12 col-12">
+						<!-- Top Left -->
+						<div class="top-left">
+							<ul class="list-main">
+								<li><i class="ti-headphone-alt"></i> +27 (081) 565-0206</li>
+								<li>
+									<i class="ti-email"></i>
+									support@swiftlink.com
+								</li>
+							</ul>
+						</div>
+						<!--/ End Top Left -->
+					</div>
+					<div class="col-lg-6 col-md-12 col-12">
+						<!-- Top Right -->
+						<div class="right-content">
+							@if (User.IsInRole("Manager"))
+							{
+								<ul class="list-main">
+									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
+									<li><i class="ti-bag"></i><a href="#products">Shop</a></li>
+									<li><i class="ti-dashboard"></i><a href="/Backend">Backend</a></li>
+									<li><i class="ti-power-off"></i><a asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home" , new { area="" })">Logout</a></li>
+								</ul>
+							}
+							else if (User.IsInRole("User"))
+							{
+								<ul class="list-main">
+									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
+									<li><i class="ti-bag"></i><a href="#products">Shop</a></li>
+								</ul>
+							}
+							else
+							{
+								<ul class="list-main">
+									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
+									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
+									<li><i class="ti-power-off"></i><a href="/User">Sign up</a></li>
+								</ul>
+							}
+						</div>
+						<!-- End Top Right -->
+					</div>
+				</div>
+			</div>
+		</div>
 		<!-- End Topbar -->
+		<!-- Middle Inner -->
 		<div class="middle-inner">
 			<div class="container">
 				<div class="row">
 					<div class="col-lg-2 col-md-2 col-12">
 						<!-- Logo -->
 						<div class="logo">
-							<a href="/"><img src="#" alt="logo"></a>
+							<a href="/"><img src="/Media/LogoCropped.png" alt="logo"></a>
 						</div>
 						<!--/ End Logo -->
 						<!-- Search Form -->
@@ -118,11 +167,27 @@
 					</div>
 					<div class="col-lg-2 col-md-3 col-12">
 						<div class="right-bar">
-							<!-- Search Form -->
-							<div class="sinlge-bar shopping">
-								<a href="#" onclick="loadWishlist()" class="single-icon"><i class="fa fa-heart-o"></i></a>
-								<!-- Wishlist Item -->
+							<div id="wishList" class="sinlge-bar shopping">
+								<a id="wishlistHover" href="#" onclick="loadWishlist()" class="single-icon"><i class="fa fa-heart-o"></i></a>
 								<div id="Wishlistbasket" class="shopping-item">
+									<script type="text/javascript">
+										//	$(document).ready(function () {
+										//		$('#wishlistHover').mouseenter(function () {
+										//			let wishlistStart = 1;
+										//			$.ajax({
+										//				type: 'GET',
+										//				url: '/Shop/Index',
+										//				data: { wishlistStart: wishlistStart },
+										//				success: function (r) {
+										//					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
+										//				},
+										//				error: function () {
+										//					$("#productInfo h2").text("Product is no Longer in Stock!");
+										//				}
+										//			});
+										//		});
+										//	});
+										//</script>
 									@if (ViewBag.Wishlist == 1)
 									{
 										@if (Model.Count() > 0)
@@ -138,7 +203,9 @@
 												<ul class="shopping-list">
 													<li>
 														<a href="#" class="remove" title="Remove this item" onclick="loadDeleteCart('@product.Id')"><i class="fa fa-remove"></i></a>
-														<a class="cart-img" href="/Shop/Product/@product.Id"><img src="@Url.Action("GetImage", "Backend", new { id = product.Id })" alt="@product.ProductName" /></a>
+														<a class="cart-img" href="/Shop/Product/@product.Id">
+															<img src="@Url.Action("GetImage", "Backend", new { id = product.Id })" alt="@product.ProductName" />
+														</a>
 														<h4><a href="/Shop/Product/@product.Id">@product.ProductName.Substring(0,20) ...</a></h4>
 														<p class="quantity">
 															1x - <span class="amount" style="text-decoration-line:line-through;">R @product.ProductBasePrice</span>
@@ -160,37 +227,72 @@
 									}
 								</div>
 							</div>
-							<!--/ End Wishlist Item -->
-							<div class="sinlge-bar">
-								<a href="#" id="basketHover" class="single-icon"><i class="fa fa-user-circle-o" aria-hidden="true"></i></a>
+							<div id="account" class="sinlge-bar shopping">
+								<a id="AccountHover" href="#" onclick="loadAccount()" class="single-icon"><i class="fa fa-user-circle-o"></i></a>
+								@if (ViewBag.IsCookie)
+								{
+									<div id="AccountOptions" class="shopping-item">
+										<div class="dropdown-cart-header">
+											<p class="h4">@ViewBag.FirstName</p>
+										</div>
+										<ul class="shopping-list">
+											<li>
+												<a class="h5" href="/User">Login</a>
+											</li>
+											<li>
+												<a class="h5" href="/User">Register</a>
+											</li>
+										</ul>
+									</div>
+								}
+								else
+								{
+									<div id="AccountOptions" class="shopping-item">
+										<div class="dropdown-cart-header">
+											<p>Hello <span class="font-weight-bold">@ViewBag.FirstName</span>,<br /> What would you like to do?</p>
+										</div>
+										<ul class="shopping-list">
+											<li>
+												<a class="cart-img" href="/User"><img src="#" alt="UserImage" /></a>
+											</li>
+											<li>
+												<a class="h4" href="/User">My Account</a>
+											</li>
+											<li>
+												<a class="h5" href="/User">My Orders</a>
+											</li>
+											<li>
+												<a class="h6" href="/User">Check Order Status</a>
+											</li>
+										</ul>
+										<div class="bottom">
+											<a href="#" onclick="userLogout()" class="btn animate">Logout</a>
+										</div>
+									</div>
+								}
 							</div>
-							<div class="sinlge-bar shopping">
-								<a href="#" onclick="loadCart()" class="single-icon">
-									<i class="ti-bag"></i>
-									<span class="total-count">
-										@ViewBag.BasketCount
-									</span>
-								</a>
+							<div id="shoppingbasket" class="sinlge-bar shopping">
+								<a id="basketHover" href="#" onclick="loadCart()" class="single-icon"><i class="ti-bag"></i><span class="total-count">@ViewBag.ItemCount</span></a>
 								<!-- Shopping Item -->
-								<div id="shoppingbasket" class="shopping-item">	
-			@*						<script type="text/javascript">
-										$(document).ready(function () {
-											$('#basketHover').mouseenter(function () {
-												let basketId = 1;
-												$.ajax({
-													type: 'GET',
-													url: '/Home/Index',
-													data: { basketId: basketId },
-													success: function (r) {
-														$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
-													},
-													error: function () {
-														$("#productInfo h2").text("Product is no Longer in Stock!");
-													}
-												});
-											});
-										});
-									</script>*@
+								<div class="shopping-item">
+									<script type="text/javascript">
+										//	$(document).ready(function () {
+										//		$('#basketHover').mouseenter(function () {
+										//			let basketStart = 1;
+										//			$.ajax({
+										//				type: 'GET',
+										//				url: '/Shop/Index',
+										//				data: { basketStart: basketStart },
+										//				success: function (r) {
+										//					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
+										//				},
+										//				error: function () {
+										//					$("#productInfo h2").text("Product is no Longer in Stock!");
+										//				}
+										//			});
+										//		});
+										//	});
+										//</script>
 									@if (ViewBag.BasketLoad == 1)
 									{
 										@if (Model.Count() > 0)
@@ -206,7 +308,9 @@
 												<ul class="shopping-list">
 													<li>
 														<a href="#" class="remove" title="Remove this item" onclick="loadDeleteCart('@product.Id')"><i class="fa fa-remove"></i></a>
-														<a class="cart-img" href="/Shop/Product/@product.Id"><img src="@Url.Action("GetImage", "Backend", new { id = product.Id })" alt="@product.ProductName" /></a>
+														<a class="cart-img" href="/Shop/Product/@product.Id">
+															<img src="@Url.Action("GetImage", "Backend", new { id = product.Id })" alt="@product.ProductName" />
+														</a>
 														<h4><a href="/Shop/Product/@product.Id">@product.ProductName.Substring(0,20) ...</a></h4>
 														<p class="quantity">
 															1x - <span class="amount" style="text-decoration-line:line-through;">R @product.ProductBasePrice</span>
@@ -228,7 +332,7 @@
 													<span>Total:</span>
 													<span class="total-amount" style="text-decoration-line:underline">R @ViewBag.CartTotalSale</span>
 												</div>
-												<a href="/Home/UnderConstruction" class="btn animate">Checkout</a>
+												<a href="/Checkout" class="btn animate">Checkout</a>
 											</div>
 										}
 										else
@@ -248,6 +352,7 @@
 				</div>
 			</div>
 		</div>
+		<!--/ End Middle Inner -->
 		<!-- Header Inner -->
 		<div class="header-inner">
 			<div class="container">
@@ -260,25 +365,26 @@
 									<div class="navbar-collapse">
 										<div class="nav-inner">
 											<ul class="nav main-menu menu navbar-nav">
-												@*
-													<li><a href="/">Home</a></li>
-													*@
-													<li class="active">
-													<a href="/Shop">Shop<i class="ti-angle-down"></i></a>
-													<ul class="dropdown">
-														<li><a href="/Shop">Shop</a></li>
-														<li><a href="/Cart">View Cart</a></li>
-														<li><a href="/Home/UnderConstruction">Checkout</a></li>
-													</ul>
+												<li class="active">
+													<a href="/Shop">Shop</a>
+												</li>
 												<li>
-													<a href="#">PC Builder<i class="ti-angle-down"></i><span class="new">New</span></a>
+													<a>Upgrade Kits & Combos<i class="ti-angle-down"></i></a>
 													<ul class="dropdown">
-														<li><a href="/Home/UnderConstruction">Pre-built</a></li>
-														<li><a href="/Home/UnderConstruction">Customize</a></li>
-														<li><a href="/Home/UnderConstruction">Learn</a></li>
+														<li><a href="/Cart">Upgrade Kits</a></li>
+														<li><a href="/Cart">CPUs & Coolers Combos</a></li>
+														<li><a href="/Cart">Peripherals Combos</a></li>
 													</ul>
 												</li>
-												<li><a href="/Home/UnderConstruction">Contact Us</a></li>
+												<li>
+													<a>Trending Products<i class="ti-angle-down"></i><span class="new">New</span></a>
+													<ul class="dropdown">
+														<li><a href="/Cart">Intels Latest i7 & i5 CPUs</a></li>
+														<li><a href="/Cart">AMD Ryzen</a></li>
+														<li><a href="/Cart">Nvidia RTX</a></li>
+														<li><a href="/Cart">Gaming Peripherals & Accessories</a></li>
+													</ul>
+												</li>
 											</ul>
 										</div>
 									</div>
@@ -292,7 +398,6 @@
 		</div>
 		<!--/ End Header Inner -->
 	</div>
-	<!--/ End Header -->	
 	<!-- Breadcrumbs -->
 	<div class="breadcrumbs">
 		<div class="container">
@@ -555,6 +660,20 @@
 	</script>
 	<!--Functions-->
 	<script type="text/javascript">
+		function userLogout() {
+			alertify.notify('Logging out', 'custom', 2, function () { console.log('dismissed'); });
+			$.ajax({
+				type: 'GET',
+				url: '/User/Logout',
+				success: function (r) {
+					$("#account").html($(r).find("#account").html());
+					alertify.notify('You have Logged out' + category, 'success', 3, function () { console.log('dismissed'); });
+				},
+				error: function (e) {
+					alertify.error('Error: JavaScript Function (userLogout)');
+				}
+			});
+		}
 		// [Alertify]
 		// Prompt user to accept or decline cookies
 		function fireOncePerSession1() {

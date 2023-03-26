@@ -16,7 +16,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<!-- Favicon -->
-	<link rel="icon" type="image/png" href="#">
+		<link rel="icon" type="image/png" href="http://swiftlinkprod-env.eba-s2qbd5re.eu-central-1.elasticbeanstalk.com/favicon.ico/Media/LogoCropped.png">
 	<!-- Web Font -->
 	<link href="https://fonts.googleapis.com/css?family=Lato:200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap" rel="stylesheet">
 	<!-- StyleSheet -->
@@ -98,7 +98,7 @@
 								<ul class="list-main">
 									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
 									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
-									<li><i class="ti-dashboard"></i><a href="/Dashboard">Dashboard</a></li>
+									<li><i class="ti-dashboard"></i><a href="/Backend">Backend</a></li>
 									<li><i class="ti-power-off"></i><a asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home" , new { area="" })">Logout</a></li>
 								</ul>
 							}
@@ -107,6 +107,7 @@
 								<ul class="list-main">
 									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
 									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
+									<li><i class="ti-power-off"></i><a asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home" , new { area="" })">Logout</a></li>
 								</ul>
 							}
 							else
@@ -114,7 +115,7 @@
 								<ul class="list-main">
 									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
 									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
-									<li><i class="ti-power-off"></i><a href="/Identity/Account/Login">Login</a></li>
+									<li><i class="ti-power-off"></i><a href="/Identity/Account/Login">Sign up</a></li>
 								</ul>
 							}
 						</div>

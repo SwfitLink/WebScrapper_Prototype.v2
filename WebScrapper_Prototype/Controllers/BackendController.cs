@@ -3,12 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Text;
-using System.Web;
 using WebScrapper_Prototype.Data;
 using WebScrapper_Prototype.Models;
 using WebScrapper_Prototype.Services;
 using X.PagedList;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace WebScrapper_Prototype.Controllers
 {

@@ -74,7 +74,7 @@ namespace WebScrapper_Prototype.Areas.Identity.Pages.Account
             public string LastName { get; set; }
             [Required]
             [StringLength(25, ErrorMessage = "The country code is to long")]
-            [Display(Name = "Country Code")]
+            [Display(Name = "Province Code")]
             public string CountryCode { get; set; }
             [Required]
             [StringLength(10, ErrorMessage = "The number is to long please check and try again")]
@@ -110,15 +110,15 @@ namespace WebScrapper_Prototype.Areas.Identity.Pages.Account
         }
 
 
-        public async Task OnGetAsync(string returnUrl = null)
+        public async Task OnGetAsync(string returnUrl = "/Shop")
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync(string returnUrl = "/Shop")
         {
-            returnUrl ??= Url.Content("~/");
+            returnUrl ??= Url.Content("/Shop");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
@@ -128,15 +128,14 @@ namespace WebScrapper_Prototype.Areas.Identity.Pages.Account
                 user.LastName = Input.LastName;
                 user.Email = Input.Email;
                 user.PhoneNumber = Input.Cellphone;
-                user.CountryCode = Input.CountryCode;           
 
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+
+				await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User created a new account with password.");
-
+                    _logger.LogInformation("User created a new account with password.");                   
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));

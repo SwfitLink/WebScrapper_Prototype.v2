@@ -2,7 +2,7 @@
 @using WebScrapper_Prototype.Areas.Identity.Data;
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
-@model WebScrapper_Prototype.Models.CheckoutAccount
+@model WebScrapper_Prototype.Models.UserViewModel
 @{
 	ViewData["Title"] = "Checkout";
 }
@@ -18,7 +18,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<!-- Favicon -->
-	<link rel="icon" type="image/png" href="#">
+	<link rel="icon" type="image/png" href="/Media/LogoCropped.png" src="/Media/LogoCropped.png">
 	<!-- Web Font -->
 	<link href="https://fonts.googleapis.com/css?family=Lato:200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap" rel="stylesheet">
 	<!-- StyleSheet -->
@@ -77,10 +77,151 @@
 		<div id="progressBar"></div>
 	</div>
 	<!-- End Scroll -->
+	<!-- Header -->
 	<div class="header shop">
 		<!-- Topbar -->
-		<partial name="_topbar" />
+		<div class="topbar">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-5 col-md-12 col-12">
+						<!-- Top Left -->
+						<div class="top-left">
+							<ul class="list-main">
+								<li><i class="ti-headphone-alt"></i> <a href="tel:0815650206">Call us</a></li>
+								<li><i class="ti-email"></i> <a href="mailto:brandenconnected@gmail.com">Email us</a></li>
+							</ul>
+						</div>
+						<!--/ End Top Left -->
+					</div>
+					<div class="col-lg-6 col-md-12 col-12">
+						<!-- Top Right -->
+						<div class="right-content">
+							@if (User.IsInRole("Manager"))
+							{
+								<ul class="list-main">
+									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
+									<li><i class="ti-bag"></i><a href="#products">Shop</a></li>
+									<li><i class="ti-dashboard"></i><a href="/Backend">Backend</a></li>
+									<li><i class="ti-power-off"></i><a asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home" , new { area="" })">Logout</a></li>
+								</ul>
+							}
+							else if (User.IsInRole("User"))
+							{
+								<ul class="list-main">
+									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
+									<li><i class="ti-bag"></i><a href="#products">Shop</a></li>
+								</ul>
+							}
+							else
+							{
+								<ul class="list-main">
+									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
+									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
+									<li><i class="ti-power-off"></i><a href="/User">Sign up</a></li>
+								</ul>
+							}
+						</div>
+						<!-- End Top Right -->
+					</div>
+				</div>
+			</div>
+		</div>
 		<!-- End Topbar -->
+		<!-- Middle Inner -->
+		<div class="middle-inner">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-2 col-md-2 col-12">
+						<!-- Logo -->
+						<div class="logo">
+							<a href="/"><img src="/Media/LogoCropped.png" alt="logo"></a>
+						</div>
+						<!--/ End Logo -->
+						<!-- Search Form -->
+						<div class="search-top">
+							<div class="top-search"><a href="#0"><i class="ti-search"></i></a></div>
+							<!-- Search Form -->
+							<div class="search-top">
+								<form class="search-form">
+									@Html.TextBox("SearchString", ViewBag.CurrentFilter as string,
+									new {Class="form-control me-2", PlaceHolder="Search Products..."})
+									<button value="search" type="submit"><i class="ti-search"></i></button>
+								</form>
+							</div>
+							<!--/ End Search Form -->
+						</div>
+						<!--/ End Search Form -->
+						<div class="mobile-nav"></div>
+					</div>
+					<div class="col-lg-8 col-md-7 col-12">
+						<div class="search-bar-top">
+							<div class="search-bar">
+								<select>
+									<option selected="selected">All Categories</option>
+								</select>
+								<form>
+									@Html.TextBox("SearchString", ViewBag.CurrentFilter as string,
+									new {Class="form-control me-2", PlaceHolder="Search Products..."})
+									<button class="btnn" type="submit"><i class="ti-search"></i></button>
+								</form>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-2 col-md-3 col-12">
+						<div class="right-bar">
+							<div id="account" class="sinlge-bar shopping">
+								<a id="AccountHover" href="#" onclick="loadAccount()" class="single-icon"><i class="fa fa-user-circle-o"></i></a>
+								@if (ViewBag.IsCookie)
+								{
+									<div id="AccountOptions" class="shopping-item">
+										<div class="dropdown-cart-header">
+											<p class="h4">@ViewBag.FirstName</p>
+										</div>
+										<ul class="shopping-list">
+											<li>
+												<a class="h5" href="/User">Login</a>
+											</li>
+											<li>
+												<a class="h5" href="/User">Register</a>
+											</li>
+										</ul>
+										<div class="bottom">
+											<a href="/User/Logout" class="btn animate">Logout</a>
+										</div>
+									</div>
+								}
+								else
+								{
+									<div id="AccountOptions" class="shopping-item">
+										<div class="dropdown-cart-header">
+											<p>Hello <span class="font-weight-bold">@ViewBag.FirstName</span>,<br /> What would you like to do?</p>
+										</div>
+										<ul class="shopping-list">
+											<li>
+												<a class="cart-img" href="/User"><img src="#" alt="UserImage" /></a>
+											</li>
+											<li>
+												<a class="h4" href="/User">My Account</a>
+											</li>
+											<li>
+												<a class="h5" href="/User">My Orders</a>
+											</li>
+											<li>
+												<a class="h6" href="/User">Check Order Status</a>
+											</li>
+										</ul>
+										<div class="bottom">
+											<a href="/User/Logout" class="btn animate">Logout</a>
+										</div>
+									</div>
+								}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--/ End Middle Inner -->
 		<!-- Header Inner -->
 		<div class="header-inner">
 			<div class="container">
@@ -94,12 +235,25 @@
 										<div class="nav-inner">
 											<ul class="nav main-menu menu navbar-nav">
 												<li class="active">
-													<a href="/Shop">Shop<i class="ti-angle-down"></i></a>
+													<a href="/Shop">Shop</a>
+												</li>
+												<li>
+													<a>Upgrade Kits & Combos<i class="ti-angle-down"></i></a>
 													<ul class="dropdown">
-														<li><a href="/Cart">Shop</a></li>
-														<li><a href="/Cart">View Cart</a></li>
+														<li><a href="/Cart">Upgrade Kits</a></li>
+														<li><a href="/Cart">CPUs & Coolers Combos</a></li>
+														<li><a href="/Cart">Peripherals Combos</a></li>
 													</ul>
-												<li><a href="/Home/UnderConstruction">Contact Us</a></li>
+												</li>
+												<li>
+													<a>Trending Products<i class="ti-angle-down"></i><span class="new">New</span></a>
+													<ul class="dropdown">
+														<li><a href="/Cart">Intels Latest i7 & i5 CPUs</a></li>
+														<li><a href="/Cart">AMD Ryzen</a></li>
+														<li><a href="/Cart">Nvidia RTX</a></li>
+														<li><a href="/Cart">Gaming Peripherals & Accessories</a></li>
+													</ul>
+												</li>
 											</ul>
 										</div>
 									</div>
@@ -139,109 +293,201 @@
 	<section id="123Section" class="shop checkout section">
 		<div class="container">
 			<div class="col-md-12 col-md-8 col-12">
-			<div class="row">
-				@if (ViewBag.userIsCookie)
-				{
-					<div class="col-lg-8 col-12">
-						<div class="checkout-form">
-							<h2>Make Your Checkout Here</h2>
-							<p>Please register in order to checkout more quickly</p>
-							<!-- Form -->
-							<form id="registerForm" asp-action="CheckoutAccount" class="form" method="post">
-								<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-								<div class="row">
-									<div class="col-lg-6 col-md-6 col-12">
-										<div class="form-group">
-											<label>First Name<span>*</span></label>
-											<input asp-for="FirstName" type="text" name="firstName" autocomplete="firstname" placeholder="" required="required">
+				<div class="row">
+					@if (ViewBag.userIsCookie)
+					{
+						<div class="col-lg-8 col-12">
+							<div class="checkout-form">
+								<h2>Register to Proceed</h2>
+								<p>We don't share any of your information with anyone.</p>
+								<!-- Form -->
+								<form id="registerForm" asp-action="EntireUser" class="form" method="post">
+									<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+									<div class="row">
+										<div class="col-lg-6 col-md-6 col-12">
+											<div class="form-group">
+												<label>First Name<span>*</span></label>
+												<input asp-for="FirstName" type="text" name="firstName" autocomplete="firstname" placeholder="Bill" required="required">
+											</div>
+										</div>
+										<div class="col-lg-6 col-md-6 col-12">
+											<div class="form-group">
+												<label>Last Name<span>*</span></label>
+												<input asp-for="LastName" type="text" name="lastName" autocomplete="lastname" placeholder="Gates" required="required">
+											</div>
+										</div>
+										<div class="col-lg-6 col-md-6 col-12">
+											<div class="form-group">
+												<label>Email Address<span>*</span></label>
+												<input asp-for="Email" type="email" name="email" autocomplete="email" placeholder="lowprices@wazaware.co.za" required="required">
+											</div>
+										</div>
+										<div class="col-lg-6 col-md-6 col-12">
+											<div class="form-group">
+												<label>Phone Number<span>*</span></label>
+												<input asp-for="PhoneNumber" type="tel" name="phoneNumber" autocomplete="cellphone" placeholder="0815650206" required="required">
+											</div>
+										</div>
+										<div class="col-lg-6 col-md-6 col-12">
+											<div class="form-group">
+												<label>Province<span>*</span></label>
+												<select name="province" asp-for="Province">
+													<option value="ZA">Western Cape</option>
+													<option value="CH">Gauteng</option>
+												</select>
+											</div>
+										</div>
+										<div class="col-lg-6 col-md-6 col-12">
+											<div class="form-group">
+												<label>City<span>*</span></label>
+												<select name="city" asp-for="City">
+													<option value="CPT">Cape Town (CPT)</option>
+													<option value="PE">Port Elizabeth (PE)</option>
+												</select>
+											</div>
+										</div>
+										<div class="col-lg-6 col-md-6 col-12">
+											<div class="form-group">
+												<label>Unit No.<span>*</span></label>
+												<input asp-for="Unit" type="text" name="unit" autocomplete="on" placeholder="213 Villa Costa" required="required">
+											</div>
+										</div>
+										<div class="col-lg-6 col-md-6 col-12">
+											<div class="form-group">
+												<label>Street Name<span>*</span></label>
+												<input asp-for="Street" type="text" name="street" autocomplete="on" placeholder="St James Road" required="required">
+											</div>
+										</div>
+										<div class="col-lg-6 col-md-6 col-12">
+											<div class="form-group">
+												<label>Area/Suburb<span>*</span></label>
+												<input asp-for="Area" type="text" name="area" autocomplete="on" placeholder="Seapoint" required="required">
+											</div>
+										</div>
+										<div class="col-lg-6 col-md-6 col-12">
+											<div class="form-group">
+												<label>Postal Code<span>*</span></label>
+												<input asp-for="PostalCode" type="number" name="postalCode" autocomplete="on" placeholder="8001" required="required">
+											</div>
+										</div>
+										<div class="col-lg-6 col-md-6 col-12">
+											<div class="form-group">
+												<label>Create a password<span>*</span></label>
+												<input asp-for="Password" type="password" name="password" autocomplete="off" placeholder="*********" required="required">
+											</div>
+										</div>
+										<div class="col-lg-6 col-md-6 col-12">
+											<div class="form-group">
+												<label>Confirm password<span>*</span></label>
+												<input asp-for="ConfirmPassword" type="password" name="confirmPassword" autocomplete="off" placeholder="*********" required="required">
+											</div>
+										</div>
+										<div class="col-12">
+											<input type="submit" value="Submit Details" class="btn btn-primary" />
 										</div>
 									</div>
-									<div class="col-lg-6 col-md-6 col-12">
-										<div class="form-group">
-											<label>Last Name<span>*</span></label>
-											<input asp-for="LastName" type="text" name="lastName" autocomplete="lastname" placeholder="" required="required">
-										</div>
-									</div>
-									<div class="col-lg-6 col-md-6 col-12">
-										<div class="form-group">
-											<label>Email Address<span>*</span></label>
-											<input asp-for="ContactEmail" type="email" name="contactEmail" autocomplete="email" placeholder="" required="required">
-										</div>
-									</div>
-									<div class="col-lg-6 col-md-6 col-12">
-										<div class="form-group">
-											<label>Phone Number<span>*</span></label>
-											<input asp-for="PhoneNumber" type="number" name="phoneNumber" autocomplete="cellphone" placeholder="" required="required">
-										</div>
-									</div>
-									<div class="col-lg-6 col-md-6 col-12">
-										<div class="form-group">
-											<label>Country<span>*</span></label>
-											<select name="countryCode" asp-for="CountryCode" id="locationCountry">
-												<option value="ZA">South Africa</option>
-												<option value="CH">Switzerland</option>
-											</select>
-										</div>
-									</div>
-									<div class="col-lg-6 col-md-6 col-12">
-										<div class="form-group">
-											<label>Province<span>*</span></label>
-											<select name="locationProvince" asp-for="LocationProvince" id="locationProvince">
-												<option value="Western Cape" selected="selected">Western Cape</option>
-												<option value="Eastern Cape">Eastern Cape</option>
-												<option value="Gauteng">Gauteng</option>
-											</select>
-										</div>
-									</div>
-									<div class="col-lg-6 col-md-6 col-12">
-										<div class="form-group">
-											<label>City<span>*</span></label>
-											<select name="locationCity" asp-for="LocationCity" id="locationCountry">
-												<option value="ZA">Cape Town (CPT)</option>
-												<option value="CH">Port Elizabeth (PE)</option>
-											</select>
-										</div>
-									</div>
-									<div class="col-lg-6 col-md-6 col-12">
-										<div class="form-group">
-											<label>Address Line 1<span>*</span></label>
-											<input asp-for="AddressLine1" type="text" name="addressLine1" autocomplete="addressline1" placeholder="" required="required">
-										</div>
-									</div>
-									<div class="col-lg-6 col-md-6 col-12">
-										<div class="form-group">
-											<label>Address Line 2<span>*</span></label>
-											<input asp-for="AddressLine2" type="text" name="addressLine2" autocomplete="addressline2" placeholder="" required="required">
-										</div>
-									</div>
-									<div class="col-lg-6 col-md-6 col-12">
-										<div class="form-group">
-											<label>Postal Code<span>*</span></label>
-											<input asp-for="PostalCode" type="text" name="postalCode" autocomplete="postalcode" placeholder="" required="required">
-										</div>
-									</div>
-									<div class="col-lg-6 col-md-6 col-12">
-										<div class="form-group create-account">
-											<input asp-for="IsSubscribed" name="isSubscribed" id="cbox" type="checkbox">
-											<label>Subscribe to Newsletter?</label>
-										</div>
-									</div>
-									<div class="col-12">
-										<input type="submit" value="Submit Details" class="btn btn-primary" />
-									</div>
-								</div>
-							</form>
-							<!--/ End Form -->
+								</form>
+								<!--/ End Form -->
+							</div>
 						</div>
-					</div>
-				}
-				else
+					}
+					else if (String.IsNullOrEmpty(Model.Area))
+					{
+						<div class="col-lg-8 col-12">
+							<div class="checkout-form">
+								<h2>Provide Shipping Address</h2>
+								<p>Looks like we don't have your shipping address yet.<br />We don't share any of your information with anyone.</p>
+								<!-- Form -->
+								<form id="registerForm" asp-action="ShippingUser" class="form" method="post">
+									<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+									<div class="row">
+										<div class="col-lg-6 col-md-6 col-12">
+											<div class="form-group">
+												<label>Province<span>*</span></label>
+												<select name="province" asp-for="Province">
+													<option value="WC">Western Cape</option>
+													<option value="EC">Eastern Cape</option>
+												</select>
+											</div>
+										</div>
+										<div class="col-lg-6 col-md-6 col-12">
+											<div class="form-group">
+												<label>City<span>*</span></label>
+												<select name="city" asp-for="City">
+													<option value="CPT">Cape Town (CPT)</option>
+													<option value="PE">Port Elizabeth (PE)</option>
+												</select>
+											</div>
+										</div>
+										<div class="col-lg-6 col-md-6 col-12">
+											<div class="form-group">
+												<label>Unit No.<span>*</span></label>
+												<input asp-for="Unit" type="text" name="unit" autocomplete="on" placeholder="213 Villa Costa" required="required">
+											</div>
+										</div>
+										<div class="col-lg-6 col-md-6 col-12">
+											<div class="form-group">
+												<label>Street Name<span>*</span></label>
+												<input asp-for="Street" type="text" name="street" autocomplete="on" placeholder="St James Road" required="required">
+											</div>
+										</div>
+										<div class="col-lg-6 col-md-6 col-12">
+											<div class="form-group">
+												<label>Area/Suburb<span>*</span></label>
+												<input asp-for="Area" type="text" name="area" autocomplete="on" placeholder="Seapoint" required="required">
+											</div>
+										</div>
+										<div class="col-lg-6 col-md-6 col-12">
+											<div class="form-group">
+												<label>Postal Code<span>*</span></label>
+												<input asp-for="PostalCode" type="number" name="postalCode" autocomplete="on" placeholder="8001" required="required">
+											</div>
+										</div>
+										<div class="col-lg-6 col-md-6 col-12">
+											<div class="form-group">
+												<label>Create a password<span>*</span></label>
+												<input asp-for="Password" type="password" name="password" autocomplete="off" placeholder="*********" required="required">
+											</div>
+										</div>
+										<div class="col-lg-6 col-md-6 col-12">
+											<div class="form-group">
+												<label>Confirm password<span>*</span></label>
+												<input asp-for="ConfirmPassword" type="password" name="confirmPassword" autocomplete="off" placeholder="*********" required="required">
+											</div>
+										</div>
+										<div class="col-12">
+											<input type="submit" value="Submit Details" class="btn btn-primary" />
+										</div>
+									</div>
+								</form>
+								<!--/ End Form -->
+							</div>
+						</div>
+					}
+					else if (!String.IsNullOrEmpty(ViewBag.Result))
+					{
+						<p class="h3">@ViewBag.Result</p>
+						<div class="container text-center">
+							<div class="row">
+								<div class="col">
+									<a href="#" class="btn-elegant">Login</a>
+								</div>
+								<div class="col">
+									<a href="#" class="btn-orange">Register with a Different Email Address</a>									
+								</div>
+								<div class="col">
+									<a href="#" class="btn-warning">Reset Password?</a>									
+								</div>
+							</div>
+						</div>						
+					}
+					else if(ViewBag.userIsCookie == false)
 					{
 						<div class="col-lg-6 col-md-6 col-12">
 							<div class="order-details">
 								<!-- Order Widget -->
 								<div class="single-widget">
-									<h2>Verify Account Details</h2>
+									<p class="fw-bolder h5">Please Verify You Contact & Shipping Details</p>
 									<div class="content">
 										<ul>
 											<li>
@@ -254,7 +500,7 @@
 											</li>
 											<li>
 												Contact Email:
-												<span class="total-amount">@Model.ContactEmail</span>
+												<span class="total-amount">@Model.Email</span>
 											</li>
 											<li>
 												Cellphone Number:
@@ -262,11 +508,9 @@
 											</li>
 											<li class="last">
 												Shipping Address:
-												<span class="total-amount">@Model.AddressLine1</span><br>
-												<span class="total-amount">@Model.AddressLine2</span><br>
-												<span class="total-amount">@Model.LocationCity</span><br>
-												<span class="total-amount">@Model.LocationProvince</span><br>
-												<span class="total-amount">@Model.PostalCode</span><br>
+												<span class="total-amount">@Model.Unit @Model.Street</span><br>
+												<span class="total-amount">@Model.Area, @Model.City</span><br>
+												<span class="total-amount">@Model.Province, @Model.PostalCode</span>
 											</li>
 										</ul>
 									</div>
@@ -276,7 +520,7 @@
 								<div class="single-widget get-button">
 									<div class="content">
 										<div class="button">
-											<a href="#" onclick="editDetails()" class="btn disabled">Edit Details</a>
+											<a href="#" class="btn disabled">Edit</a>
 										</div>
 									</div>
 								</div>
@@ -287,7 +531,10 @@
 							<div class="order-details">
 								<!-- Order Widget -->
 								<div class="single-widget">
-									<h2>Order Summary</h2>
+									<h2>
+										Order Summary
+										<a data-toggle="modal" data-target="#Modal" title="Quick View" href="#"><i class=" ti-eye"></i><span>View Order</span></a>
+									</h2>
 									<div class="content">
 										<ul>
 											<li>
@@ -325,13 +572,16 @@
 											<li class="last">Total: <span style="text-decoration-line:underline;font-weight:700;">R @ViewBag.GrandTotal.ToString("#,##0.00")</span></li>
 										</ul>
 									</div>
-									<script>
-										$(function () {
-											$('[data-toggle="tooltip"]').tooltip()
-										})
-									</script>
 								</div>
-								<!--/ End Order Widget -->	
+								<!-- Button Widget -->
+								<div class="single-widget get-button">
+									<div class="content">
+										<div class="button">
+										</div>
+									</div>
+								</div>
+								<!--/ End Button Widget -->
+								<!--/ End Order Widget -->
 							</div>
 						</div>
 						<h2 id="makepayment">Select Payment Method Below:</h2>
@@ -370,7 +620,7 @@
 							</div>
 						</div>
 					}
-			</div>
+				</div>
 			</div>
 		</div>
 	</section>
@@ -439,6 +689,97 @@
 		</div>
 	</section>
 	<!-- End Shop Newsletter -->
+	<!-- Modal -->
+	<div class="modal fade" id="Modal" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div id="QuickShopModal" class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span class="ti-close" aria-hidden="true"></span></button>
+				</div>
+				<div id="progressBarContainer">
+					<div id="progressBar"></div>
+				</div>
+				@foreach (var product in ViewBag.Items)
+				{
+					<div class="modal-body">
+						<div class="row no-gutters">
+							<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+								<!-- Product Slider -->
+								<div class="product-gallery">
+									<div class="quickview-slider-active">
+										<div class="single-slider">
+											<img src="@Url.Action("GetImage", "Backend", new { id = product.Id })" alt="@product.ProductName" />
+										</div>
+									</div>
+								</div>
+								<!-- End Product slider -->
+							</div>
+							<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+								<div class="quickview-content">
+									<a href="/Shop/Product/@product.Id">
+										<h2>@product.ProductName</h2>
+									</a>
+									<div class="quickview-ratting-review">
+										<div class="quickview-ratting-wrap">
+											<div class="quickview-ratting">
+												<i class="yellow fa fa-star"></i>
+												<i class="yellow fa fa-star"></i>
+												<i class="yellow fa fa-star"></i>
+												<i class="yellow fa fa-star"></i>
+												<i class="fa fa-star"></i>
+											</div>
+											<a href="#"> (1 customer review)</a>
+										</div>
+									</div>
+									<div class="quickview-stock">
+										<span><i class="fa fa-check-circle-o"></i> @product.ProductStock</span>
+									</div>
+									<div class="product-price">
+										<span class="text-decoration-line-through">R @product.ProductBasePrice</span>
+										<h3 style="color:red; font-weight:800;">R @product.ProductSalePrice</h3>
+									</div>
+									<div class="quickview-peragraph">
+										<p>@product.ProductDescription</p>
+									</div>
+									<div class="quantity">
+										<!-- Input Order -->
+										<div class="input-group">
+											<div class="button minus">
+												<button type="button" class="btn btn-primary btn-number" disabled="disabled" data-type="minus" data-field="quant[1]">
+													<i class="ti-minus"></i>
+												</button>
+											</div>
+											<input type="text" name="quant[1]" class="input-number" data-min="1" data-max="1000" value="1">
+											<div class="button plus">
+												<button type="button" class="btn btn-primary btn-number" data-type="plus" data-field="quant[1]">
+													<i class="ti-plus"></i>
+												</button>
+											</div>
+										</div>
+										<!--/ End Input Order -->
+									</div>
+									<div class="add-to-cart">
+										<a href="#" class="btn" onclick="loadAddToCart('@product.Id')">Add to cart</a>
+										<a href="#" onclick="loadAddToWishlist('@product.Id')" class="btn min"><i class="ti-heart"></i></a>
+									</div>
+									<div class="default-social">
+										<h4 class="share-now">Share:</h4>
+										<ul>
+											<li><a class="facebook" href="#"><i class="fa fa-facebook"></i></a></li>
+											<li><a class="twitter" href="#"><i class="fa fa-twitter"></i></a></li>
+											<li><a class="youtube" href="#"><i class="fa fa-pinterest-p"></i></a></li>
+											<li><a class="dribbble" href="#"><i class="fa fa-google-plus"></i></a></li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				}
+			</div>
+		</div>
+	</div>
+	<!-- Modal end -->
 	<!-- Start Footer Area -->
 	<footer class="footer">
 		<!-- Footer Top -->
@@ -449,7 +790,7 @@
 						<!-- Single Widget -->
 						<div class="single-footer about">
 							<div class="logo">
-								<a href="/"><img src="images/logo2.png" alt="#"></a>
+								<a href="/"><img src="/Media/LogoCropped.png" alt="#"></a>
 							</div>
 							<p class="text">Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue,  magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus.</p>
 							<p class="call">Got Question? Call us 24/7<span><a href="tel:123456789">+27 81 565 0206</a></span></p>
@@ -631,8 +972,8 @@
 					window.location.href = '/Orders/Index';
 				},
 				error: function (e) {
-					alertify.error('Error: JavaScript Function (proceedToCheckout)');
-					alertify.error(e);
+					alertify.error('Error: You have entered some invalid information');
+					window.location.href = '/Shop/Index';
 				}
 			});
 		}
