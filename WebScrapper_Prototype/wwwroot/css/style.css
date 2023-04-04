@@ -230,11 +230,12 @@ Version:1.0
 	background-color: #fff;
 	border-bottom: 1px solid #e2e2e2;
 	padding: 15px 0;
+
 }
 /* Logo */
 .header .logo {
 	float: left;
-	margin-top: 35px;
+	/* margin-top: 35px; */
 	-webkit-transition: all 0.4s ease;
 	-moz-transition: all 0.4s ease;
 	transition: all 0.4s ease;
@@ -366,7 +367,7 @@ Version:1.0
 }
 .header.shop .logo {
 	float: left;
-	margin-top: 35px;
+	/* margin-top: 35px; */
 }
 .header.shop .top-contact {
 	margin-top:0px;
@@ -602,14 +603,14 @@ Version:1.0
 	color:#fff;
 }
 .header.shop{
-	background:#fff;
+	background: #fbf2e0;
 }
 .header.shop .nav-inner {
 	margin: 0;
 	float: left;
 }
 .header.shop .topbar {
-	background-color: #fff;
+	background-color: #f9f8f5b8;
 	border: none;
 }
 .header.shop.v3 .topbar{
@@ -624,7 +625,6 @@ Version:1.0
 }
 .header.shop .logo {
 	float: left;
-	margin: 19px 0 0;
 }
 .header.shop .top-contact {
 	margin-top:0px;
@@ -691,12 +691,12 @@ Version:1.0
 .header.shop .search-bar form {
 	display: inline-block;
 	float: left;
-	width: 260px;
+	width: 100%;
 }
 .header.shop .search-bar input {
 	height: 48px;
 	background: transparent;
-	color: #666;
+	color: #eee;
 	border-radius: 0;
 	border: none;
 	font-size: 14px;
@@ -738,14 +738,14 @@ Version:1.0
 }
 .header.shop .middle-inner {
 	padding: 20px 0;
-	background: #fff;
-	border-top: 1px solid #eee;
+	background: #fff5e1b8;
+	border-top: 1px solid #464646;
 }
 .header.shop.v3 .middle-inner {
 	border:none;
 }
 .header.shop .header-inner {
-	background: #333;
+	background: #666;
 }
 .header.shop.v3 .header-inner {
 	background: transparent;
@@ -780,12 +780,12 @@ Version:1.0
 	position: absolute;
 	left: 0;
 	top: 64px;
-	background: #fff;
-	z-index: 1;
+	/* background: #fff; */
 	width: 100%;
-	-webkit-box-shadow: 0px 5px 15px #0000000a;
+	/* -webkit-box-shadow: 0px 5px 15px #0000000a; */
 	-moz-box-shadow: 0px 5px 15px #0000000a;
-	box-shadow: 0px 5px 15px #0000000a;
+	/* box-shadow: 0px 5px 15px #0000000a; */
+	z-index: 1;
 }
 .header.shop .main-category li{
 	display:block;
@@ -1746,7 +1746,7 @@ Version:1.0
 }
 /* Sinlge Product */
 .single-product{
-	margin-top:50px;
+	margin-top: 20px;
 }
 .single-product .product-img {
   position: relative;
@@ -1758,7 +1758,9 @@ Version:1.0
   position: relative;
 }
 .single-product .product-img a img {
-  width: 100%;
+  max-height: 200px;
+  width: 70%;
+  border-radius: 0;
 }
 .single-product .product-img a img.hover-img {
   position: absolute;
@@ -1786,7 +1788,7 @@ Version:1.0
 	line-height: 25px;
 }
 .single-product .product-img a span.new {
-	background-color: #8493ca;
+	background-color: #17a2b8;
 	display: inline-block;
 	font-size: 11px;
 	color: #fff;
@@ -1801,11 +1803,12 @@ Version:1.0
 	border-radius: 30px;
 	height: 26px;
 	line-height: 24px;
+	z-index: 1;
 }
 .single-product .product-img a span.out-of-stock {
-	background-color: #ed1b24;
+	background-color: #dc3545;
 	display: inline-block;
-	font-size: 11px;
+	font-size: 1;
 	color: #fff;
 	right: 20px;
 	top: 20px;
@@ -1818,21 +1821,22 @@ Version:1.0
 	border-radius: 30px;
 	height: 26px;
 	line-height: 24px;
+	z-index: 1;
 }
 .single-product .product-img .product-action {
-	display: inline-block;
+	display: contents;
 	position: absolute;
 	right: 0;
 	bottom: 0;
-	z-index: 99;
+	z-index: 9;
 	border-radius: 3px;
+	top: 5px;
 }
 .single-product .product-img .product-action a {
 	background-color: transparent;
 	color: #333;
-	display: block;
-	font-size: 16px;
 	display: inline-block;
+	font-size: 16px;
 	margin-right: 15px;
 	text-align: right;
 	height: 52px;
@@ -1859,7 +1863,7 @@ Version:1.0
 	-o-transition: opacity .6s, margin .3s;
 	transition: opacity .6s, margin .3s;
 	font-size: 11px;
-	right: 0;
+	left: 0;
 	line-height: 14px;
 	top: -12px;
 	margin-top: -5px;
@@ -1931,7 +1935,7 @@ Version:1.0
 	position: absolute;
 	left: 0;
 	bottom: -50px;
-	z-index: 9;
+	z-index: 1;
 	height: 50px;
 	line-height: 50px;
 	-webkit-transition:all 0.4s ease;
@@ -2030,7 +2034,7 @@ Version:1.0
 ========================================*/
 .shop-sidebar .single-widget {
 	margin-top: 30px;
-	background: #F6F7FB;
+	background: #c6c6c6a1;
 	padding: 30px;
 }
 .shop-sidebar .single-widget:first-child {
@@ -2135,7 +2139,7 @@ Version:1.0
 }
 .shop-sidebar .categor-list li a {
 	display: inline-block;
-	color: #666;
+	color: #333333;
 	font-weight: 400;
 	font-size: 14px;
 	text-transform: capitalize;
@@ -2201,8 +2205,8 @@ Version:1.0
 /* Shop Topbar */
 .shop .shop-top {
 	clear: both;
-	background: #f6f7fb;
-	padding: 18px 20px 50px 20px;
+	background: lightsteelblue;
+	padding: 5px 15px;
 }
 .shop .shop-shorter {
 	float: left;
@@ -3748,6 +3752,9 @@ li.pagination {}
 .shop-services .single-service {
 	position: relative;
 	padding-left: 65px;
+	/* display: flex; */
+	align-items: center;
+	flex-direction: column;
 }
 .shop-services .single-service i {
 	height: 50px;
@@ -4847,7 +4854,7 @@ li.pagination {}
 	20. Start Footer CSS
 ===============================*/
 .footer{
-	background:#222;
+	background: #666;
 }
 .footer .about {
 	padding-right: 50px;
@@ -4947,4 +4954,4 @@ li.pagination {}
 }
 /*=============================
 	End Footer CSS
-===============================*/
+===============================*/=========*/

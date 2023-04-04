@@ -20,7 +20,7 @@ namespace WebScrapper_Prototype.Controllers
 		private readonly SignInManager<ApplicationUser> _signInManager;
 		private readonly IHttpContextAccessor _httpContextAccessor;
 		private string userEmail = string.Empty;
-		Queue<string> _userDetails = new();
+		private string userFirstName = string.Empty;
 
 		public CheckoutController(ILogger<ShopController> logger, WebScrapper_PrototypeContext context, ApplicationDbContext app, UserManager<ApplicationUser> usermanager, SignInManager<ApplicationUser> signInManager, IHttpContextAccessor httpContextAccessor)
 		{
@@ -34,8 +34,19 @@ namespace WebScrapper_Prototype.Controllers
 		[HttpGet]
 		public async Task<IActionResult> Index(int startPlaceOrder)
 		{
-			// Check if user account is cookie
+			/// Cookies ///
 			userEmail = await CheckUserCookie();
+			if (userEmail.Contains("cookie"))
+			{
+				ViewBag.IsCookie = true;
+				ViewBag.FirstName = "Please Login or Register";
+			}
+			else
+			{
+				ViewBag.IsCookie = false;
+				userFirstName = _context.UserModels.FirstOrDefault(s => s.Email.Equals(userEmail)).FirstName;
+				ViewBag.FirstName = userFirstName;
+			}
 			var view = new UserViewModel
 			{
 				FirstName = string.Empty,
@@ -76,7 +87,7 @@ namespace WebScrapper_Prototype.Controllers
 				shippingTotal = 300;
 				ViewBag.GetFreeShipping = 1500 - salePriceSum;
 				ViewBag.CartTotalSale = salePriceSum + 300;
-			}
+			}	
 			/// --------HandlingFee----------
 			/// ↓SUMMARY↓: First Iteration
 			/// ↓----------------------------
@@ -196,7 +207,17 @@ namespace WebScrapper_Prototype.Controllers
 		{
 			UserDetailsService service = new(_context, _httpContextAccessor, _app, _userManager, _signInManager);
 			string token = await CheckUserCookie();
-			await service.EntireUser(model, token);
+			var result = await service.EntireUser(model, token);
+			Console.WriteLine(result);
+			switch (result)
+			{
+				case 200:
+					return RedirectToAction(nameof(Index));
+				case 250:
+					return RedirectToAction(nameof(Index));
+				case 500:
+					return RedirectToAction("Index", "User");
+			}
 			return RedirectToAction(nameof(Index));
 		}
 		[HttpPost]

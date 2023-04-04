@@ -5,6 +5,16 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <!DOCTYPE html>
+<configuration>
+	<system.webServer>
+		<security>
+			<dynamicIpSecurity denyAction="Forbidden">
+				<denyByConcurrentRequests enabled="true" maxConcurrentRequests="10" />
+				<denyByRequestRate enabled="true" maxRequests="30" requestIntervalInMilliseconds="300" />
+			</dynamicIpSecurity>
+		</security>
+	</system.webServer>
+</configuration>
 <html lang="zxx">
 <head>
 	<!-- Title Tag  -->
@@ -72,202 +82,6 @@
 		<div id="progressBar"></div>
 	</div>
 	<!-- End Scroll -->
-	<div class="header shop">
-		<!-- Topbar -->
-		<div class="topbar">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-5 col-md-12 col-12">
-						<!-- Top Left -->
-						<div class="top-left">
-							<ul class="list-main">
-								<li><i class="ti-headphone-alt"></i> +27 (081) 565-0206</li>
-								<li>
-									<i class="ti-email"></i>
-									support@swiftlink.com
-								</li>
-							</ul>
-						</div>
-						<!--/ End Top Left -->
-					</div>
-					<div class="col-lg-6 col-md-12 col-12">
-						<!-- Top Right -->
-						<div class="right-content">
-							@if (User.IsInRole("Manager"))
-							{
-								<ul class="list-main">
-									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
-									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
-									<li><i class="ti-dashboard"></i><a href="/Backend">Backend</a></li>
-									<li><i class="ti-power-off"></i><a asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home" , new { area="" })">Logout</a></li>
-								</ul>
-							}
-							else if (User.IsInRole("User"))
-							{
-								<ul class="list-main">
-									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
-									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
-									<li><i class="ti-power-off"></i><a asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home" , new { area="" })">Logout</a></li>
-								</ul>
-							}
-							else
-							{
-								<ul class="list-main">
-									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
-									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
-									<li><i class="ti-power-off"></i><a href="/Identity/Account/Login">Sign up</a></li>
-								</ul>
-							}
-						</div>
-						<!-- End Top Right -->
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- End Topbar -->
-		<!-- Header Inner -->
-		<div class="header-inner">
-			<div class="container">
-				<div class="cat-nav-head">
-					<div class="row">
-						<div class="col-12">
-							<div id="shopmenu" class="menu-area">
-								<!-- Main Menu -->
-								<nav class="navbar navbar-expand-lg">
-									<div class="navbar-collapse">
-										<div class="nav-inner">
-											<ul class="nav main-menu menu navbar-nav">
-												@*
-												<li><a href="/">Home</a></li>
-												*@
-												<li class="active">
-													<a href="/Shop">Shop<i class="ti-angle-down"></i></a>
-													<ul class="dropdown">
-														<li><a href="/Cart">Shop</a></li>
-														<li><a href="/Cart">View Cart</a></li>
-													</ul>
-												<li><a href="/Home/UnderConstruction">Contact Us</a></li>
-											</ul>
-										</div>
-									</div>
-								</nav>
-								<!--/ End Main Menu -->
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!--/ End Header Inner -->
-	</div>
-	<!--/ End Header -->
-	<!-- Breadcrumbs -->
-	<div class="breadcrumbs">
-		<div class="container">
-			<div class="row">
-				<div class="col-12">
-					<div class="bread-inner">
-						<ul class="bread-list">
-							<li><a href="/Shop/Checkout">Checkout<i class="ti-arrow-right"></i></a></li>
-							<li class="active"><a href="/Orders">View Order</a></li>
-						</ul>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- End Breadcrumbs -->
-	<h2>Coming Soon</h2>
-	<footer class="footer">
-		<!-- Footer Top -->
-		<div class="footer-top section">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-5 col-md-6 col-12">
-						<!-- Single Widget -->
-						<div class="single-footer about">
-							<div class="logo">
-								<a href="/"><img src="images/logo2.png" alt="#"></a>
-							</div>
-							<p class="text">Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue,  magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus.</p>
-							<p class="call">Got Question? Call us 24/7<span><a href="tel:123456789">+27 81 565 0206</a></span></p>
-						</div>
-						<!-- End Single Widget -->
-					</div>
-					<div class="col-lg-2 col-md-6 col-12">
-						<!-- Single Widget -->
-						<div class="single-footer links">
-							<h4>Information</h4>
-							<ul>
-								<li><a href="/Home/UnderConstruction">About Us</a></li>
-								<li><a href="/Home/UnderConstruction">Faq</a></li>
-								<li><a href="/Home/UnderConstruction">Terms & Conditions</a></li>
-								<li><a href="/Home/UnderConstruction">Contact Us</a></li>
-								<li><a href="/Home/UnderConstruction">Help</a></li>
-							</ul>
-						</div>
-						<!-- End Single Widget -->
-					</div>
-					<div class="col-lg-2 col-md-6 col-12">
-						<!-- Single Widget -->
-						<div class="single-footer links">
-							<h4>Customer Service</h4>
-							<ul>
-								<li><a href="/Home/UnderConstruction">Payment Methods</a></li>
-								<li><a href="/Home/UnderConstruction">Money-back</a></li>
-								<li><a href="/Home/UnderConstruction">Returns</a></li>
-								<li><a href="/Home/UnderConstruction">Shipping</a></li>
-								<li><a href="/Home/UnderConstruction">Privacy Policy</a></li>
-							</ul>
-						</div>
-						<!-- End Single Widget -->
-					</div>
-					<div class="col-lg-3 col-md-6 col-12">
-						<!-- Single Widget -->
-						<div class="single-footer social">
-							<h4>Get In Touch</h4>
-							<!-- Single Widget -->
-							<div class="contact">
-								<ul>
-									<li>Montague Gardens Cape Town</li>
-									<li>8001 South Africa.</li>
-									<li>info@swfitlink.com</li>
-									<li>+27 81 565 0206</li>
-								</ul>
-							</div>
-							<!-- End Single Widget -->
-							<ul>
-								<li><a href="#"><i class="ti-facebook"></i></a></li>
-								<li><a href="#"><i class="ti-twitter"></i></a></li>
-								<li><a href="#"><i class="ti-flickr"></i></a></li>
-								<li><a href="#"><i class="ti-instagram"></i></a></li>
-							</ul>
-						</div>
-						<!-- End Single Widget -->
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- End Footer Top -->
-		<div class="copyright">
-			<div class="container">
-				<div class="inner">
-					<div class="row">
-						<div class="col-lg-6 col-12">
-							<div class="left">
-								<p>Copyright © 2023 <a href="/" target="_blank">SwiftLink</a>  -  All Rights Reserved.</p>
-							</div>
-						</div>
-						<div class="col-lg-6 col-12">
-							<div class="right">
-								<img src="images/payments.png" alt="#">
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</footer>
 	<!-- /End Footer Area -->
 	@section Scripts {
 		<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>

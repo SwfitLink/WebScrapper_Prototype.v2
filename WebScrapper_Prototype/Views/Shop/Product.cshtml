@@ -10,23 +10,43 @@
 	ViewData["Title"] = "ProductName";
 }
 <!DOCTYPE html>
+<configuration>
+	<system.webServer>
+		<security>
+			<dynamicIpSecurity denyAction="Forbidden">
+				<denyByConcurrentRequests enabled="true" maxConcurrentRequests="10" />
+				<denyByRequestRate enabled="true" maxRequests="30" requestIntervalInMilliseconds="300" />
+			</dynamicIpSecurity>
+		</security>
+	</system.webServer>
+</configuration>
 <html lang="zxx">
 <head>
-	<!-- Title Tag  -->
-	<title>Product</title>
-	<!-- Meta Tag -->
+	<!-- Meta Tags -->
 	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name='copyright' content=''>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<!-- Favicon -->
-		<link rel="icon" type="image/png" href="http://swiftlinkprod-env.eba-s2qbd5re.eu-central-1.elasticbeanstalk.com/favicon.ico/Media/LogoCropped.png">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="WaZaWare.co.za /Find the Right Price/ | Gaming | PC | Laptops | Monitors | PC Builder">
+	<meta property="og:title" content="WaZaWare">
+	<meta property="og:description" content="WaZaWare.co.za /Find the Right Price/ | Gaming | PC | Laptops | Monitors | PC Builder">
+	<meta property="og:image" content="http://swiftlinkprod-env.eba-s2qbd5re.eu-central-1.elasticbeanstalk.com/Media/Logo/LogoOfficialIcon.png">
+	<meta property="og:url" content="https://swiftlinkprod-env.eba-s2qbd5re.eu-central-1.elasticbeanstalk.com">
+	<meta property="og:type" content="website">
+	<meta name="twitter:card" content="http://swiftlinkprod-env.eba-s2qbd5re.eu-central-1.elasticbeanstalk.com/Media/Logo/LogoOfficialIcon.png">
+	<meta name="twitter:title" content="WaZaWare">
+	<meta name="twitter:description" content="WaZaWare.co.za /Find the Right Price/ | Gaming | PC | Laptops | Monitors | PC Builder">
+	<meta name="twitter:image" content="http://swiftlinkprod-env.eba-s2qbd5re.eu-central-1.elasticbeanstalk.com/Media/Logo/LogoOfficialIcon.png">
+	<!-- Logo -->
+	<link rel="shortcut icon" href="/Media/Logo/favicon.ico" type="image/x-icon">
+	<link rel="icon" href="/Media/Logo/favicon.ico" type="image/x-icon">
+	<!-- Title Tag  -->
+	<title>Product Page</title>
 	<!-- Web Font -->
 	<link href="https://fonts.googleapis.com/css?family=Lato:200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap" rel="stylesheet">
 	<!-- StyleSheet -->
 	<!-- Bootstrap -->
-	<link rel="stylesheet" href="~/css/bootstrap.css">
+	<link rel="stylesheet" href="~/css/bootstrap.min.css">
+	<link rel="stylesheet" href="~/bootstrap/css/bootstrap.css">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
 	<!-- Magnific Popup -->
 	<link rel="stylesheet" href="~/css/magnific-popup.min.css">
 	<!-- Font Awesome -->
@@ -52,14 +72,40 @@
 	<link rel="stylesheet" href="~/alertifyjs/css/themes/default.min.css" />
 	<!-- Reset CSS -->
 	<link rel="stylesheet" href="~/css/reset.css">
-	<!-- Nice Select JS -->
-	<link rel="stylesheet" href="~/css/niceselect.css">
 	<!-- Temp CSS -->
 	<link rel="stylesheet" href="~/css/style.css">
 	<!-- Responsive CSS -->
 	<link rel="stylesheet" href="~/css/responsive.css">
 	<!-- Site CSS -->
 	<link rel="stylesheet" href="~/css/site.css">
+	<style type="text/css">
+		/* hide mobile div by default */
+		.mobile {
+			display: none;
+		}
+
+		/* show desktop div on screens wider than 768px */
+		@@media (min-width: 768px) {
+			.desktop {
+				display: block;
+			}
+
+			.mobile {
+				display: none;
+			}
+		}
+
+		/* show mobile div on screens narrower than 768px */
+		@@media (max-width: 767px) {
+			.desktop {
+				display: none;
+			}
+
+			.mobile {
+				display: block;
+			}
+		}
+	</style>
 </head>
 <body class="js" onload="fireOncePerSession1();">
 	<!-- Preloader -->
@@ -72,332 +118,238 @@
 		</div>
 	</div>
 	<!--/ End Preloader -->
-	<!-- Header -->
+	<!-- Header Shop -->
 	<div class="header shop">
-		<!-- Topbar -->
-		<div class="topbar">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-5 col-md-12 col-12">
-						<!-- Top Left -->
-						<div class="top-left">
-							<ul class="list-main">
-								<li><i class="ti-headphone-alt"></i> +27 (081) 565-0206</li>
-								<li>
-									<i class="ti-email"></i>
-									support@swiftlink.com
-								</li>
-							</ul>
-						</div>
-						<!--/ End Top Left -->
-					</div>
-					<div class="col-lg-6 col-md-12 col-12">
-						<!-- Top Right -->
-						<div class="right-content">
-							@if (User.IsInRole("Manager"))
-							{
+		<!-- Topbar // Desktop Only -->
+		<div class="desktop">
+			<div class="topbar">
+				<div class="container">
+					<div class="row">
+						<div class="col-lg-5 col-md-12 col-12">
+							<!-- Top Left -->
+							<div class="top-left">
 								<ul class="list-main">
-									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
-									<li><i class="ti-bag"></i><a href="#products">Shop</a></li>
-									<li><i class="ti-dashboard"></i><a href="/Backend">Backend</a></li>
-									<li><i class="ti-power-off"></i><a asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home" , new { area="" })">Logout</a></li>
+									<li>
+										<div style="display:flex;flex-direction: row;flex-wrap: wrap;">
+											<script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
+											<a href="tel:0815650206" alt="Call us" style="border-radius:10px; white-space: nowrap;"
+											   data-toggle="tooltip" data-placement="right" title="Got a Question that can't wait? Give us a call!">
+												<lord-icon src="https://cdn.lordicon.com/pneolqso.json"
+														   trigger="hover"
+														   colors="primary:#f7941d,secondary:#545454,tertiary:#1663c7,quaternary:#ffffff"
+														   style="width:32px;height:32px">
+												</lord-icon>
+											</a>
+										</div>
+									</li>
+									<li>
+										<div style="display:flex;flex-direction: row;flex-wrap: wrap;">
+											<script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
+											<a href="mailto:brandenconnected@gmail.com" alt="Call us" style="border-radius:10px; white-space: nowrap;"
+											   data-toggle="tooltip" data-placement="right" title="Send us an email">
+												<lord-icon src="https://cdn.lordicon.com/tkgyrmwc.json"
+														   trigger="hover"
+														   colors="primary:#e88c30,secondary:#e88c30"
+														   style="width:32px;height:32px">
+												</lord-icon>
+											</a>
+										</div>
+									</li>
 								</ul>
-							}
-							else if (User.IsInRole("User"))
-							{
-								<ul class="list-main">
-									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
-									<li><i class="ti-bag"></i><a href="#products">Shop</a></li>
-								</ul>
-							}
-							else
-							{
-								<ul class="list-main">
-									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
-									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
-									<li><i class="ti-power-off"></i><a href="/User">Sign up</a></li>
-								</ul>
-							}
-						</div>
-						<!-- End Top Right -->
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- End Topbar -->
-		<!-- Middle Inner -->
-		<div class="middle-inner">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-2 col-md-2 col-12">
-						<!-- Logo -->
-						<div class="logo">
-							<a href="/"><img src="/Media/LogoCropped.png" alt="logo"></a>
-						</div>
-						<!--/ End Logo -->
-						<!-- Search Form -->
-						<div class="search-top">
-							<div class="top-search"><a href="#0"><i class="ti-search"></i></a></div>
-							<!-- Search Form -->
-							<div class="search-top">
-								<form class="search-form">
-									@Html.TextBox("SearchString", ViewBag.CurrentFilter as string,
-									new {Class="form-control me-2", PlaceHolder="Search Products..."})
-									<button value="search" type="submit"><i class="ti-search"></i></button>
-								</form>
 							</div>
-							<!--/ End Search Form -->
+							<!--/ End Top Left -->
 						</div>
-						<!--/ End Search Form -->
-						<div class="mobile-nav"></div>
-					</div>
-					<div class="col-lg-8 col-md-7 col-12">
-						<div class="search-bar-top">
-							<div class="search-bar">
-								<select>
-									<option selected="selected">All Categories</option>
-								</select>
-								<form>
-									@Html.TextBox("SearchString", ViewBag.CurrentFilter as string,
-									new {Class="form-control me-2", PlaceHolder="Search Products..."})
-									<button class="btnn" type="submit"><i class="ti-search"></i></button>
-								</form>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-2 col-md-3 col-12">
-						<div class="right-bar">
-							<div id="wishList" class="sinlge-bar shopping">
-								<a id="wishlistHover" href="#" onclick="loadWishlist()" class="single-icon"><i class="fa fa-heart-o"></i></a>
-								<div id="Wishlistbasket" class="shopping-item">
-									<script type="text/javascript">
-										//	$(document).ready(function () {
-										//		$('#wishlistHover').mouseenter(function () {
-										//			let wishlistStart = 1;
-										//			$.ajax({
-										//				type: 'GET',
-										//				url: '/Shop/Index',
-										//				data: { wishlistStart: wishlistStart },
-										//				success: function (r) {
-										//					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
-										//				},
-										//				error: function () {
-										//					$("#productInfo h2").text("Product is no Longer in Stock!");
-										//				}
-										//			});
-										//		});
-										//	});
-										//</script>
-									@if (ViewBag.Wishlist == 1)
-									{
-										@if (Model.Count() > 0)
-										{
-											<div class="dropdown-cart-header">
-												<span>Items: @Model.Count</span>
-												<a href="/Shop/Cart">
-													My Wishlist
-												</a>
-											</div>
-											@foreach (var product in Model)
-											{
-												<ul class="shopping-list">
-													<li>
-														<a href="#" class="remove" title="Remove this item" onclick="loadDeleteCart('@product.Id')"><i class="fa fa-remove"></i></a>
-														<a class="cart-img" href="/Shop/Product/@product.Id">
-															<img src="@Url.Action("GetImage", "Backend", new { id = product.Id })" alt="@product.ProductName" />
-														</a>
-														<h4><a href="/Shop/Product/@product.Id">@product.ProductName.Substring(0,20) ...</a></h4>
-														<p class="quantity">
-															1x - <span class="amount" style="text-decoration-line:line-through;">R @product.ProductBasePrice</span>
-															<span class="amount" style="color:red;font-weight:800;">R @product.ProductSalePrice</span>
-														</p>
-													</li>
-												</ul>
-											}
-											<div class="bottom"></div>
-										}
-										else
-										{
-											<p>Your Wish list is Empty</p>
-										}
-									}
-									else
-									{
-										<p onclick="loadCart()">Click to load</p>
-									}
-								</div>
-							</div>
-							<div id="account" class="sinlge-bar shopping">
-								<a id="AccountHover" href="#" onclick="loadAccount()" class="single-icon"><i class="fa fa-user-circle-o"></i></a>
+						<div class="col-lg-6 col-md-12 col-12">
+							<!-- Top Right -->
+							<div class="right-content">
 								@if (ViewBag.IsCookie)
 								{
-									<div id="AccountOptions" class="shopping-item">
-										<div class="dropdown-cart-header">
-											<p class="h4">@ViewBag.FirstName</p>
-										</div>
-										<ul class="shopping-list">
-											<li>
-												<a class="h5" href="/User">Login</a>
-											</li>
-											<li>
-												<a class="h5" href="/User">Register</a>
-											</li>
-										</ul>
-									</div>
+									<ul class="list-main">
+										<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
+										<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
+										<li><i class="ti-power-off"></i><a href="/User">Login/Register</a></li>
+									</ul>
 								}
 								else
 								{
-									<div id="AccountOptions" class="shopping-item">
-										<div class="dropdown-cart-header">
-											<p>Hello <span class="font-weight-bold">@ViewBag.FirstName</span>,<br /> What would you like to do?</p>
-										</div>
-										<ul class="shopping-list">
-											<li>
-												<a class="cart-img" href="/User"><img src="#" alt="UserImage" /></a>
-											</li>
-											<li>
-												<a class="h4" href="/User">My Account</a>
-											</li>
-											<li>
-												<a class="h5" href="/User">My Orders</a>
-											</li>
-											<li>
-												<a class="h6" href="/User">Check Order Status</a>
-											</li>
-										</ul>
-										<div class="bottom">
-											<a href="#" onclick="userLogout()" class="btn animate">Logout</a>
-										</div>
-									</div>
+									<ul class="list-main">
+										<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
+										<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
+										<li><i class="ti-power-off"></i><a href="/User">Account: @ViewBag.FirstName</a></li>
+									</ul>
 								}
 							</div>
-							<div id="shoppingbasket" class="sinlge-bar shopping">
-								<a id="basketHover" href="#" onclick="loadCart()" class="single-icon"><i class="ti-bag"></i><span class="total-count">@ViewBag.ItemCount</span></a>
-								<!-- Shopping Item -->
-								<div class="shopping-item">
-									<script type="text/javascript">
-										//	$(document).ready(function () {
-										//		$('#basketHover').mouseenter(function () {
-										//			let basketStart = 1;
-										//			$.ajax({
-										//				type: 'GET',
-										//				url: '/Shop/Index',
-										//				data: { basketStart: basketStart },
-										//				success: function (r) {
-										//					$("#shoppingbasket").html($(r).find("#shoppingbasket").html());
-										//				},
-										//				error: function () {
-										//					$("#productInfo h2").text("Product is no Longer in Stock!");
-										//				}
-										//			});
-										//		});
-										//	});
-										//</script>
-									@if (ViewBag.BasketLoad == 1)
-									{
-										@if (Model.Count() > 0)
-										{
-											<div class="dropdown-cart-header">
-												<span>Items: @Model.Count</span>
-												<a href="/Shop/Cart">
-													View Cart
-												</a>
-											</div>
-											@foreach (var product in Model)
-											{
-												<ul class="shopping-list">
-													<li>
-														<a href="#" class="remove" title="Remove this item" onclick="loadDeleteCart('@product.Id')"><i class="fa fa-remove"></i></a>
-														<a class="cart-img" href="/Shop/Product/@product.Id">
-															<img src="@Url.Action("GetImage", "Backend", new { id = product.Id })" alt="@product.ProductName" />
-														</a>
-														<h4><a href="/Shop/Product/@product.Id">@product.ProductName.Substring(0,20) ...</a></h4>
-														<p class="quantity">
-															1x - <span class="amount" style="text-decoration-line:line-through;">R @product.ProductBasePrice</span>
-															<span class="amount" style="color:red;font-weight:800;">R @product.ProductSalePrice</span>
-														</p>
-													</li>
-												</ul>
-											}
-											<div class="bottom">
-												<div class="total">
-													<span>Sub Total:</span>
-													<span class="total-amount" style="text-decoration-line:line-through; color:red;">R @ViewBag.CartTotalBase</span>
-												</div>
-												<div class="total">
-													<span>Discount:</span>
-													<span class="total-amount" style="color:red;font-weight:800;">R @ViewBag.Savings</span>
-												</div>
-												<div class="total">
-													<span>Total:</span>
-													<span class="total-amount" style="text-decoration-line:underline">R @ViewBag.CartTotalSale</span>
-												</div>
-												<a href="/Checkout" class="btn animate">Checkout</a>
-											</div>
-										}
-										else
-										{
-											<p>Your Cart is Empty</p>
-										}
-									}
-									else
-									{
-										<p onclick="loadCart()">Click to load</p>
-									}
-								</div>
-								<!--/ End Shopping Item -->
-							</div>
+							<!-- End Top Right -->
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		<!--/ End Middle Inner -->
-		<!-- Header Inner -->
-		<div class="header-inner">
-			<div class="container">
-				<div class="cat-nav-head">
+			<!-- // -->
+			<!-- Middle Inner -->
+			<div class="middle-inner">
+				<div class="container">
 					<div class="row">
-						<div class="col-12">
-							<div id="shopmenu" class="menu-area">
-								<!-- Main Menu -->
-								<nav class="navbar navbar-expand-lg">
-									<div class="navbar-collapse">
-										<div class="nav-inner">
-											<ul class="nav main-menu menu navbar-nav">
-												<li class="active">
-													<a href="/Shop">Shop</a>
+						<div class="col-lg-3 col-md-2 col-12">
+							<div class="logo">
+								<a href="/"><img src="/Media/Logo/LogoOfficialCropped.png" alt="WaZaWare Find The Right Price!" style="border-radius:10px;"></a>
+							</div>
+						</div>
+						<div class="col-lg-7 col-md-7 col-12">
+							<div class="search-bar-top">
+								<div class="search-bar">
+									<form class="form-inline my-2 my-lg-0">
+										@Html.TextBox("SearchString", ViewBag.CurrentFilter as string,
+										new {Class="form-control me-2", Style="color:black;width: 100%;", PlaceHolder="Search Products..." })
+										<button href="#products" class="btnn" type="submit"><i class="ti-search"></i></button>
+									</form>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-2 col-md-3 col-12">
+							<div class="right-bar">
+								<div id="account" class="sinlge-bar shopping">
+									<a id="AccountHover" href="/User" onclick="loadAccount()" class="single-icon">
+										<i>
+											<script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
+											<lord-icon src="https://cdn.lordicon.com/dxjqoygy.json"
+													   trigger="loop-on-hover"
+													   delay="1000"
+													   colors="primary:#000000,secondary:#f7941d"
+													   style="width:50px;height:50px">
+											</lord-icon>
+										</i>
+									</a>
+									@if (ViewBag.IsCookie)
+									{
+										<div id="AccountOptions" class="shopping-item">
+											<div class="dropdown-cart-header">
+												<p>@ViewBag.FirstName</p>
+											</div>
+											<ul class="shopping-list">
+												<li>
+													<a class="h5" href="/User">Login</a>
 												</li>
 												<li>
-													<a>Upgrade Kits & Combos<i class="ti-angle-down"></i></a>
-													<ul class="dropdown">
-														<li><a href="/Cart">Upgrade Kits</a></li>
-														<li><a href="/Cart">CPUs & Coolers Combos</a></li>
-														<li><a href="/Cart">Peripherals Combos</a></li>
-													</ul>
-												</li>
-												<li>
-													<a>Trending Products<i class="ti-angle-down"></i><span class="new">New</span></a>
-													<ul class="dropdown">
-														<li><a href="/Cart">Intels Latest i7 & i5 CPUs</a></li>
-														<li><a href="/Cart">AMD Ryzen</a></li>
-														<li><a href="/Cart">Nvidia RTX</a></li>
-														<li><a href="/Cart">Gaming Peripherals & Accessories</a></li>
-													</ul>
+													<a class="h5" href="/User">Register</a>
 												</li>
 											</ul>
 										</div>
+									}
+									else
+									{
+										<div id="AccountOptions" class="shopping-item">
+											<div class="dropdown-cart-header">
+												<p>Hello <span class="font-weight-bold">@ViewBag.FirstName</span>,<br /> What would you like to do?</p>
+											</div>
+											<ul class="shopping-list">
+												<li>
+													<a class="cart-img" href="/User"><img src="" alt="UserImage" /></a>
+												</li>
+												<li>
+													<a class="h4" href="/User">My Account</a>
+												</li>
+												<li>
+													<a class="h5" href="/User">My Orders</a>
+												</li>
+												<li>
+													<a class="h6" href="/User">Check Order Status</a>
+												</li>
+											</ul>
+											<div class="bottom">
+												<a href="#" onclick="userLogout()" class="btn animate">Logout</a>
+											</div>
+										</div>
+									}
+								</div>
+								<div id="shoppingbasket" class="sinlge-bar shopping">
+									<a id="basketHover" href="#" onclick="loadCart()" class="single-icon">
+										<i>
+											<span class="total-count">@ViewBag.ItemCount</span>
+											<script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
+											<lord-icon src="https://cdn.lordicon.com/ggihhudh.json"
+													   trigger="loop-on-hover"
+													   delay="1000"
+													   colors="primary:#c79816,secondary:#674e03,tertiary:#F7941D"
+													   style="width:50px;height:50px">
+											</lord-icon>
+										</i>
+									</a>
+									<!-- Shopping Item -->
+									<div class="shopping-item">
+										@if (ViewBag.BasketLoad == 1)
+										{
+											@if (Model.Count() > 0)
+											{
+												<div class="dropdown-cart-header">
+													<span>Items: @Model.Count</span>
+													<a href="/Shop/Cart">
+														View Cart
+													</a>
+												</div>
+												@foreach (var product in Model)
+												{
+													<ul class="shopping-list">
+														<li>
+															<a href="#" class="remove" title="Remove this item" onclick="loadDeleteCart('@product.Id')"><i class="fa fa-remove"></i></a>
+															<a class="cart-img" href="/Shop/Product/@product.Id">
+																<img src="@Url.Action("GetImage", "Backend", new { id = product.Id })" alt="@product.ProductName" />
+															</a>
+															<h4><a href="/Shop/Product/@product.Id">@product.ProductName!.Substring(0,20) ...</a></h4>
+															<p class="quantity">
+																1x - <span class="amount" style="text-decoration-line:line-through;">R @product.ProductBasePrice</span>
+																<span class="amount" style="color:red;font-weight:800;">R @product.ProductSalePrice</span>
+															</p>
+														</li>
+													</ul>
+												}
+												<div class="bottom">
+													<div class="total">
+														<span>Sub Total:</span>
+														<span class="total-amount" style="text-decoration-line:line-through; color:red;">R @ViewBag.CartTotalBase</span>
+													</div>
+													<div class="total">
+														<span>Discount:</span>
+														<span class="total-amount" style="color:red;font-weight:800;">R @ViewBag.Savings</span>
+													</div>
+													<div class="total">
+														<span>Total:</span>
+														<span class="total-amount" style="text-decoration-line:underline">R @ViewBag.CartTotalSale</span>
+													</div>
+													<a href="/Checkout" class="btn animate">Checkout</a>
+												</div>
+											}
+											else
+											{
+												<p>Your Cart is Empty</p>
+											}
+										}
+										else
+										{
+											<p onclick="loadCart()">Click to load</p>
+										}
 									</div>
-								</nav>
-								<!--/ End Main Menu -->
+									<!--/ End Shopping Item -->
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
+			<!-- // -->
+			<!-- Header Inner Partial View-->
+			<partial name="_HeaderInner" />
+			<!-- // -->
 		</div>
-		<!--/ End Header Inner -->
+		<!-- // -->
+		<!-- Header Inner // Mobile Only -->
+		<div class="mobile">
+			<!-- Header Inner Partial View-->
+			<partial name="_HeaderInnerMobile" />
+			<!-- // -->
+		</div>
+		<!-- // -->
 	</div>
+	<!-- // -->
 	<!-- Breadcrumbs -->
 	<div class="breadcrumbs">
 		<div class="container">
@@ -496,111 +448,39 @@
 			}
 		</div>
 	</div>		
-	<!-- End Product -->
-	<!-- Start Footer Area -->
-	<footer class="footer">
-		<!-- Footer Top -->
-		<div class="footer-top section">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-5 col-md-6 col-12">
-						<!-- Single Widget -->
-						<div class="single-footer about">
-							<div class="logo">
-								<a href="/"><img src="images/logo2.png" alt="#"></a>
-							</div>
-							<p class="call">Got Question? Call us 24/7<span><a href="tel:123456789">+27 81 565 0206</a></span></p>
-						</div>
-						<!-- End Single Widget -->
-					</div>
-					<div class="col-lg-2 col-md-6 col-12">
-						<!-- Single Widget -->
-						<div class="single-footer links">
-							<h4>Information</h4>
-							<ul>
-								<li><a href="/Home/UnderConstruction">About Us</a></li>
-								<li><a href="/Home/UnderConstruction">Faq</a></li>
-								<li><a href="/Home/UnderConstruction">Terms & Conditions</a></li>
-								<li><a href="/Home/UnderConstruction">Contact Us</a></li>
-								<li><a href="/Home/UnderConstruction">Help</a></li>
-							</ul>
-						</div>
-						<!-- End Single Widget -->
-					</div>
-					<div class="col-lg-2 col-md-6 col-12">
-						<!-- Single Widget -->
-						<div class="single-footer links">
-							<h4>Customer Service</h4>
-							<ul>
-								<li><a href="/Home/UnderConstruction">Payment Methods</a></li>
-								<li><a href="/Home/UnderConstruction">Money-back</a></li>
-								<li><a href="/Home/UnderConstruction">Returns</a></li>
-								<li><a href="/Home/UnderConstruction">Shipping</a></li>
-								<li><a href="/Home/UnderConstruction">Privacy Policy</a></li>
-							</ul>
-						</div>
-						<!-- End Single Widget -->
-					</div>
-					<div class="col-lg-3 col-md-6 col-12">
-						<!-- Single Widget -->
-						<div class="single-footer social">
-							<h4>Get In Touch</h4>
-							<!-- Single Widget -->
-							<div class="contact">
-								<ul>
-									<li>Montague Gardens, Cape Town</li>
-									<li>8001 South Africa.</li>
-									<li>info@swfitlink.com</li>
-									<li>+27 81 565 0206</li>
-								</ul>
-							</div>
-							<!-- End Single Widget -->
-							<ul>
-								<li><a href="#"><i class="ti-facebook"></i></a></li>
-								<li><a href="#"><i class="ti-twitter"></i></a></li>
-								<li><a href="#"><i class="ti-flickr"></i></a></li>
-								<li><a href="#"><i class="ti-instagram"></i></a></li>
-							</ul>
-						</div>
-						<!-- End Single Widget -->
-					</div>
-				</div>
+	<!-- // -->
+	<!-- Similar Products -->
+	<div style="border-top:dotted; border-width:2px; margin:15px; padding:10px;"></div>
+	<div class="container">
+		<div class="col-9">
+			<h3>Similar Products Section is being implemented</h3>
+		</div>
+		<div class="row">
+			<div class="col">
+				<script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
+				<lord-icon src="https://cdn.lordicon.com/bfcglkmk.json"
+						   trigger="loop"
+						   delay="2000"
+						   colors="primary:#1663c7,secondary:#f7941d"
+						   style="width:200px;height:200px">
+				</lord-icon>
 			</div>
 		</div>
-		<!-- End Footer Top -->
-		<div class="copyright">
-			<div class="container">
-				<div class="inner">
-					<div class="row">
-						<div class="col-lg-6 col-12">
-							<div class="left">
-								<p>Copyright © 2023 <a href="/" target="_blank">SwiftLink</a>  -  All Rights Reserved.</p>
-							</div>
-						</div>
-						<div class="col-lg-6 col-12">
-							<div class="right">
-								<img src="images/payments.png" alt="#">
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</footer>
-	<!-- /End Footer Area -->
-	@section Scripts {
-		<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-	}
+	</div>
+	<div style="border-top:dotted; border-width:2px; margin:15px; padding:10px;"></div>
+	<!-- // -->
+	<!-- Footer Partial View-->
+	<partial name="_Footer" />
+	<!-- // -->
 	<!-- Jquery -->
 	<script src="~/js/jquery.min.js"></script>
 	<script src="~/js/jquery-migrate-3.0.0.js"></script>
-	<script src="~/s/jquery-ui.min.js"></script>
+	<script src="~/js/jquery-ui.min.js"></script>
 	<!-- Popper JS -->
 	<script src="~/js/popper.min.js"></script>
 	<!-- Bootstrap JS -->
 	<script src="~/js/bootstrap.min.js"></script>
-	<!-- Color JS -->
-	<script src="~/js/colors.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
 	<!-- Slicknav JS -->
 	<script src="~/js/slicknav.min.js"></script>
 	<!-- Owl Carousel JS -->
@@ -618,14 +498,45 @@
 	<!-- Alertify -->
 	<script src="~/alertifyjs/alertify.min.js"></script>
 	<!-- ScrollUp JS -->
-	<script src="~/js/scrollup.js"></script>
+	<script src="/js/scrollup.js"></script>
 	<!-- Onepage Nav JS -->
 	<script src="~/js/onepage-nav.min.js"></script>
 	<!-- Easing JS -->
 	<script src="~/js/easing.js"></script>
 	<!-- Active JS -->
 	<script src="~/js/active.js"></script>
+	<!-- Custom Scripts -->
+	<!-- Load ProgressBar -->
+	<script type="text/javascript">
+		const progressBarContainer = document.querySelector("#progressBarContainer");
+		const progressBar = document.querySelector("#progressBar");
+		let totalPageHeight = document.body.scrollHeight - window.innerHeight;
+		let debounceResize;
 
+		window.addEventListener("scroll", () => {
+			let newProgressHeight = window.pageYOffset / totalPageHeight;
+			progressBar.style.transform = `scale(1,${newProgressHeight})`;
+			progressBar.style.opacity = `${newProgressHeight}`;
+		}, {
+			capture: true,
+			passive: true
+		});
+
+		window.addEventListener("resize", () => {
+			clearTimeout(debounceResize);
+			debounceResize = setTimeout(() => {
+				totalPageHeight = document.body.scrollHeight - window.innerHeight;
+			}, 250);
+		});
+
+		progressBarContainer.addEventListener("click", (e) => {
+			let newPageScroll = e.clientY / progressBarContainer.offsetHeight * totalPageHeight;
+			window.scrollTo({
+				top: newPageScroll,
+				behavior: 'smooth'
+			});
+		});
+	</script>
 	<!-- Custom Scripts -->
 	<!-- Load ProgressBar -->
 	<script type="text/javascript">

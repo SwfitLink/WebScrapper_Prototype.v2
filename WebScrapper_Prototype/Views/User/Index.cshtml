@@ -11,16 +11,24 @@
 <!DOCTYPE html>
 <html lang="zxx">
 <head>
+	<!-- Meta Tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="WaZaWare.co.za /Find the Right Price/ | Gaming | PC | Laptops | Monitors | PC Builder">
+	<meta property="og:title" content="WaZaWare">
+	<meta property="og:description" content="WaZaWare.co.za /Find the Right Price/ | Gaming | PC | Laptops | Monitors | PC Builder">
+	<meta property="og:image" content="http://swiftlinkprod-env.eba-s2qbd5re.eu-central-1.elasticbeanstalk.com/Media/Logo/LogoOfficialIcon.png">
+	<meta property="og:url" content="http://swiftlinkprod-env.eba-s2qbd5re.eu-central-1.elasticbeanstalk.com">
+	<meta property="og:type" content="website">
+	<meta name="twitter:card" content="http://swiftlinkprod-env.eba-s2qbd5re.eu-central-1.elasticbeanstalk.com/Media/Logo/LogoOfficialIcon.png">
+	<meta name="twitter:title" content="WaZaWare">
+	<meta name="twitter:description" content="WaZaWare.co.za /Find the Right Price/ | Gaming | PC | Laptops | Monitors | PC Builder">
+	<meta name="twitter:image" content="http://swiftlinkprod-env.eba-s2qbd5re.eu-central-1.elasticbeanstalk.com/Media/Logo/LogoOfficialIcon.png">
+	<!-- Logo -->
+	<link rel="shortcut icon" href="http://swiftlinkprod-env.eba-s2qbd5re.eu-central-1.elasticbeanstalk.com/Media/Logo/favicon.ico" type="image/x-icon">
+	<link rel="icon" href="http://swiftlinkprod-env.eba-s2qbd5re.eu-central-1.elasticbeanstalk.com/Media/Logo/favicon.ico" type="image/x-icon">
 	<!-- Title Tag  -->
 	<title>Account Details</title>
-	<!-- Meta Tag -->
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name='copyright' content=''>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<!-- Favicon -->
-	<link rel="icon" type="image/png" href="/Media/LogoCropped.png" src="/Media/LogoCropped.png">
 	<!-- Web Font -->
 	<link href="https://fonts.googleapis.com/css?family=Lato:200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap" rel="stylesheet">
 	<!-- StyleSheet -->
@@ -51,15 +59,40 @@
 	<link rel="stylesheet" href="~/alertifyjs/css/themes/default.min.css" />
 	<!-- Reset CSS -->
 	<link rel="stylesheet" href="~/css/reset.css">
-	<!-- Nice Select JS -->
-	<link rel="stylesheet" href="~/css/niceselect.css">
 	<!-- Temp CSS -->
 	<link rel="stylesheet" href="~/css/style.css">
 	<!-- Responsive CSS -->
 	<link rel="stylesheet" href="~/css/responsive.css">
 	<!-- Site CSS -->
 	<link rel="stylesheet" href="~/css/site.css">
-	<style>
+	<style type="text/css">
+		/* hide mobile div by default */
+		.mobile {
+			display: none;
+		}
+
+		/* show desktop div on screens wider than 768px */
+		@@media (min-width: 768px) {
+			.desktop {
+				display: block;
+			}
+
+			.mobile {
+				display: none;
+			}
+		}
+
+		/* show mobile div on screens narrower than 768px */
+		@@media (max-width: 767px) {
+			.desktop {
+				display: none;
+			}
+
+			.mobile {
+				display: block;
+			}
+		}
+
 		.section-divider {
 			border-top: 1px solid black;
 			padding-top: 20px;
@@ -71,7 +104,6 @@
 			padding-right: 10px;
 			margin-right: 10px;
 		}
-
 	</style>
 </head>
 <body class="js">
@@ -84,203 +116,190 @@
 			</div>
 		</div>
 	</div>
-	<!-- End Preloader -->
-	<!-- End Scroll -->
-	<!-- Header -->
+	<!-- // -->
+	<!-- Header Shop -->
 	<div class="header shop">
-		<!-- Topbar -->
-		<div class="topbar">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-5 col-md-12 col-12">
-						<!-- Top Left -->
-						<div class="top-left">
-							<ul class="list-main">
-								<li><i class="ti-headphone-alt"></i> <a href="tel:0815650206">Call us</a></li>
-								<li><i class="ti-email"></i> <a href="mailto:brandenconnected@gmail.com">Email us</a></li>
-							</ul>
-						</div>
-						<!--/ End Top Left -->
-					</div>
-					<div class="col-lg-6 col-md-12 col-12">
-						<!-- Top Right -->
-						<div class="right-content">
-							@if (User.IsInRole("Manager"))
-							{
+		<!-- Topbar // Desktop Only -->
+		<div class="desktop">
+			<div class="topbar">
+				<div class="container">
+					<div class="row">
+						<div class="col-lg-5 col-md-12 col-12">
+							<!-- Top Left -->
+							<div class="top-left">
 								<ul class="list-main">
-									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
-									<li><i class="ti-bag"></i><a href="#products">Shop</a></li>
-									<li><i class="ti-dashboard"></i><a href="/Backend">Backend</a></li>
-									<li><i class="ti-power-off"></i><a asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home" , new { area="" })">Logout</a></li>
-								</ul>
-							}
-							else if (User.IsInRole("User"))
-							{
-								<ul class="list-main">
-									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
-									<li><i class="ti-bag"></i><a href="#products">Shop</a></li>
-								</ul>
-							}
-							else
-							{
-								<ul class="list-main">
-									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
-									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
-									<li><i class="ti-power-off"></i><a href="/User">Sign up</a></li>
-								</ul>
-							}
-						</div>
-						<!-- End Top Right -->
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- End Topbar -->
-		<!-- Middle Inner -->
-		<div class="middle-inner">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-2 col-md-2 col-12">
-						<!-- Logo -->
-						<div class="logo">
-							<a href="/"><img src="/Media/LogoCropped.png" alt="logo"></a>
-						</div>
-						<!--/ End Logo -->
-						<!-- Search Form -->
-						<div class="search-top">
-							<div class="top-search"><a href="#"><i class="ti-search"></i></a></div>
-							<!-- Search Form -->
-							<div class="search-top">
-								<form class="search-form">
-									@Html.TextBox("SearchString", ViewBag.CurrentFilter as string,
-									new {Class="form-control me-2", PlaceHolder="Search Products..."})
-									<button value="search" type="submit"><i class="ti-search"></i></button>
-								</form>
-							</div>
-							<!--/ End Search Form -->
-						</div>
-						<!--/ End Search Form -->
-						<div class="mobile-nav"></div>
-					</div>
-					<div class="col-lg-8 col-md-7 col-12">
-						<div class="search-bar-top">
-							<div class="search-bar">
-								<form>
-									@Html.TextBox("SearchString", ViewBag.CurrentFilter as string,
-									new {Class="form-control me-2", PlaceHolder="Search..."})
-									<button class="btnn" type="submit"><i class="ti-search"></i></button>
-								</form>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-2 col-md-3 col-12">
-						<div class="right-bar">
-							<div class="sinlge-bar shopping">
-								<a id="AccountHover" href="#" onclick="loadAccount()" class="single-icon"><i class="fa fa-user-circle-o"></i></a>
-								@if (ViewBag.UserLayer != 0)
-								{
-									<div id="AccountOptions" class="shopping-item">
-										<div class="dropdown-cart-header">
-											<p class="h4">@ViewBag.FirstName</p>
+									<li>
+										<div style="display:flex;flex-direction: row;flex-wrap: wrap;">
+											<script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
+											<a href="tel:0815650206" alt="Call us" style="border-radius:10px; white-space: nowrap;"
+											   data-toggle="tooltip" data-placement="right" title="Got a Question that can't wait? Give us a call!">
+												<lord-icon src="https://cdn.lordicon.com/pneolqso.json"
+														   trigger="hover"
+														   colors="primary:#f7941d,secondary:#545454,tertiary:#1663c7,quaternary:#ffffff"
+														   style="width:32px;height:32px">
+												</lord-icon>
+											</a>
 										</div>
-										<ul class="shopping-list">
-											<li>
-												<a class="h5" href="/User">Login</a>
-											</li>
-											<li>
-												<a class="h5" href="/User">Register</a>
-											</li>
-										</ul>
-									</div>
+									</li>
+									<li>
+										<div style="display:flex;flex-direction: row;flex-wrap: wrap;">
+											<script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
+											<a href="mailto:brandenconnected@gmail.com" alt="Call us" style="border-radius:10px; white-space: nowrap;"
+											   data-toggle="tooltip" data-placement="right" title="Send us an email">
+												<lord-icon src="https://cdn.lordicon.com/tkgyrmwc.json"
+														   trigger="hover"
+														   colors="primary:#e88c30,secondary:#e88c30"
+														   style="width:32px;height:32px">
+												</lord-icon>
+											</a>
+										</div>
+									</li>
+								</ul>
+							</div>
+							<!--/ End Top Left -->
+						</div>
+						<div class="col-lg-6 col-md-12 col-12">
+							<!-- Top Right -->
+							<div class="right-content">
+								@if (ViewBag.IsCookie)
+								{
+									<ul class="list-main">
+										<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
+										<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
+										<li><i class="ti-power-off"></i><a href="/User">Login/Register</a></li>
+									</ul>
 								}
 								else
 								{
-									<div id="AccountOptions" class="shopping-item">
-										<div class="dropdown-cart-header">
-											<p>Hello <span class="font-weight-bold">@Model.FirstName</span>,<br /> What would you like to do?</p>
-										</div>
-										<ul class="shopping-list">
-											<li>
-												<a class="cart-img" href="/User"><img src="#" alt="UserImage" /></a>
-											</li>
-											<li>
-												<a class="h4" href="/User">My Account</a>
-											</li>
-											<li>
-												<a class="h5" href="/User">My Orders</a>
-											</li>
-											<li>
-												<a class="h6" href="/User">Check Order Status</a>
-											</li>
-										</ul>
-										<div class="bottom">
-											<a href="#" onclick="userLogout()" class="btn animate">Logout</a>
-										</div>
-									</div>
+									<ul class="list-main">
+										<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
+										<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
+										<li><i class="ti-power-off"></i><a href="/User">Account: @ViewBag.FirstName</a></li>
+									</ul>
 								}
 							</div>
+							<!-- End Top Right -->
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		<!--/ End Middle Inner -->
-		<!-- Header Inner -->
-		<div class="header-inner">
-			<div class="container">
-				<div class="cat-nav-head">
+			<!-- // -->
+			<!-- Middle Inner -->
+			<div class="middle-inner">
+				<div class="container">
 					<div class="row">
-						<div class="col-12">
-							<div id="shopmenu" class="menu-area">
-								<!-- Main Menu -->
-								<nav class="navbar navbar-expand-lg">
-									<div class="navbar-collapse">
-										<div class="nav-inner">
-											<ul class="nav main-menu menu navbar-nav">
-												<li class="active">
-													<a href="/Shop">Shop</a>
+						<div class="col-lg-3 col-md-2 col-12">
+							<div class="logo">
+								<a href="/"><img src="/Media/Logo/LogoOfficialCropped.png" alt="WaZaWare Find The Right Price!" style="border-radius:10px;"></a>
+							</div>
+						</div>
+						<div class="col-lg-7 col-md-7 col-12">
+							<div class="search-bar-top">
+								<div class="search-bar">
+									<form class="form-inline my-2 my-lg-0">
+										@Html.TextBox("SearchString", ViewBag.CurrentFilter as string,
+										new {Class="form-control me-2", PlaceHolder="Search Products..." })
+										<button class="btnn" type="submit"><i class="ti-search"></i></button>
+									</form>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-2 col-md-3 col-12">
+							<div class="right-bar">
+								<div id="account" class="sinlge-bar shopping">
+									<a id="AccountHover" href="/User" onclick="loadAccount()" class="single-icon">
+										<i>
+											<script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
+											<lord-icon src="https://cdn.lordicon.com/dxjqoygy.json"
+													   trigger="loop-on-hover"
+													   delay="1000"
+													   colors="primary:#000000,secondary:#f7941d"
+													   style="width:50px;height:50px">
+											</lord-icon>
+										</i>
+									</a>
+									@if (ViewBag.IsCookie)
+									{
+										<div id="AccountOptions" class="shopping-item">
+											<div class="dropdown-cart-header">
+												<p>@ViewBag.FirstName</p>
+											</div>
+											<ul class="shopping-list">
+												<li>
+													<a class="h5" href="/User">Login</a>
 												</li>
 												<li>
-													<a>Upgrade Kits & Combos<i class="ti-angle-down"></i></a>
-													<ul class="dropdown">
-														<li><a href="/Shop">Upgrade Kits</a></li>
-														<li><a href="/Shop">CPUs & Coolers Combos</a></li>
-														<li><a href="/Shop">Peripherals Combos</a></li>
-													</ul>
-												</li>
-												<li>
-													<a>Trending Products<i class="ti-angle-down"></i><span class="new">New</span></a>
-													<ul class="dropdown">
-														<li><a href="/Shop">Intels Latest i7 & i5 CPUs</a></li>
-														<li><a href="/Shop">AMD Ryzen</a></li>
-														<li><a href="/Shop">Nvidia RTX</a></li>
-														<li><a href="/Shop">Gaming Peripherals & Accessories</a></li>
-													</ul>
+													<a class="h5" href="/User">Register</a>
 												</li>
 											</ul>
 										</div>
-									</div>
-								</nav>
-								<!--/ End Main Menu -->
+									}
+									else
+									{
+										<div id="AccountOptions" class="shopping-item">
+											<div class="dropdown-cart-header">
+												<p>Hello <span class="font-weight-bold">@ViewBag.FirstName</span>,<br /> What would you like to do?</p>
+											</div>
+											<ul class="shopping-list">
+												<li>
+													<a class="cart-img" href="/User"><img src="#" alt="UserImage" /></a>
+												</li>
+												<li>
+													<a class="h4" href="/User">My Account</a>
+												</li>
+												<li>
+													<a class="h5" href="/User">My Orders</a>
+												</li>
+												<li>
+													<a class="h6" href="/User">Check Order Status</a>
+												</li>
+											</ul>
+											<div class="bottom">
+												<a href="#" onclick="userLogout()" class="btn animate">Logout</a>
+											</div>
+										</div>
+									}
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
+			<!-- // -->
+			<!-- Header Inner Partial View-->
+			<partial name="_HeaderInner" />
+			<!-- // -->
 		</div>
-		<!--/ End Header Inner -->
+		<!-- // -->
+		<!-- Header Inner // Mobile Only -->
+		<div class="mobile">
+			<!-- Header Inner Partial View-->
+			<partial name="_HeaderInnerMobile" />
+			<!-- // -->
+		</div>
+		<!-- // -->
 	</div>
+	<!-- // -->
 	@if (ViewBag.UserLayer == 0)
 	{
 		<section id="UserInfoDisplay" class="shop checkout section">
 			<div class="container">
-				<div class="row section-divider">
-					<div class="col-9">
-						<br>
+				<div class="row">
+					<div class="col-sm-6 col-md-4 col-12">
 						<p class="fs-4 h4">Welcome back,</p>
 						<p class="fs-2 h2">@Model.FirstName @Model.LastName</p>
 					</div>
-					<div class="col-4 div-divider" style="margin: 0 10px;">
+					<div class="col-sm-6 col-md-4 col-12" style="display:flex; flex-direction:column;">
+						<a href="#0" onclick="inDevNotice()" class="button btn-outline-danger" style="padding:10px;">Delete Account</a>
+						<a href="#0" onclick="inDevNotice()" class="button btn-outline-warning" style="padding:10px;">Logout</a>
+					</div>
+					<div class="col-sm-6 col-md-4 col-12" style="display:flex; flex-direction:column;">
+						<a href="#0" onclick="inDevNotice()" class="button btn-outline-info" style="padding:10px;">My Orders</a>
+						<a href="/Shop/Cart" class="button btn-outline-info" style="padding:10px;">My Shopping Cart</a>
+					</div>
+				</div>
+				<div class="row section-divider">
+					<div class="col-sm-6 col-md-6 col-12">
 						<p class="fw-bolder h5"><br>Contact Details <a href="#" onclick="showUserUpdateContact()"><i class="ti-pencil-alt" style="white-space: nowrap;" data-toggle="tooltip" data-placement="right" title="Change Contact Details"></i></a></p>
 						<div style="top:15px" class="row">
 							<div class="col">
@@ -309,24 +328,13 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-6 div-divider">
-						<div class="col-lg-8 col-12">
-							<p class="fw-bolder h5"><br>Shipping Address <a href="#" onclick="showUserUpdateShipping()"><i class="ti-pencil-alt" style="white-space: nowrap;" data-toggle="tooltip" data-placement="right" title="Change Shipping Address"></i></a></p>
-							<div style="top:15px" class="row">
-								<div class="col-lg-6 col-md-6 col-12">
-									<p class="fs-4 h6 fw-bolder" style="top:0;">@Model.Unit @Model.Street</p>
-									<p class="fs-4 h6 fw-bolder" style="top:5px;">@Model.Area</p>
-									<p class="fs-4 h6 fw-bolder" style="top:5px;">@Model.City @Model.PostalCode</p>
-									<p class="fs-4 h6 fw-bolder" style="top:5px;">@Model.Province</p>
-								</div>
-							</div>
-						</div>
-					</div>
 				</div>
-				<div class="row" style="margin-top:10px;">
-					<div class="col-9">
-						<a href="#" class="button btn-outline-danger" style="padding:10px;">Delete Account</a>
-					</div>
+				<div class="col-sm-6 col-md-6 col-12">
+					<p class="fw-bolder h5"><br>Shipping Address <a href="#" onclick="showUserUpdateShipping()"><i class="ti-pencil-alt" style="white-space: nowrap;" data-toggle="tooltip" data-placement="right" title="Change Shipping Address"></i></a></p>
+					<p class="fs-4 h6 fw-bolder" style="top:0;">@Model.Unit @Model.Street</p>
+					<p class="fs-4 h6 fw-bolder" style="top:5px;">@Model.Area</p>
+					<p class="fs-4 h6 fw-bolder" style="top:5px;">@Model.City @Model.PostalCode</p>
+					<p class="fs-4 h6 fw-bolder" style="top:5px;">@Model.Province</p>
 				</div>
 			</div>
 		</section>
@@ -463,8 +471,26 @@
 						<p class="fs-2 h2">Please Login into your <span style="color:orange; font-weight:800;">Wa</span><span style="color:forestgreen; font-weight:800;">Za</span><span style="color:orange; font-weight:800;">Ware</span> Account</p>
 					</div>
 					<div class="col-9" style="margin: 0 10px;">
-						<p class="fw-bolder h5"><br>Login</p>
+						<p class="fw-bolder h5 title"><br>Login</p>
+						@{
+							switch (ViewBag.Result)
+							{
+								case 200: ViewBag.Result = "Successfully Logged In!";
+									<div class="danger-color-dark"><i class="ti-alert"></i> @ViewBag.Result</div>
+									break;
+								case 500: ViewBag.Result = "Incorrect Password: Try again!";
+									<div class="danger-color-dark"><i class="ti-alert"></i> @ViewBag.Result</div>
+									break;
+								case 404: ViewBag.Result = "Invalid Email: Please Register or Try Again!";
+									<div class="danger-color-dark"><i class="ti-alert"></i> @ViewBag.Result</div>
+									break;
+								default: ViewBag.Result = "Please fill out all the fields below";
+									<div class="danger-color-dark"><i class="ti-info-alt"></i> @ViewBag.Result</div>
+									break;
+							}
+						}														
 						<form asp-action="Login" class="form" method="post">
+							<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 							<div class="row" style="top:15px">
 								<div class="col-lg-6 col-md-6 col-12">
 									<div class="form-group">
@@ -507,8 +533,29 @@
 					</div>
 					<div class="col-9" style="margin: 0 10px;">
 						<p class="fw-bolder h5"><br>We don't share any of your information with anyone</p>
+						@{
+							switch (ViewBag.Result)
+							{
+								case 200:
+									ViewBag.Result = "Successfully Registered!";
+									<div class="danger-color-dark"><i class="ti-alert"></i> @ViewBag.Result</div>
+									break;
+								case 500:
+									ViewBag.Result = "Incorrect Password: Try again!";
+									<div class="danger-color-dark"><i class="ti-alert"></i> @ViewBag.Result</div>
+									break;
+								case 404:
+									ViewBag.Result = "Invalid Email: Please Register or Try Again!";
+									<div class="danger-color-dark"><i class="ti-alert"></i> @ViewBag.Result</div>
+									break;
+								default:
+									ViewBag.Result = "Please fill out all the fields below";
+									<div class="danger-color-dark"><i class="ti-info-alt"></i> @ViewBag.Result</div>
+									break;
+							}
+						}
 						<form id="registerForm" asp-action="Register" class="form" method="post">
-							<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+							<div asp-validation-summary="All" class="text-danger"></div>
 							<div class="row" style="top:15px">
 								<div class="col-lg-6 col-md-6 col-12">
 									<div class="form-group">
@@ -557,8 +604,8 @@
 								</div>
 							</div>
 						</form>
-						<div class="row" style="top:15px">
-							<div class="col">
+						<div class="row">
+							<div class="col" style="top:10px;">
 								<button onclick="showLoginNormal()" type="button" class="btn-outline-info" style="padding:5px;">Already Registered?</button>
 							</div>
 						</div>
@@ -616,11 +663,13 @@
 			</div>
 		</section>
 	}
-
+	<!-- Footer Partial View-->
+	<partial name="_Footer" />
+	<!-- // -->
 	<!-- Jquery -->
 	<script src="~/js/jquery.min.js"></script>
 	<script src="~/js/jquery-migrate-3.0.0.js"></script>
-	<script src="~/s/jquery-ui.min.js"></script>
+	<script src="~/js/jquery-ui.min.js"></script>
 	<!-- Popper JS -->
 	<script src="~/js/popper.min.js"></script>
 	<!-- Bootstrap JS -->
@@ -664,7 +713,10 @@
 					alertify.error('Error: JavaScript Function (userLogout)');
 				}
 			});
-			window.location.href = '/Shop/Index';
+		}
+		function inDevNotice() {
+			alertify.notify('Out-Of-Service!', 'error', 3, function () { console.log('dismissed'); });
+			alertify.notify('Functionality is under-construction as currently disable...Try me again abit later :)', 'warn', 5, function () { console.log('dismissed'); });
 		}
 		$(document).ready(function () {
 			$('#LoginNormal').show();

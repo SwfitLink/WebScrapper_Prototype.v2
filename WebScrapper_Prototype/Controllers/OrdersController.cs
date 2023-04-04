@@ -14,6 +14,7 @@ namespace WebScrapper_Prototype.Controllers
 		private readonly SignInManager<ApplicationUser> _signInManager;
 		private readonly IHttpContextAccessor _httpContextAccessor;
 		private string userEmail = string.Empty;
+		private string userFirstName = string.Empty;
 
 		public OrdersController(WebScrapper_PrototypeContext context, UserManager<ApplicationUser> usermanager, SignInManager<ApplicationUser> signInManager, IHttpContextAccessor httpContextAccessor, ApplicationDbContext app)
 		{
@@ -28,8 +29,19 @@ namespace WebScrapper_Prototype.Controllers
 		/// </summary>
 		public async Task<IActionResult> Index()
         {
-			// User Details Cookie
+			/// Cookies ///
 			userEmail = await CheckUserCookie();
+			if (userEmail.Contains("cookie"))
+			{
+				ViewBag.IsCookie = true;
+				ViewBag.FirstName = "Please Login or Register";
+			}
+			else
+			{
+				ViewBag.IsCookie = false;
+				userFirstName = _context.UserModels.FirstOrDefault(s => s.Email.Equals(userEmail)).FirstName;
+				ViewBag.FirstName = userFirstName;
+			}
 			var products = from o in _context.Orders
 						 join op in _context.OrderProducts on o.Id equals op.OrderId
 						 join p in _context.Products on op.ProductKey equals p.Id

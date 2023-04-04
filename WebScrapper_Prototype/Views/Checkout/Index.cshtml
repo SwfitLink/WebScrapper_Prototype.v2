@@ -7,18 +7,36 @@
 	ViewData["Title"] = "Checkout";
 }
 <!DOCTYPE html>
+<configuration>
+	<system.webServer>
+		<security>
+			<dynamicIpSecurity denyAction="Forbidden">
+				<denyByConcurrentRequests enabled="true" maxConcurrentRequests="10" />
+				<denyByRequestRate enabled="true" maxRequests="30" requestIntervalInMilliseconds="300" />
+			</dynamicIpSecurity>
+		</security>
+	</system.webServer>
+</configuration>
 <html lang="zxx">
 <head>
+	<!-- Meta Tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="WaZaWare.co.za /Find the Right Price/ | Gaming | PC | Laptops | Monitors | PC Builder">
+	<meta property="og:title" content="WaZaWare">
+	<meta property="og:description" content="WaZaWare.co.za /Find the Right Price/ | Gaming | PC | Laptops | Monitors | PC Builder">
+	<meta property="og:image" content="http://swiftlinkprod-env.eba-s2qbd5re.eu-central-1.elasticbeanstalk.com/Media/Logo/LogoOfficialIcon.png">
+	<meta property="og:url" content="http://swiftlinkprod-env.eba-s2qbd5re.eu-central-1.elasticbeanstalk.com">
+	<meta property="og:type" content="website">
+	<meta name="twitter:card" content="http://swiftlinkprod-env.eba-s2qbd5re.eu-central-1.elasticbeanstalk.com/Media/Logo/LogoOfficialIcon.png">
+	<meta name="twitter:title" content="WaZaWare">
+	<meta name="twitter:description" content="WaZaWare.co.za /Find the Right Price/ | Gaming | PC | Laptops | Monitors | PC Builder">
+	<meta name="twitter:image" content="http://swiftlinkprod-env.eba-s2qbd5re.eu-central-1.elasticbeanstalk.com/Media/Logo/LogoOfficialIcon.png">
+	<!-- Logo -->
+	<link rel="shortcut icon" href="http://swiftlinkprod-env.eba-s2qbd5re.eu-central-1.elasticbeanstalk.com/Media/Logo/favicon.ico" type="image/x-icon">
+	<link rel="icon" href="http://swiftlinkprod-env.eba-s2qbd5re.eu-central-1.elasticbeanstalk.com/Media/Logo/favicon.ico" type="image/x-icon">
 	<!-- Title Tag  -->
 	<title>Checkout</title>
-	<!-- Meta Tag -->
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name='copyright' content=''>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<!-- Favicon -->
-	<link rel="icon" type="image/png" href="/Media/LogoCropped.png" src="/Media/LogoCropped.png">
 	<!-- Web Font -->
 	<link href="https://fonts.googleapis.com/css?family=Lato:200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap" rel="stylesheet">
 	<!-- StyleSheet -->
@@ -57,11 +75,48 @@
 	<link rel="stylesheet" href="~/css/responsive.css">
 	<!-- Site CSS -->
 	<link rel="stylesheet" href="~/css/site.css">
+	<style type="text/css">
+		/* hide mobile div by default */
+		.mobile {
+			display: none;
+		}
+
+		/* show desktop div on screens wider than 768px */
+		@@media (min-width: 768px) {
+			.desktop {
+				display: block;
+			}
+
+			.mobile {
+				display: none;
+			}
+		}
+
+		/* show mobile div on screens narrower than 768px */
+		@@media (max-width: 767px) {
+			.desktop {
+				display: none;
+			}
+
+			.mobile {
+				display: block;
+			}
+		}
+
+		.section-divider {
+			border-top: 1px solid black;
+			padding-top: 20px;
+			margin-top: 20px;
+		}
+
+		.div-divider {
+			border-right: 1px solid black;
+			padding-right: 10px;
+			margin-right: 10px;
+		}
+	</style>
 </head>
 <body class="js">
-	<div id="progressBarContainer">
-		<div id="progressBar"></div>
-	</div>
 	<!-- Preloader -->
 	<div class="preloader">
 		<div class="preloader-inner">
@@ -71,203 +126,117 @@
 			</div>
 		</div>
 	</div>
-	<!-- End Preloader -->
-	<!-- End Scroll -->
+	<!-- // -->
+	<!-- Scroll -->
 	<div id="progressBarContainer">
 		<div id="progressBar"></div>
 	</div>
-	<!-- End Scroll -->
-	<!-- Header -->
+	<!-- // -->
+	<!-- Header Shop -->
 	<div class="header shop">
-		<!-- Topbar -->
-		<div class="topbar">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-5 col-md-12 col-12">
-						<!-- Top Left -->
-						<div class="top-left">
-							<ul class="list-main">
-								<li><i class="ti-headphone-alt"></i> <a href="tel:0815650206">Call us</a></li>
-								<li><i class="ti-email"></i> <a href="mailto:brandenconnected@gmail.com">Email us</a></li>
-							</ul>
-						</div>
-						<!--/ End Top Left -->
-					</div>
-					<div class="col-lg-6 col-md-12 col-12">
-						<!-- Top Right -->
-						<div class="right-content">
-							@if (User.IsInRole("Manager"))
-							{
+		<!-- Topbar // Desktop Only -->
+		<div class="desktop">
+			<div class="topbar">
+				<div class="container">
+					<div class="row">
+						<div class="col-lg-5 col-md-12 col-12">
+							<!-- Top Left -->
+							<div class="top-left">
 								<ul class="list-main">
-									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
-									<li><i class="ti-bag"></i><a href="#products">Shop</a></li>
-									<li><i class="ti-dashboard"></i><a href="/Backend">Backend</a></li>
-									<li><i class="ti-power-off"></i><a asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home" , new { area="" })">Logout</a></li>
+									<li>
+										<div style="display:flex;flex-direction: row;flex-wrap: wrap;">
+											<script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
+											<a href="tel:0815650206" alt="Call us" style="border-radius:10px; white-space: nowrap;"
+											   data-toggle="tooltip" data-placement="right" title="Got a Question that can't wait? Give us a call!">
+												<lord-icon src="https://cdn.lordicon.com/pneolqso.json"
+														   trigger="hover"
+														   colors="primary:#f7941d,secondary:#545454,tertiary:#1663c7,quaternary:#ffffff"
+														   style="width:32px;height:32px">
+												</lord-icon>
+											</a>
+										</div>
+									</li>
+									<li>
+										<div style="display:flex;flex-direction: row;flex-wrap: wrap;">
+											<script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
+											<a href="mailto:brandenconnected@gmail.com" alt="Call us" style="border-radius:10px; white-space: nowrap;"
+											   data-toggle="tooltip" data-placement="right" title="Send us an email">
+												<lord-icon src="https://cdn.lordicon.com/tkgyrmwc.json"
+														   trigger="hover"
+														   colors="primary:#e88c30,secondary:#e88c30"
+														   style="width:32px;height:32px">
+												</lord-icon>
+											</a>
+										</div>
+									</li>
 								</ul>
-							}
-							else if (User.IsInRole("User"))
-							{
-								<ul class="list-main">
-									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
-									<li><i class="ti-bag"></i><a href="#products">Shop</a></li>
-								</ul>
-							}
-							else
-							{
-								<ul class="list-main">
-									<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
-									<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
-									<li><i class="ti-power-off"></i><a href="/User">Sign up</a></li>
-								</ul>
-							}
-						</div>
-						<!-- End Top Right -->
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- End Topbar -->
-		<!-- Middle Inner -->
-		<div class="middle-inner">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-2 col-md-2 col-12">
-						<!-- Logo -->
-						<div class="logo">
-							<a href="/"><img src="/Media/LogoCropped.png" alt="logo"></a>
-						</div>
-						<!--/ End Logo -->
-						<!-- Search Form -->
-						<div class="search-top">
-							<div class="top-search"><a href="#0"><i class="ti-search"></i></a></div>
-							<!-- Search Form -->
-							<div class="search-top">
-								<form class="search-form">
-									@Html.TextBox("SearchString", ViewBag.CurrentFilter as string,
-									new {Class="form-control me-2", PlaceHolder="Search Products..."})
-									<button value="search" type="submit"><i class="ti-search"></i></button>
-								</form>
 							</div>
-							<!--/ End Search Form -->
+							<!--/ End Top Left -->
 						</div>
-						<!--/ End Search Form -->
-						<div class="mobile-nav"></div>
-					</div>
-					<div class="col-lg-8 col-md-7 col-12">
-						<div class="search-bar-top">
-							<div class="search-bar">
-								<select>
-									<option selected="selected">All Categories</option>
-								</select>
-								<form>
-									@Html.TextBox("SearchString", ViewBag.CurrentFilter as string,
-									new {Class="form-control me-2", PlaceHolder="Search Products..."})
-									<button class="btnn" type="submit"><i class="ti-search"></i></button>
-								</form>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-2 col-md-3 col-12">
-						<div class="right-bar">
-							<div id="account" class="sinlge-bar shopping">
-								<a id="AccountHover" href="#" onclick="loadAccount()" class="single-icon"><i class="fa fa-user-circle-o"></i></a>
+						<div class="col-lg-6 col-md-12 col-12">
+							<!-- Top Right -->
+							<div class="right-content">
 								@if (ViewBag.IsCookie)
 								{
-									<div id="AccountOptions" class="shopping-item">
-										<div class="dropdown-cart-header">
-											<p class="h4">@ViewBag.FirstName</p>
-										</div>
-										<ul class="shopping-list">
-											<li>
-												<a class="h5" href="/User">Login</a>
-											</li>
-											<li>
-												<a class="h5" href="/User">Register</a>
-											</li>
-										</ul>
-										<div class="bottom">
-											<a href="/User/Logout" class="btn animate">Logout</a>
-										</div>
-									</div>
+									<ul class="list-main">
+										<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
+										<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
+										<li><i class="ti-power-off"></i><a href="/User">Login/Register</a></li>
+									</ul>
 								}
 								else
 								{
-									<div id="AccountOptions" class="shopping-item">
-										<div class="dropdown-cart-header">
-											<p>Hello <span class="font-weight-bold">@ViewBag.FirstName</span>,<br /> What would you like to do?</p>
-										</div>
-										<ul class="shopping-list">
-											<li>
-												<a class="cart-img" href="/User"><img src="#" alt="UserImage" /></a>
-											</li>
-											<li>
-												<a class="h4" href="/User">My Account</a>
-											</li>
-											<li>
-												<a class="h5" href="/User">My Orders</a>
-											</li>
-											<li>
-												<a class="h6" href="/User">Check Order Status</a>
-											</li>
-										</ul>
-										<div class="bottom">
-											<a href="/User/Logout" class="btn animate">Logout</a>
-										</div>
-									</div>
+									<ul class="list-main">
+										<li><i class="ti-shopping-cart"></i><a href="/Shop/Cart">Cart</a></li>
+										<li><i class="ti-bag"></i><a href="/Shop">Shop</a></li>
+										<li><i class="ti-power-off"></i><a href="/User">Account: @ViewBag.FirstName</a></li>
+									</ul>
 								}
 							</div>
+							<!-- End Top Right -->
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		<!--/ End Middle Inner -->
-		<!-- Header Inner -->
-		<div class="header-inner">
-			<div class="container">
-				<div class="cat-nav-head">
+			<!-- // -->
+			<!-- Middle Inner -->
+			<div class="middle-inner">
+				<div class="container">
 					<div class="row">
-						<div class="col-12">
-							<div id="shopmenu" class="menu-area">
-								<!-- Main Menu -->
-								<nav class="navbar navbar-expand-lg">
-									<div class="navbar-collapse">
-										<div class="nav-inner">
-											<ul class="nav main-menu menu navbar-nav">
-												<li class="active">
-													<a href="/Shop">Shop</a>
-												</li>
-												<li>
-													<a>Upgrade Kits & Combos<i class="ti-angle-down"></i></a>
-													<ul class="dropdown">
-														<li><a href="/Cart">Upgrade Kits</a></li>
-														<li><a href="/Cart">CPUs & Coolers Combos</a></li>
-														<li><a href="/Cart">Peripherals Combos</a></li>
-													</ul>
-												</li>
-												<li>
-													<a>Trending Products<i class="ti-angle-down"></i><span class="new">New</span></a>
-													<ul class="dropdown">
-														<li><a href="/Cart">Intels Latest i7 & i5 CPUs</a></li>
-														<li><a href="/Cart">AMD Ryzen</a></li>
-														<li><a href="/Cart">Nvidia RTX</a></li>
-														<li><a href="/Cart">Gaming Peripherals & Accessories</a></li>
-													</ul>
-												</li>
-											</ul>
-										</div>
-									</div>
-								</nav>
-								<!--/ End Main Menu -->
+						<div class="col-lg-3 col-md-2 col-12">
+							<div class="logo">
+								<a href="/"><img src="/Media/Logo/LogoOfficialCropped.png" alt="WaZaWare Find The Right Price!" style="border-radius:10px;"></a>
+							</div>
+						</div>
+						<div class="col-lg-7 col-md-7 col-12">
+							<div class="search-bar-top">
+								<div class="search-bar">
+									<form class="form-inline my-2 my-lg-0">
+										@Html.TextBox("SearchString", ViewBag.CurrentFilter as string,
+										new {Class="form-control me-2", PlaceHolder="Search Products..." })
+										<button class="btnn" type="submit"><i class="ti-search"></i></button>
+									</form>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
+			<!-- // -->
+			<!-- Header Inner Partial View-->
+			<partial name="_HeaderInner" />
+			<!-- // -->
 		</div>
-		<!--/ End Header Inner -->
+		<!-- // -->
+		<!-- Header Inner // Mobile Only -->
+		<div class="mobile">
+			<!-- Header Inner Partial View-->
+			<partial name="_HeaderInnerMobile" />
+			<!-- // -->
+		</div>
+		<!-- // -->
 	</div>
-	<!--/ End Header -->
+	<!-- // -->
 	<!-- Breadcrumbs -->
 	<div class="breadcrumbs">
 		<div class="container">
@@ -292,586 +261,315 @@
 	</div>
 	<section id="123Section" class="shop checkout section">
 		<div class="container">
-			<div class="col-md-12 col-md-8 col-12">
-				<div class="row">
-					@if (ViewBag.userIsCookie)
-					{
-						<div class="col-lg-8 col-12">
-							<div class="checkout-form">
-								<h2>Register to Proceed</h2>
-								<p>We don't share any of your information with anyone.</p>
-								<!-- Form -->
-								<form id="registerForm" asp-action="EntireUser" class="form" method="post">
-									<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-									<div class="row">
-										<div class="col-lg-6 col-md-6 col-12">
-											<div class="form-group">
-												<label>First Name<span>*</span></label>
-												<input asp-for="FirstName" type="text" name="firstName" autocomplete="firstname" placeholder="Bill" required="required">
-											</div>
-										</div>
-										<div class="col-lg-6 col-md-6 col-12">
-											<div class="form-group">
-												<label>Last Name<span>*</span></label>
-												<input asp-for="LastName" type="text" name="lastName" autocomplete="lastname" placeholder="Gates" required="required">
-											</div>
-										</div>
-										<div class="col-lg-6 col-md-6 col-12">
-											<div class="form-group">
-												<label>Email Address<span>*</span></label>
-												<input asp-for="Email" type="email" name="email" autocomplete="email" placeholder="lowprices@wazaware.co.za" required="required">
-											</div>
-										</div>
-										<div class="col-lg-6 col-md-6 col-12">
-											<div class="form-group">
-												<label>Phone Number<span>*</span></label>
-												<input asp-for="PhoneNumber" type="tel" name="phoneNumber" autocomplete="cellphone" placeholder="0815650206" required="required">
-											</div>
-										</div>
-										<div class="col-lg-6 col-md-6 col-12">
-											<div class="form-group">
-												<label>Province<span>*</span></label>
-												<select name="province" asp-for="Province">
-													<option value="ZA">Western Cape</option>
-													<option value="CH">Gauteng</option>
-												</select>
-											</div>
-										</div>
-										<div class="col-lg-6 col-md-6 col-12">
-											<div class="form-group">
-												<label>City<span>*</span></label>
-												<select name="city" asp-for="City">
-													<option value="CPT">Cape Town (CPT)</option>
-													<option value="PE">Port Elizabeth (PE)</option>
-												</select>
-											</div>
-										</div>
-										<div class="col-lg-6 col-md-6 col-12">
-											<div class="form-group">
-												<label>Unit No.<span>*</span></label>
-												<input asp-for="Unit" type="text" name="unit" autocomplete="on" placeholder="213 Villa Costa" required="required">
-											</div>
-										</div>
-										<div class="col-lg-6 col-md-6 col-12">
-											<div class="form-group">
-												<label>Street Name<span>*</span></label>
-												<input asp-for="Street" type="text" name="street" autocomplete="on" placeholder="St James Road" required="required">
-											</div>
-										</div>
-										<div class="col-lg-6 col-md-6 col-12">
-											<div class="form-group">
-												<label>Area/Suburb<span>*</span></label>
-												<input asp-for="Area" type="text" name="area" autocomplete="on" placeholder="Seapoint" required="required">
-											</div>
-										</div>
-										<div class="col-lg-6 col-md-6 col-12">
-											<div class="form-group">
-												<label>Postal Code<span>*</span></label>
-												<input asp-for="PostalCode" type="number" name="postalCode" autocomplete="on" placeholder="8001" required="required">
-											</div>
-										</div>
-										<div class="col-lg-6 col-md-6 col-12">
-											<div class="form-group">
-												<label>Create a password<span>*</span></label>
-												<input asp-for="Password" type="password" name="password" autocomplete="off" placeholder="*********" required="required">
-											</div>
-										</div>
-										<div class="col-lg-6 col-md-6 col-12">
-											<div class="form-group">
-												<label>Confirm password<span>*</span></label>
-												<input asp-for="ConfirmPassword" type="password" name="confirmPassword" autocomplete="off" placeholder="*********" required="required">
-											</div>
-										</div>
-										<div class="col-12">
-											<input type="submit" value="Submit Details" class="btn btn-primary" />
-										</div>
-									</div>
-								</form>
-								<!--/ End Form -->
-							</div>
-						</div>
-					}
-					else if (String.IsNullOrEmpty(Model.Area))
-					{
-						<div class="col-lg-8 col-12">
-							<div class="checkout-form">
-								<h2>Provide Shipping Address</h2>
-								<p>Looks like we don't have your shipping address yet.<br />We don't share any of your information with anyone.</p>
-								<!-- Form -->
-								<form id="registerForm" asp-action="ShippingUser" class="form" method="post">
-									<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-									<div class="row">
-										<div class="col-lg-6 col-md-6 col-12">
-											<div class="form-group">
-												<label>Province<span>*</span></label>
-												<select name="province" asp-for="Province">
-													<option value="WC">Western Cape</option>
-													<option value="EC">Eastern Cape</option>
-												</select>
-											</div>
-										</div>
-										<div class="col-lg-6 col-md-6 col-12">
-											<div class="form-group">
-												<label>City<span>*</span></label>
-												<select name="city" asp-for="City">
-													<option value="CPT">Cape Town (CPT)</option>
-													<option value="PE">Port Elizabeth (PE)</option>
-												</select>
-											</div>
-										</div>
-										<div class="col-lg-6 col-md-6 col-12">
-											<div class="form-group">
-												<label>Unit No.<span>*</span></label>
-												<input asp-for="Unit" type="text" name="unit" autocomplete="on" placeholder="213 Villa Costa" required="required">
-											</div>
-										</div>
-										<div class="col-lg-6 col-md-6 col-12">
-											<div class="form-group">
-												<label>Street Name<span>*</span></label>
-												<input asp-for="Street" type="text" name="street" autocomplete="on" placeholder="St James Road" required="required">
-											</div>
-										</div>
-										<div class="col-lg-6 col-md-6 col-12">
-											<div class="form-group">
-												<label>Area/Suburb<span>*</span></label>
-												<input asp-for="Area" type="text" name="area" autocomplete="on" placeholder="Seapoint" required="required">
-											</div>
-										</div>
-										<div class="col-lg-6 col-md-6 col-12">
-											<div class="form-group">
-												<label>Postal Code<span>*</span></label>
-												<input asp-for="PostalCode" type="number" name="postalCode" autocomplete="on" placeholder="8001" required="required">
-											</div>
-										</div>
-										<div class="col-lg-6 col-md-6 col-12">
-											<div class="form-group">
-												<label>Create a password<span>*</span></label>
-												<input asp-for="Password" type="password" name="password" autocomplete="off" placeholder="*********" required="required">
-											</div>
-										</div>
-										<div class="col-lg-6 col-md-6 col-12">
-											<div class="form-group">
-												<label>Confirm password<span>*</span></label>
-												<input asp-for="ConfirmPassword" type="password" name="confirmPassword" autocomplete="off" placeholder="*********" required="required">
-											</div>
-										</div>
-										<div class="col-12">
-											<input type="submit" value="Submit Details" class="btn btn-primary" />
-										</div>
-									</div>
-								</form>
-								<!--/ End Form -->
-							</div>
-						</div>
-					}
-					else if (!String.IsNullOrEmpty(ViewBag.Result))
-					{
-						<p class="h3">@ViewBag.Result</p>
-						<div class="container text-center">
+			@if (ViewBag.userIsCookie)
+			{
+				<div class="col-lg-8 col-12">
+					<div class="checkout-form">
+						<h2>Register to Proceed <button onclick="proceedToUser()" class="btn-outline-info" style="padding:5px; margin-left:10px;">Already Registered?</button></h2>
+						<p>We don't share any of your information with anyone.</p>
+						<!-- Form -->
+						<form id="registerForm" asp-action="EntireUser" class="form" method="post">
+							<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 							<div class="row">
-								<div class="col">
-									<a href="#" class="btn-elegant">Login</a>
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="form-group">
+										<label>First Name<span>*</span></label>
+										<input asp-for="FirstName" type="text" name="firstName" autocomplete="firstname" placeholder="Bill" required="required">
+									</div>
 								</div>
-								<div class="col">
-									<a href="#" class="btn-orange">Register with a Different Email Address</a>									
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="form-group">
+										<label>Last Name<span>*</span></label>
+										<input asp-for="LastName" type="text" name="lastName" autocomplete="lastname" placeholder="Gates" required="required">
+									</div>
 								</div>
-								<div class="col">
-									<a href="#" class="btn-warning">Reset Password?</a>									
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="form-group">
+										<label>Email Address<span>*</span></label>
+										<input asp-for="Email" type="email" name="email" autocomplete="email" placeholder="lowprices@wazaware.co.za" required="required">
+									</div>
+								</div>
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="form-group">
+										<label>Phone Number<span>*</span></label>
+										<input asp-for="PhoneNumber" type="tel" name="phoneNumber" autocomplete="cellphone" placeholder="0815650206" required="required">
+									</div>
+								</div>
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="form-group">
+										<label>Province<span>*</span></label>
+										<select name="province" asp-for="Province">
+											<option value="ZA">Western Cape</option>
+											<option value="CH">Gauteng</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="form-group">
+										<label>City<span>*</span></label>
+										<select name="city" asp-for="City">
+											<option value="CPT">Cape Town (CPT)</option>
+											<option value="PE">Port Elizabeth (PE)</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="form-group">
+										<label>Unit No.<span>*</span></label>
+										<input asp-for="Unit" type="text" name="unit" autocomplete="on" placeholder="213 Villa Costa" required="required">
+									</div>
+								</div>
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="form-group">
+										<label>Street Name<span>*</span></label>
+										<input asp-for="Street" type="text" name="street" autocomplete="on" placeholder="St James Road" required="required">
+									</div>
+								</div>
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="form-group">
+										<label>Area/Suburb<span>*</span></label>
+										<input asp-for="Area" type="text" name="area" autocomplete="on" placeholder="Seapoint" required="required">
+									</div>
+								</div>
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="form-group">
+										<label>Postal Code<span>*</span></label>
+										<input asp-for="PostalCode" type="number" name="postalCode" autocomplete="on" placeholder="8001" required="required">
+									</div>
+								</div>
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="form-group">
+										<label>Create a password<span>*</span></label>
+										<input asp-for="Password" type="password" name="password" autocomplete="off" placeholder="*********" required="required">
+									</div>
+								</div>
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="form-group">
+										<label>Confirm password<span>*</span></label>
+										<input asp-for="ConfirmPassword" type="password" name="confirmPassword" autocomplete="off" placeholder="*********" required="required">
+									</div>
+								</div>
+								<div class="col-12">
+									<input type="submit" value="Save" class="btn btn-primary" />
 								</div>
 							</div>
-						</div>						
-					}
-					else if(ViewBag.userIsCookie == false)
-					{
-						<div class="col-lg-6 col-md-6 col-12">
-							<div class="order-details">
-								<!-- Order Widget -->
-								<div class="single-widget">
-									<p class="fw-bolder h5">Please Verify You Contact & Shipping Details</p>
-									<div class="content">
-										<ul>
-											<li>
-												First Name:
-												<span class="total-amount">@Model.FirstName</span>
-											</li>
-											<li>
-												LastName:
-												<span class="total-amount">@Model.LastName</span>
-											</li>
-											<li>
-												Contact Email:
-												<span class="total-amount">@Model.Email</span>
-											</li>
-											<li>
-												Cellphone Number:
-												<span class="total-amount">@Model.PhoneNumber</span>
-											</li>
-											<li class="last">
-												Shipping Address:
-												<span class="total-amount">@Model.Unit @Model.Street</span><br>
-												<span class="total-amount">@Model.Area, @Model.City</span><br>
-												<span class="total-amount">@Model.Province, @Model.PostalCode</span>
-											</li>
-										</ul>
-									</div>
-								</div>
-								<!--/ End Order Widget -->
-								<!-- Button Widget -->
-								<div class="single-widget get-button">
-									<div class="content">
-										<div class="button">
-											<a href="#" class="btn disabled">Edit</a>
-										</div>
-									</div>
-								</div>
-								<!--/ End Button Widget -->
-							</div>
-						</div>
-						<div class="col-lg-6 col-md-6 col-12">
-							<div class="order-details">
-								<!-- Order Widget -->
-								<div class="single-widget">
-									<h2>
-										Order Summary
-										<a data-toggle="modal" data-target="#Modal" title="Quick View" href="#"><i class=" ti-eye"></i><span>View Order</span></a>
-									</h2>
-									<div class="content">
-										<ul>
-											<li>
-												Total Items:
-												<span class="total-amount" style="font-weight:600;">@ViewBag.BasketCount</span>
-											</li>
-											<li>
-												Before Discount:
-												<span class="total-amount" style="text-decoration-line:line-through; color:red;">R @ViewBag.CartTotalBase.ToString("#,##0.00")</span>
-											</li>
-											<li>
-												You Save:
-												<span class="total-amount" style="color:forestgreen;font-weight:800;">R @ViewBag.Savings.ToString("#,##0.00")</span>
-											</li>
-											<li>
-												Sub Total:
-												<span class="total-amount" style="font-weight:600;">R @ViewBag.CartTotalSale.ToString("#,##0.00")</span>
-											</li>
-											<li>
-												Shipping:
-												@if (ViewBag.GetFreeShipping > 0)
-												{
-													<label>Spend R <span style="text-decoration-line:underline;">@ViewBag.GetFreeShipping</span> to get <b>FREE</b> Shipping</label>
-												}
-												else
-												{
-													<span><b>FREE</b></span>
-
-												}
-											</li>
-											<li style="color:gray;">
-												Handling Fee <i class="fa fa-info-circle" style="white-space: nowrap;" data-toggle="tooltip" data-placement="right" title="Think of our handling fee like a secret seasoning - it's the special ingredient that adds value to your shopping experience and helps us continue providing top-notch service without sacrificing our bottom line."></i> :
-												<span style="color:gray;">R @ViewBag.HandlingFee</span>
-											</li>
-											<li class="last">Total: <span style="text-decoration-line:underline;font-weight:700;">R @ViewBag.GrandTotal.ToString("#,##0.00")</span></li>
-										</ul>
-									</div>
-								</div>
-								<!-- Button Widget -->
-								<div class="single-widget get-button">
-									<div class="content">
-										<div class="button">
-										</div>
-									</div>
-								</div>
-								<!--/ End Button Widget -->
-								<!--/ End Order Widget -->
-							</div>
-						</div>
-						<h2 id="makepayment">Select Payment Method Below:</h2>
-						<div class="col-lg-12 col-md-6 col-12">
-							<div class="order-details">
-								<!-- Order Widget -->
-								<div class="single-widget">
-									<h2 id="makepayment">Payment Methods</h2>
-									<div class="content">
-										<ul class="check-box-list">
-											<li>
-												<label class="checkbox-inline" for="0"><input name="EFT" id="0" type="checkbox"> EFT</label>
-											</li>
-											<li>
-												<label class="checkbox-inline" for="1"><input name="PayPal" id="1" type="checkbox"> PayPal</label>
-											</li>
-											<li>
-												<label class="checkbox-inline" for="2"><input name="CreditCard" id="2" type="checkbox"> Credit Card</label>
-											</li>
-											<li>
-												<label class="checkbox-inline" for="3"><input name="PayFast" id="3" type="checkbox"> PayFast</label>
-											</li>
-										</ul>
-									</div>
-								</div>
-								<!--/ End Order Widget -->
-								<!-- Button Widget -->
-								<div class="single-widget get-button">
-									<div class="content">
-										<div class="button">
-											<a href="#" onclick="proceedToCheckout()" class="btn">Proceed with payment</a>
-										</div>
-									</div>
-								</div>
-								<!--/ End Button Widget -->
-							</div>
-						</div>
-					}
+						</form>
+						<!--/ End Form -->
+					</div>
 				</div>
-			</div>
+			}
+			else if (String.IsNullOrEmpty(Model.Area))
+			{
+				<div class="col-lg-8 col-12">
+					<div class="checkout-form">
+						<h2>Provide Shipping Address</h2>
+						<p>Looks like we don't have your shipping address yet.<br />We don't share any of your information with anyone.</p>
+						<!-- Form -->
+						<form id="registerForm" asp-action="ShippingUser" class="form" method="post">
+							<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+							<div class="row">
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="form-group">
+										<label>Province<span>*</span></label>
+										<select name="province" asp-for="Province">
+											<option value="WC">Western Cape</option>
+											<option value="EC">Eastern Cape</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="form-group">
+										<label>City<span>*</span></label>
+										<select name="city" asp-for="City">
+											<option value="CPT">Cape Town (CPT)</option>
+											<option value="PE">Port Elizabeth (PE)</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="form-group">
+										<label>Unit No.<span>*</span></label>
+										<input asp-for="Unit" type="text" name="unit" autocomplete="on" placeholder="213 Villa Costa" required="required">
+									</div>
+								</div>
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="form-group">
+										<label>Street Name<span>*</span></label>
+										<input asp-for="Street" type="text" name="street" autocomplete="on" placeholder="St James Road" required="required">
+									</div>
+								</div>
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="form-group">
+										<label>Area/Suburb<span>*</span></label>
+										<input asp-for="Area" type="text" name="area" autocomplete="on" placeholder="Seapoint" required="required">
+									</div>
+								</div>
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="form-group">
+										<label>Postal Code<span>*</span></label>
+										<input asp-for="PostalCode" type="number" name="postalCode" autocomplete="on" placeholder="8001" required="required">
+									</div>
+								</div>
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="form-group">
+										<label>Create a password<span>*</span></label>
+										<input asp-for="Password" type="password" name="password" autocomplete="off" placeholder="*********" required="required">
+									</div>
+								</div>
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="form-group">
+										<label>Confirm password<span>*</span></label>
+										<input asp-for="ConfirmPassword" type="password" name="confirmPassword" autocomplete="off" placeholder="*********" required="required">
+									</div>
+								</div>
+								<div class="col-12">
+									<input type="submit" value="Submit Details" class="btn btn-primary" />
+								</div>
+							</div>
+						</form>
+						<!--/ End Form -->
+					</div>
+				</div>
+			}
+			else if (ViewBag.userIsCookie == false)
+			{
+				<div class="row">
+					<div class="col-12">
+						<p class="fs-4 h4">Hello @Model.FirstName!</p>
+						<p class="fs-2 h2">Please Verify Your Details Below</p>
+					</div>
+				</div>
+				<div class="row section-divider">
+					<div class="col-sm-6 col-md-6 col-12">
+						<p class="fw-bolder h5"><br><span style="text-decoration:underline; text-decoration-thickness:1px; font-weight:800;">Verify Contact Details</span> <a href="#0" onclick="proceedToUser()"><i class="ti-pencil-alt" style="white-space: nowrap;" data-toggle="tooltip" data-placement="right" title="Change Contact Details"></i></a></p><br>
+						<div class="row">
+							<div class="col">
+								<p class="label-info fs-4 fw-bolder">First Name</p>
+								<p class="fs-4 h6 fw-bolder" style="top:0;">@Model.FirstName</p>
+							</div>
+							<div class="col">
+								<p class="label-info fs-4 fw-bolder">Last Name</p>
+								<p class="fs-4 h6 fw-bolder" style="top:0;">@Model.LastName</p>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<p class="label-info fs-4 fw-bolder">Email Address</p>
+								@if (Model.Email!.Length >= 15)
+								{
+									<p class="fs-4 h6 fw-bolder" style="top:0;">@Model.Email!.Substring(0,15)...</p>
+								}
+								else
+								{
+									<p class="fs-4 h6 fw-bolder" style="top:0;">@Model.Email</p>
+								}
+							</div>
+							<div class="col">
+								<p class="label-info fs-4 fw-bolder">Phone Number</p>
+								<p class="fs-4 h6 fw-bolder" style="top:0;">@Model.PhoneNumber</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6 col-md-6 col-12">
+						<p class="fw-bolder h5"><br><span style="text-decoration:underline; text-decoration-thickness:1px; font-weight:800;">Verify Shipping Address</span> <a href="#" onclick="showUserUpdateShipping()"><i class="ti-pencil-alt" style="white-space: nowrap;" data-toggle="tooltip" data-placement="right" title="Change Shipping Address"></i></a></p><br>
+						<p class="fs-4 h6 fw-bolder" style="top:0;">@Model.Unit @Model.Street</p>
+						<p class="fs-4 h6 fw-bolder" style="top:5px;">@Model.Area</p>
+						<p class="fs-4 h6 fw-bolder" style="top:5px;">@Model.City @Model.PostalCode</p>
+						<p class="fs-4 h6 fw-bolder" style="top:5px;">@Model.Province</p>
+					</div>
+				</div>
+				<div class="row section-divider">
+					<div class="col-sm-6 col-md-6 col-12 div-divider">
+						<p class="fw-bolder h5"><br><span style="text-decoration:underline; text-decoration-thickness:1px; font-weight:800;">Order Summary</span> <a href="#0" onclick="proceedToUser()"><i class="ti-shopping-cart-full" style="white-space: nowrap;" data-toggle="tooltip" data-placement="right" title="My Shopping Cart"></i></a></p><br>
+						<div class="row">
+							<div class="col">
+								<p class="label-info fs-4 fw-bolder">Total Items In Cart</p>
+								<p class="fs-4 h6 fw-bolder" style="top:0;">@ViewBag.BasketCount</p>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<p class="label-info fs-4 fw-bolder">Before Discount</p>
+								<p class="fs-4 h6 fw-bolder"><span style="color:red; text-decoration:line-through;">R @ViewBag.CartTotalBase.ToString("#,##0.00")</span></p>
+							</div>
+							<div class="col">
+								<p class="label-info fs-4 fw-bolder">After Discount</p>
+								<p class="fs-4 h6 fw-bolder"><span style="color:cadetblue; font-weight:700;">R @ViewBag.CartTotalSale.ToString("#,##0.00")</span></p>
+							</div>
+
+							<div class="col">
+								<p class="label-info fs-4 fw-bolder">You Save</p>
+								<p class="fs-4 h6 fw-bolder"><span style="color:forestgreen; font-weight:700;">R @ViewBag.Savings.ToString("#,##0.00")</span></p>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<p class="label-info fs-4 fw-bolder">Shipping</p>
+								@if (ViewBag.GetFreeShipping > 0)
+								{
+
+									<p class="fs-4 h6 fw-bolder">R @ViewBag.ShippingCost
+										<span style="font-size:10px; color:gray;">Spend R <span style="font-weight:600; color:cadetblue;">@ViewBag.GetFreeShipping</span> to get <span style="font-weight:600; color:cadetblue;">FREE</span> Shipping</span>
+									</p>
+									
+								}
+								else
+								{
+									<p class="fs-4 h6 fw-bolder" style="font-weight:600; color:cadetblue;">FREE</p>
+								}
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<p class="label-info fs-4 fw-bolder">Handling Fee  <i class="fa fa-info-circle" style="white-space: nowrap;" data-toggle="tooltip" data-placement="right" title="Think of our handling fee like a secret seasoning - it's the special ingredient that adds value to your shopping experience and helps us continue providing top-notch service without sacrificing our bottom line."></i></p>
+								<p class="fs-4 h6 fw-bolder">R @ViewBag.HandlingFee</p>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<p class="label-info fs-3 fw-bolder">Cart Total</p>
+								<p class="fs-3 h3 fw-bolder"><span style="text-decoration:underline; text-decoration-thickness:1px;">R @ViewBag.GrandTotal.ToString("#,##0.00")</span></p>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-4 col-md-4 col-12">
+						<p class="fw-bolder h5"><br><span style="text-decoration:underline; text-decoration-thickness:1px; font-weight:800;">Select Payment Method</span></p><br>
+						<div class="row">
+							<div class="col">
+								<form id="registerForm" asp-action="ShippingUser" class="form" method="post">
+									<div class="row">
+										<div class="col-lg-6 col-md-6 col-12">
+											<div class="form-group">
+												<label>Payment Method</label>
+												<select name="paymentMethod">
+													<option value="CC">Credit Card</option>
+													<option value="IE">Instant EFT</option>
+													<option value="FNBEBUCKS">eBucks</option>
+													<option value="SE">Standard EFT</option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<a href="#0" onclick="proceedToCheckout()" class="btn btn-primary" style="color:aliceblue;">Proceed <i class="ti-arrow-right"></i></a>
+							</div>
+						</div>
+					</div>
+				</div>
+			}
 		</div>
 	</section>
 	<!--/ End Checkout -->
-	<section class="shop-services section home">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-3 col-md-6 col-12">
-					<!-- Start Single Service -->
-					<div class="single-service">
-						<i class="ti-rocket"></i>
-						<h4>Free shipping</h4>
-						<p>Orders over R1500</p>
-					</div>
-					<!-- End Single Service -->
-				</div>
-				<div class="col-lg-3 col-md-6 col-12">
-					<!-- Start Single Service -->
-					<div class="single-service">
-						<i class="ti-reload"></i>
-						<h4>Warranty Included</h4>
-						<p>Up to 2 years</p>
-					</div>
-					<!-- End Single Service -->
-				</div>
-				<div class="col-lg-3 col-md-6 col-12">
-					<!-- Start Single Service -->
-					<div class="single-service">
-						<i class="ti-lock"></i>
-						<h4>Secure Payment</h4>
-						<p>100% secure payment</p>
-					</div>
-					<!-- End Single Service -->
-				</div>
-				<div class="col-lg-3 col-md-6 col-12">
-					<!-- Start Single Service -->
-					<div class="single-service">
-						<i class="ti-tag"></i>
-						<h4>Best Price</h4>
-						<p>Everything is <span>On Sale</span> 24/7 </p>
-					</div>
-					<!-- End Single Service -->
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- Start Shop Newsletter  -->
-	<section class="shop-newsletter section">
-		<div class="container">
-			<div class="inner-top">
-				<div class="row">
-					<div class="col-lg-8 offset-lg-2 col-12">
-						<!-- Start Newsletter Inner -->
-						<div class="inner">
-							<h4>Newsletter</h4>
-							<p> Subscribe to our newsletter and get <span>10%</span> off your first purchase</p>
-							<form action="mail/mail.php" method="get" target="_blank" class="newsletter-inner">
-								<input name="EMAIL" placeholder="Your email address" required="" type="email">
-								<button class="btn">Subscribe</button>
-							</form>
-						</div>
-						<!-- End Newsletter Inner -->
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- End Shop Newsletter -->
-	<!-- Modal -->
-	<div class="modal fade" id="Modal" tabindex="-1" role="dialog">
-		<div class="modal-dialog" role="document">
-			<div id="QuickShopModal" class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span class="ti-close" aria-hidden="true"></span></button>
-				</div>
-				<div id="progressBarContainer">
-					<div id="progressBar"></div>
-				</div>
-				@foreach (var product in ViewBag.Items)
-				{
-					<div class="modal-body">
-						<div class="row no-gutters">
-							<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
-								<!-- Product Slider -->
-								<div class="product-gallery">
-									<div class="quickview-slider-active">
-										<div class="single-slider">
-											<img src="@Url.Action("GetImage", "Backend", new { id = product.Id })" alt="@product.ProductName" />
-										</div>
-									</div>
-								</div>
-								<!-- End Product slider -->
-							</div>
-							<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
-								<div class="quickview-content">
-									<a href="/Shop/Product/@product.Id">
-										<h2>@product.ProductName</h2>
-									</a>
-									<div class="quickview-ratting-review">
-										<div class="quickview-ratting-wrap">
-											<div class="quickview-ratting">
-												<i class="yellow fa fa-star"></i>
-												<i class="yellow fa fa-star"></i>
-												<i class="yellow fa fa-star"></i>
-												<i class="yellow fa fa-star"></i>
-												<i class="fa fa-star"></i>
-											</div>
-											<a href="#"> (1 customer review)</a>
-										</div>
-									</div>
-									<div class="quickview-stock">
-										<span><i class="fa fa-check-circle-o"></i> @product.ProductStock</span>
-									</div>
-									<div class="product-price">
-										<span class="text-decoration-line-through">R @product.ProductBasePrice</span>
-										<h3 style="color:red; font-weight:800;">R @product.ProductSalePrice</h3>
-									</div>
-									<div class="quickview-peragraph">
-										<p>@product.ProductDescription</p>
-									</div>
-									<div class="quantity">
-										<!-- Input Order -->
-										<div class="input-group">
-											<div class="button minus">
-												<button type="button" class="btn btn-primary btn-number" disabled="disabled" data-type="minus" data-field="quant[1]">
-													<i class="ti-minus"></i>
-												</button>
-											</div>
-											<input type="text" name="quant[1]" class="input-number" data-min="1" data-max="1000" value="1">
-											<div class="button plus">
-												<button type="button" class="btn btn-primary btn-number" data-type="plus" data-field="quant[1]">
-													<i class="ti-plus"></i>
-												</button>
-											</div>
-										</div>
-										<!--/ End Input Order -->
-									</div>
-									<div class="add-to-cart">
-										<a href="#" class="btn" onclick="loadAddToCart('@product.Id')">Add to cart</a>
-										<a href="#" onclick="loadAddToWishlist('@product.Id')" class="btn min"><i class="ti-heart"></i></a>
-									</div>
-									<div class="default-social">
-										<h4 class="share-now">Share:</h4>
-										<ul>
-											<li><a class="facebook" href="#"><i class="fa fa-facebook"></i></a></li>
-											<li><a class="twitter" href="#"><i class="fa fa-twitter"></i></a></li>
-											<li><a class="youtube" href="#"><i class="fa fa-pinterest-p"></i></a></li>
-											<li><a class="dribbble" href="#"><i class="fa fa-google-plus"></i></a></li>
-										</ul>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				}
-			</div>
-		</div>
-	</div>
-	<!-- Modal end -->
-	<!-- Start Footer Area -->
-	<footer class="footer">
-		<!-- Footer Top -->
-		<div class="footer-top section">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-5 col-md-6 col-12">
-						<!-- Single Widget -->
-						<div class="single-footer about">
-							<div class="logo">
-								<a href="/"><img src="/Media/LogoCropped.png" alt="#"></a>
-							</div>
-							<p class="text">Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue,  magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus.</p>
-							<p class="call">Got Question? Call us 24/7<span><a href="tel:123456789">+27 81 565 0206</a></span></p>
-						</div>
-						<!-- End Single Widget -->
-					</div>
-					<div class="col-lg-2 col-md-6 col-12">
-						<!-- Single Widget -->
-						<div class="single-footer links">
-							<h4>Information</h4>
-							<ul>
-								<li><a href="/Home/UnderConstruction">About Us</a></li>
-								<li><a href="/Home/UnderConstruction">Faq</a></li>
-								<li><a href="/Home/UnderConstruction">Terms & Conditions</a></li>
-								<li><a href="/Home/UnderConstruction">Contact Us</a></li>
-								<li><a href="/Home/UnderConstruction">Help</a></li>
-							</ul>
-						</div>
-						<!-- End Single Widget -->
-					</div>
-					<div class="col-lg-2 col-md-6 col-12">
-						<!-- Single Widget -->
-						<div class="single-footer links">
-							<h4>Customer Service</h4>
-							<ul>
-								<li><a href="/Home/UnderConstruction">Payment Methods</a></li>
-								<li><a href="/Home/UnderConstruction">Money-back</a></li>
-								<li><a href="/Home/UnderConstruction">Returns</a></li>
-								<li><a href="/Home/UnderConstruction">Shipping</a></li>
-								<li><a href="/Home/UnderConstruction">Privacy Policy</a></li>
-							</ul>
-						</div>
-						<!-- End Single Widget -->
-					</div>
-					<div class="col-lg-3 col-md-6 col-12">
-						<!-- Single Widget -->
-						<div class="single-footer social">
-							<h4>Get In Touch</h4>
-							<!-- Single Widget -->
-							<div class="contact">
-								<ul>
-									<li>Montague Gardens Cape Town</li>
-									<li>8001 South Africa.</li>
-									<li>info@swfitlink.com</li>
-									<li>+27 81 565 0206</li>
-								</ul>
-							</div>
-							<!-- End Single Widget -->
-							<ul>
-								<li><a href="#"><i class="ti-facebook"></i></a></li>
-								<li><a href="#"><i class="ti-twitter"></i></a></li>
-								<li><a href="#"><i class="ti-flickr"></i></a></li>
-								<li><a href="#"><i class="ti-instagram"></i></a></li>
-							</ul>
-						</div>
-						<!-- End Single Widget -->
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- End Footer Top -->
-		<div class="copyright">
-			<div class="container">
-				<div class="inner">
-					<div class="row">
-						<div class="col-lg-6 col-12">
-							<div class="left">
-								<p>Copyright © 2023 <a href="/" target="_blank">SwiftLink</a>  -  All Rights Reserved.</p>
-							</div>
-						</div>
-						<div class="col-lg-6 col-12">
-							<div class="right">
-								<img src="images/payments.png" alt="#">
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</footer>
-	<!-- /End Footer Area -->
+	<!-- Shop Services Partial View-->
+	<partial name="_Services" />
+	<!-- // -->
+	<!-- Footer Partial View-->
+	<partial name="_Footer" />
+	<!-- // -->
 	@section Scripts {
 		<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 	}
@@ -949,6 +647,9 @@
 			$('#loading-bar').hide();
 			$('#123Section').show();
 		});
+		function proceedToUser() {
+			window.location.href = '/User/Index';
+		}
 
 		// [GET]
 		// Proceed to checkout

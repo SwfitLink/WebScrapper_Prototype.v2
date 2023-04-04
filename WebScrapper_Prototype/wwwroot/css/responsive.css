@@ -523,7 +523,7 @@ Version:1.0
 	display: none;
 }
 .header .header-inner{
-	display:none 
+	display: block;
 }
 .hero-slider {
 	height: 350px;
@@ -1255,7 +1255,7 @@ Version:1.0
 	display: none;
 }
 .header .header-inner{
-	display:none 
+	display: block;
 }
 .header.shop .nav li .new {
 	display:none !important;

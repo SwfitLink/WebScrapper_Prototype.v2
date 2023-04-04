@@ -17,6 +17,8 @@ namespace WebScrapper_Prototype.Controllers
 		private readonly SignInManager<ApplicationUser> _signInManager;
 		private readonly IHttpContextAccessor _httpContextAccessor;
 		private string userEmail = string.Empty;
+		private static string userFirstName;
+
 		public UserController(WebScrapper_PrototypeContext context, IHttpContextAccessor httpContextAccessor, ApplicationDbContext app, UserManager<ApplicationUser> usermanager, SignInManager<ApplicationUser> signInManager)
 		{
 			_userManager = usermanager;
@@ -26,14 +28,19 @@ namespace WebScrapper_Prototype.Controllers
 			_app = app;
 		}
 		[HttpGet]
-		public async Task<IActionResult> Index(string email, string invalidResult)
+		public async Task<IActionResult> Index(string email, int result)
 		{
 			userEmail = await CheckUserCookie();
+			if(result > 0)
+				ViewBag.Result = result;
 			if (!userEmail!.Contains("cookie") && email == null)
 			{
 				ViewBag.UserLayer = 0;
+				ViewBag.IsCookie = false;
 				var userModel = _context.UserModels.FirstOrDefault(u => u.Email!.Equals(userEmail));
 				var userShipping = _context.UserShippings.FirstOrDefault(u => u.UserId!.Equals(userEmail));
+				userFirstName = userModel.FirstName;
+				ViewBag.FirstName = userFirstName;
 
 				if (userShipping != null)
 				{
@@ -74,17 +81,21 @@ namespace WebScrapper_Prototype.Controllers
 			else if (userEmail!.Contains("cookie") && email == null)
 			{
 				ViewBag.UserLayer = 1;
+				ViewBag.IsCookie = true;
+				ViewBag.FirstName = "Please Login or Register";
 				return View();
 			}				
 			else if(email != null)
 			{
 				ViewBag.UserLayer = 2;
+				ViewBag.IsCookie = true;
 				ViewBag.Result = email;
 				return View();
 			}
 			else
 				return View();
 		}
+		[HttpPost]
 		public async Task<ActionResult> Register(UserModel model)
 		{
 			UserDetailsService service = new(_context, _httpContextAccessor, _app, _userManager, _signInManager);
@@ -177,17 +188,21 @@ namespace WebScrapper_Prototype.Controllers
 						IsEssential = true
 					};
 					HttpContext.Response.Cookies.Append(cookieName, model.Email, cookieOptions);
-					return RedirectToAction(nameof(Index));
-				case 300:
-					return RedirectToAction(nameof(Index), new { invalidResult = "Invalid Password" });					
-				default:
-					return RedirectToAction(nameof(Index), new { invalidResult = "Password is to weak" });
+					ViewBag.Result = "Successfully Logged In!";
+					return RedirectToAction(nameof(Index), new { result});
+				case 500:
+					return RedirectToAction(nameof(Index), new { result });
+				case 404:					
+					return RedirectToAction(nameof(Index), new { result });
+				default: return RedirectToAction(nameof(Index));
 			}			
 		}
 		[HttpGet]
-		public async Task Logout()
+		public async Task<IActionResult> Logout()
 		{
 			await _signInManager.SignOutAsync();
+			ViewBag.IsCookie = true;
+			return RedirectToAction(nameof(Index));
 		}
 		private async Task<string> CheckUserCookie()
 		{

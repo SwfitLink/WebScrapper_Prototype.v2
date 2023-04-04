@@ -51,16 +51,14 @@ namespace WebScrapper_Prototype.Controllers
 		/// Responsible for the Shop RazorView
 		/// </summary>
 		[HttpGet]
-		public async Task<IActionResult> Index(int basketStart, int productIdW, int wishlistStart, string priceRange,int removeProduct, int addProduct, string category, string searchString, int page)
+		public async Task<IActionResult> Index(int basketStart, int productIdW, string priceRange, int removeProduct, int addProduct, string category, string searchString, int page)
 		{
 			/// Cookies ///
 			userEmail = await CheckUserCookie();
 			if (userEmail.Contains("cookie"))
 			{
 				ViewBag.IsCookie = true;
-				ViewBag.FirstName = 
-					"Please Login or\n" +
-					"Register a New Account";
+				ViewBag.FirstName = "Please Login or Register";
 			}
 			else
 			{
@@ -86,8 +84,6 @@ namespace WebScrapper_Prototype.Controllers
 				return View(await AddToCart(addProduct));
 			if (removeProduct > 0)
 				return View(await RemoveFromCart(removeProduct));
-			if (wishlistStart > 0)
-				return View(LoadWishList());
 			if (productIdW > 0)
 				AddToWishList(productIdW);			
 
@@ -96,8 +92,9 @@ namespace WebScrapper_Prototype.Controllers
 			// Function : Search Products
 			if (!string.IsNullOrEmpty(searchString))
 			{
+				ViewBag.CurrentFilter = searchString;
 				Console.WriteLine("------------------\n" + $"Selecting Products: {searchString}");
-				products = products.Where(p => p.ProductName!.Contains(searchString));
+				products = products.Where(p => p.ProductName!.Contains(searchString));				
 				Console.WriteLine("------------------\n");
 			}
 			// Function : Product Filter = Price
@@ -188,8 +185,10 @@ namespace WebScrapper_Prototype.Controllers
 		/// Responsible for the Cart RazorView
 		/// </summary>
 		[HttpGet]
-		public IActionResult Cart()
+		public async Task<IActionResult> Cart()
 		{
+			/// Cookies ///
+			userEmail = await CheckUserCookie();
 			if (userEmail.Contains("cookie"))
 			{
 				ViewBag.IsCookie = true;
@@ -239,11 +238,74 @@ namespace WebScrapper_Prototype.Controllers
 			return View(products.ToPagedList(1, 100));
 		}
 		/// <summary>
+		/// Responsible for the Cart RazorView
+		/// </summary>
+		[HttpGet]
+		public async Task<IActionResult> Upgrade(string filter)
+		{
+			/// Cookies ///
+			userEmail = await CheckUserCookie();
+			if (userEmail.Contains("cookie"))
+			{
+				ViewBag.IsCookie = true;
+				ViewBag.FirstName =
+					"Please Login Into Your Account or\n" +
+					"Register a New Account";
+			}
+			else
+			{
+				ViewBag.IsCookie = false;
+				userFirstName = _context.UserModels.FirstOrDefault(s => s.Email.Equals(userEmail)).FirstName;
+				ViewBag.FirstName = userFirstName;
+			}
+			var products = _context.Products.Where(s => s.Visible!.Equals("Visible"));
+			switch (filter)
+			{
+				case "Kits":
+					ViewBag.Filter = "Upgrade Kits are Coming Soon!";
+					return View();			
+				case "SSDs":
+					products = _context.Products.Where(s => s.ProductCategory!.Equals("SSDs"));
+					ViewBag.Filter = "SSDs";
+					break;
+				case "Case Fans":
+					products = _context.Products.Where(s => s.ProductCategory!.Equals("Case Fans"));
+					ViewBag.Filter = "Case Fans";
+					break;
+				case "Motherboards":
+					products = _context.Products.Where(s => s.ProductCategory!.Equals("Motherboards"));
+					ViewBag.Filter = "Motherboards";
+					break;
+				case "PSUs":
+					products = _context.Products.Where(s => s.ProductCategory!.Equals("PSUs"));
+					ViewBag.Filter = "PSUs";
+					break;
+				case "Memory":
+					products = _context.Products.Where(s => s.ProductCategory!.Equals("Memory"));
+					ViewBag.Filter = "Memory";
+					break;
+				case "CPU Coolers":
+					products = _context.Products.Where(s => s.ProductCategory!.Equals("CPU Coolers"));
+					ViewBag.Filter = "CPU Coolers";
+					break;					
+				default :		
+					products = _context.Products.Where(s => s.ProductCategory!.Equals(filter));
+					if(products != null)
+						ViewBag.Filter = filter;
+					else
+						ViewBag.Filter = "404: No Products Found!";
+					break;
+			}		
+			return View(products.ToPagedList(1, 100));
+		}
+		/// <summary>
 		/// Responsible for the Product RazorView
 		/// </summary>
 		[HttpGet]
-		public IActionResult Product(int id)
+		public async Task<IActionResult> Product(int id)
 		{
+			/// Cookies ///
+			userEmail = await CheckUserCookie();
 			if (userEmail.Contains("cookie"))
 			{
 				ViewBag.IsCookie = true;
@@ -486,6 +548,14 @@ namespace WebScrapper_Prototype.Controllers
 				return RedirectToAction("Index", new { BasketID = 1 });
 			}
 			return RedirectToAction("Index", new { wishlistStart = 0 });
+		}
+		/// <summary>
+		/// Responsible for the WebsiteCritical RazorView
+		/// </summary>
+		[HttpGet]
+		public async Task<IActionResult> WebsiteCritical(int id)
+		{
+			return View();
 		}
 	}
 }

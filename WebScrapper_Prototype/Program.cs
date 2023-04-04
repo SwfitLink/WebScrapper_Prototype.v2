@@ -4,7 +4,7 @@ using System.Security.Claims;
 using System.Web.Helpers;
 using WebScrapper_Prototype.Areas.Identity.Data;
 using WebScrapper_Prototype.Data;
-using OpenAI.API;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
@@ -15,8 +15,8 @@ var connectionString = builder.Configuration.GetConnectionString("ApplicationDbC
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
-				.AddRoles<IdentityRole>()
-				.AddEntityFrameworkStores<ApplicationDbContext>();
+	.AddRoles<IdentityRole>()
+	.AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddCors(options => options.AddDefaultPolicy(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
 
@@ -29,7 +29,7 @@ var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
 {
-	app.UseExceptionHandler("/Home/Error");
+	app.UseExceptionHandler("/Shop/WebsiteCritical");
 	app.UseHsts();
 }
 
@@ -45,7 +45,15 @@ app.MapRazorPages();
 
 app.MapControllerRoute(
 	name: "default",
-	pattern: "{controller=Home}/{action=Index}/{id?}");
+	pattern: "{controller=Shop}/{action=Index}/{id?}");
+
+var forwardedHeaderOptions = new ForwardedHeadersOptions
+{
+	ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+};
+forwardedHeaderOptions.KnownNetworks.Clear();
+forwardedHeaderOptions.KnownProxies.Clear();
+app.UseForwardedHeaders(forwardedHeaderOptions);
 
 app.Run();
 

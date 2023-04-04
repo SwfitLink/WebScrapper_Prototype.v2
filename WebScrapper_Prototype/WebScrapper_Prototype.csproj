@@ -4,19 +4,13 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>5d69d375-d62b-467a-8b6a-678890b68336</UserSecretsId>
-  </PropertyGroup>
-	
-	<configuration>
-		<system.webServer>
-			<security>
-				<dynamicIpSecurity denyAction="Forbidden">
-					<denyByConcurrentRequests enabled="true" maxConcurrentRequests="10" />
-					<denyByRequestRate enabled="true" maxRequests="30" requestIntervalInMilliseconds="300" />
-				</dynamicIpSecurity>
-			</security>
-		</system.webServer>
-	</configuration>
-
+  </PropertyGroup>	
+  <ItemGroup>
+    <Compile Remove="Views\Home\**" />
+    <Content Remove="Views\Home\**" />
+    <EmbeddedResource Remove="Views\Home\**" />
+    <None Remove="Views\Home\**" />
+  </ItemGroup>
 	<ItemGroup>
     <PackageReference Include="AlertifyJS" Version="1.13.1" />
     <PackageReference Include="CsvHelper" Version="12.2.1" />
@@ -48,5 +42,17 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+    <Content Update="wwwroot\js\jquery.min.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="wwwroot\Media\Logo\favicon.ico">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\Uploads\" />
   </ItemGroup>
 </Project>

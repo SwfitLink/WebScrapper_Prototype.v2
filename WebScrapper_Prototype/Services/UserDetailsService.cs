@@ -29,31 +29,36 @@ namespace WebScrapper_Prototype.Services
 		public async Task<int> Login(LoginViewModel model)
 		{
 			var user = await _signInManager!.UserManager.FindByEmailAsync(model.Email);
-			var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
-			if (result.Succeeded)
+			if (user != null)
 			{
-				var claims = new List<Claim>
+				var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+				if (result.Succeeded)
+				{
+					var claims = new List<Claim>
 					{
 						new Claim("arr", "pwd"),
 					};
-				var roles = await _signInManager.UserManager.GetRolesAsync(user);
-				if (roles.Any())
-				{
-					//Gives Cookie [USER] Role
-					var roleClaim = string.Join(",", roles);
-					claims.Add(new Claim("Roles", roleClaim));
+					var roles = await _signInManager.UserManager.GetRolesAsync(user);
+					if (roles.Any())
+					{
+						//Gives Cookie [USER] Role
+						var roleClaim = string.Join(",", roles);
+						claims.Add(new Claim("Roles", roleClaim));
+					}
+					else
+					{
+						await _signInManager.UserManager.AddToRoleAsync(user, "User");
+						var roleClaim = string.Join(",", roles);
+						claims.Add(new Claim("Roles", roleClaim));
+					}
+					await _signInManager.SignInWithClaimsAsync(user, true, claims);
+					return 200;
 				}
 				else
-				{
-					await _signInManager.UserManager.AddToRoleAsync(user, "User");
-					var roleClaim = string.Join(",", roles);
-					claims.Add(new Claim("Roles", roleClaim));
-				}
-				await _signInManager.SignInWithClaimsAsync(user, true, claims);
-				return 200;
+					return 500;
 			}
 			else
-				return 200;
+				return 404;
 		}
 		public async Task<string> Register(UserModel model, string token)
 		{
@@ -141,12 +146,12 @@ namespace WebScrapper_Prototype.Services
 					claims.Add(new Claim("Roles", roleClaim));
 				}
 				await _signInManager.SignInWithClaimsAsync(user, true, claims);
-				return model.Email;
+				return "200";
 			}
 			else
 				return "Password was Invalid";
 		}
-		public async Task<string> EntireUser(UserViewModel model, string token)
+		public async Task<int> EntireUser(UserViewModel model, string token)
 		{			
 			var existingUser = _app!.Users.FirstOrDefault(u => u.Email == model.Email);
 			var userShipping = _context!.UserShippings.FirstOrDefault(u => u.UserId == model.Email);
@@ -154,7 +159,7 @@ namespace WebScrapper_Prototype.Services
 			if (existingUser != null)
 			{
 				if (userShipping != null)
-					return "200 User and shipping details exists";
+					return 500;
 				else
 				{
 					userShipping = new UserShipping
@@ -170,7 +175,7 @@ namespace WebScrapper_Prototype.Services
 					_context.Attach(userShipping);
 					_context.Entry(userShipping).State = EntityState.Added;
 					_context.SaveChanges();
-					return "100 User shipping details are updated";
+					return 250;
 				}
 			}
 			else
@@ -184,7 +189,7 @@ namespace WebScrapper_Prototype.Services
 					Password = model.Password
 				};
 				string result = await Register(user, token);
-				if (result.Equals("success"))
+				if (result.Equals("200"))
 				{
 					userShipping = new UserShipping
 					{
@@ -199,11 +204,16 @@ namespace WebScrapper_Prototype.Services
 					_context.Attach(userShipping);
 					_context.Entry(userShipping).State = EntityState.Added;
 					_context.SaveChanges();
-					return "300 Registering a new user...";
-
+					return 200;
+				}
+				else if (result.Equals("100"))
+				{
+					return 500;
 				}
 				else
-					return "Something went wrong";
+				{
+					return 404;
+				}				
 			}
 		}
 		public async Task ShippingUser(UserShipping model, string token)

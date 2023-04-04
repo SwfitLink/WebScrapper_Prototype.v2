@@ -560,7 +560,7 @@
     a.magnificPopup.registerModule("gallery", {
         options: {
             enabled: !1,
-            arrowMarkup: '<button title="%title%" type="button" class="mfp-arrow mfp-arrow-%dir%"></button>',
+            arrowMarkup: '<button title="%title%" type="button" class="mfp-arrow mfp-arrowLimiteddir%"></button>',
             preload: [0, 2],
             navigateByImgClick: !0,
             arrows: !0,

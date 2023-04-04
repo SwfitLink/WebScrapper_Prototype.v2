@@ -170,8 +170,8 @@ input,
 select,
 optgroup,
 textarea {
-	color: #424646;
-    font-family: 'Poppins', sans-serif;
+	color: #212529;
+	font-family: 'Poppins', sans-serif;
 	font-weight:400;
 	font-size: 14px;
 	line-height: 24px;
@@ -231,7 +231,7 @@ big {
 }
 
 .section {
-	padding: 100px 0;
+	padding: 50px 25px;
 	position: relative;
 }
 .section-title {
@@ -266,6 +266,8 @@ big {
 .container{
 	max-width: 1140px;
 }
+
+div#cpus {}
 .overlay{
 	position:relative
 }
@@ -568,7 +570,7 @@ hr {
 
 ul,ul li{
 	list-style:none;
-	padding: 1;
+	padding: 0;
 	margin:0;
 }
 
@@ -591,6 +593,7 @@ img {
 	/* Make sure images are scaled correctly. */
 	max-width: 100%;
 	/* Adhere to container width. */
+	border-radius: 15px;
 }
 
 figure {
@@ -678,7 +681,7 @@ a {
 }
 
 a:visited {
-	color: inherit;
+	/* color: inherit; */
 }
 
 a:hover, a:focus, a:active {
